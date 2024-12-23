@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+// An implementation of C#'s null-coalescing
+infix operator ??=: AssignmentPrecedence
+
+func ??=<T>(a: inout T?, b: T) {
+    a = a ?? b
+}
