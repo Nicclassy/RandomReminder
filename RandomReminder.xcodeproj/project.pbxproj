@@ -18,6 +18,12 @@
 		81B525F32D18D7E7008D36F0 /* AboutPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B525F22D18D7E7008D36F0 /* AboutPreferencesView.swift */; };
 		81B525F52D18D885008D36F0 /* RemindersPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B525F42D18D885008D36F0 /* RemindersPreferencesView.swift */; };
 		81B525F72D18E164008D36F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B525F62D18E164008D36F0 /* Constants.swift */; };
+		81B525F92D1925FF008D36F0 /* QuickReminderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B525F82D1925FF008D36F0 /* QuickReminderView.swift */; };
+		81B525FC2D19277B008D36F0 /* ReminderTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B525FB2D19277B008D36F0 /* ReminderTimer.swift */; };
+		81B525FE2D1928BB008D36F0 /* TimeOnly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B525FD2D1928BB008D36F0 /* TimeOnly.swift */; };
+		81B526002D1A10F8008D36F0 /* TimePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B525FF2D1A10F8008D36F0 /* TimePickerView.swift */; };
+		81B526042D1A23F6008D36F0 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B526032D1A23F6008D36F0 /* Date+Extensions.swift */; };
+		81B526062D1A4EF7008D36F0 /* DualTimePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B526052D1A4EF7008D36F0 /* DualTimePickerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +58,12 @@
 		81B525F22D18D7E7008D36F0 /* AboutPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutPreferencesView.swift; sourceTree = "<group>"; };
 		81B525F42D18D885008D36F0 /* RemindersPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersPreferencesView.swift; sourceTree = "<group>"; };
 		81B525F62D18E164008D36F0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = RandomReminder/Constants.swift; sourceTree = SOURCE_ROOT; };
+		81B525F82D1925FF008D36F0 /* QuickReminderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickReminderView.swift; sourceTree = "<group>"; };
+		81B525FB2D19277B008D36F0 /* ReminderTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTimer.swift; sourceTree = "<group>"; };
+		81B525FD2D1928BB008D36F0 /* TimeOnly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeOnly.swift; sourceTree = "<group>"; };
+		81B525FF2D1A10F8008D36F0 /* TimePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerView.swift; sourceTree = "<group>"; };
+		81B526032D1A23F6008D36F0 /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
+		81B526052D1A4EF7008D36F0 /* DualTimePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DualTimePickerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,8 +113,11 @@
 		8163F5D12D1241D40052A016 /* RandomReminder */ = {
 			isa = PBXGroup;
 			children = (
+				81B526012D1A1C0C008D36F0 /* Preferences */,
+				81B525FA2D19275D008D36F0 /* Models */,
 				8163F6162D13A9530052A016 /* Views */,
 				8163F6122D13A90E0052A016 /* Controllers */,
+				81B526022D1A23AB008D36F0 /* Extensions */,
 				8163F5D22D1241D40052A016 /* RandomReminderApp.swift */,
 				8163F60D2D13A7540052A016 /* AppDelegate.swift */,
 				81B525F62D18E164008D36F0 /* Constants.swift */,
@@ -132,14 +147,42 @@
 		8163F6162D13A9530052A016 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				81B525F82D1925FF008D36F0 /* QuickReminderView.swift */,
+				81B525FF2D1A10F8008D36F0 /* TimePickerView.swift */,
+				81B526052D1A4EF7008D36F0 /* DualTimePickerView.swift */,
+			);
+			name = Views;
+			path = RandomReminder/Views;
+			sourceTree = SOURCE_ROOT;
+		};
+		81B525FA2D19275D008D36F0 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				81B525FB2D19277B008D36F0 /* ReminderTimer.swift */,
+				81B525FD2D1928BB008D36F0 /* TimeOnly.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		81B526012D1A1C0C008D36F0 /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
 				8163F6142D13A9530052A016 /* GeneralPreferencesView.swift */,
 				81B525F22D18D7E7008D36F0 /* AboutPreferencesView.swift */,
 				81B525F42D18D885008D36F0 /* RemindersPreferencesView.swift */,
 				8163F6152D13A9530052A016 /* PreferencesView.swift */,
 			);
-			name = Views;
-			path = RandomReminder/Views;
+			name = Preferences;
+			path = RandomReminder/Preferences;
 			sourceTree = SOURCE_ROOT;
+		};
+		81B526022D1A23AB008D36F0 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				81B526032D1A23F6008D36F0 /* Date+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
@@ -279,12 +322,18 @@
 			files = (
 				8163F6172D13A9530052A016 /* GeneralPreferencesView.swift in Sources */,
 				8163F6182D13A9530052A016 /* PreferencesView.swift in Sources */,
+				81B525F92D1925FF008D36F0 /* QuickReminderView.swift in Sources */,
+				81B526042D1A23F6008D36F0 /* Date+Extensions.swift in Sources */,
 				8163F6132D13A90E0052A016 /* StatusBarController.swift in Sources */,
 				8163F60E2D13A7540052A016 /* AppDelegate.swift in Sources */,
 				81B525F32D18D7E7008D36F0 /* AboutPreferencesView.swift in Sources */,
 				8163F5D32D1241D40052A016 /* RandomReminderApp.swift in Sources */,
+				81B526002D1A10F8008D36F0 /* TimePickerView.swift in Sources */,
+				81B526062D1A4EF7008D36F0 /* DualTimePickerView.swift in Sources */,
 				81B525F52D18D885008D36F0 /* RemindersPreferencesView.swift in Sources */,
 				81B525F72D18E164008D36F0 /* Constants.swift in Sources */,
+				81B525FC2D19277B008D36F0 /* ReminderTimer.swift in Sources */,
+				81B525FE2D1928BB008D36F0 /* TimeOnly.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
