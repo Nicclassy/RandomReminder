@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class StatusBarController {
+final class StatusBarController {
     lazy var statusItem: NSStatusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     weak var preferencesWindow: NSWindow!
     
@@ -16,7 +16,7 @@ class StatusBarController {
         setupView()
     }
     
-    func setupView() {
+    private func setupView() {
         if let button = statusItem.button {
             button.image = NSImage(systemSymbolName: "questionmark.circle", accessibilityDescription: "Menu Bar Icon")
             // Self Implements action of the button
@@ -35,6 +35,7 @@ class StatusBarController {
         )
         preferencesMenuItem.target = self
         menu.addItem(preferencesMenuItem)
+        menu.addItem(.separator())
         
         let quitMenuItem = NSMenuItem(
             title: "Quit",

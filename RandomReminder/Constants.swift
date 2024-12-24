@@ -7,9 +7,9 @@
 
 import Foundation
 
-// An implementation of C#'s null-coalescing
+// An implementation of C#'s null-coalescing assignment operator
 infix operator ??=: AssignmentPrecedence
 
-func ??=<T>(a: inout T?, b: T) {
-    a = a ?? b
+func ??=<T>(lhs: inout T?, rhs: T) {
+    lhs = lhs ?? rhs
 }
