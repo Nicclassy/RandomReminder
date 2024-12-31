@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct TimePickerView: View {
-    let heading: String
-    @Binding var date: Date
+    private let heading: String
+    @Binding private var date: Date
     
     init(_ heading: String, selection date: Binding<Date>) {
         self.heading = heading
