@@ -7,10 +7,15 @@
 
 import Foundation
 import SwiftUI
+import Combine
+import Settings
 
 final class StatusBarController {
-    lazy var statusItem: NSStatusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-    weak var preferencesWindow: NSWindow!
+    lazy var statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+    lazy var preferencesViewController = PreferencesViewController()
+    weak var quickReminderItem: NSMenuItem!
+    
+    private let appPreferences = AppPreferences()
     
     init() {
         setupView()
@@ -19,15 +24,29 @@ final class StatusBarController {
     private func setupView() {
         if let button = statusItem.button {
             button.image = NSImage(systemSymbolName: "questionmark.circle", accessibilityDescription: "Menu Bar Icon")
-            // Self Implements action of the button
+            debug("Button loaded")
             button.target = self
             button.action = #selector(onStatusBarClick)
         }
+        
         statusItem.menu = buildMenu()
     }
     
     private func buildMenu() -> NSMenu {
         let menu = NSMenu()
+        menu.autoenablesItems = false
+        
+        let quickReminderView = QuickReminderView()
+        let controller = NSHostingController(rootView: quickReminderView)
+        controller.view.frame.size = CGSize(width: 200, height: 100)
+        
+        let quickReminderItem = NSMenuItem()
+        quickReminderItem.view = controller.view
+        quickReminderItem.isHidden = !appPreferences.quickReminderEnabled
+        menu.addItem(quickReminderItem)
+        menu.addItem(.separator())
+        self.quickReminderItem = quickReminderItem
+        
         let preferencesMenuItem = NSMenuItem(
             title: "Preferences",
             action: #selector(openPreferences),
@@ -47,32 +66,10 @@ final class StatusBarController {
         return menu
     }
     
-    private func createPreferencesWindow() -> NSWindow {
-        let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 500, height: 430),
-            styleMask: [.closable, .titled, .resizable],
-            backing: .buffered,
-            defer: false
-        )
-        let contentView = PreferencesView()
-        window.title = "Preferences"
-        window.level = .floating
-        window.contentView = NSHostingView(rootView: contentView)
-        
-        let controller = NSWindowController(window: window)
-        controller.showWindow(self)
-        
-        window.center()
-        window.orderFrontRegardless()
-        return window
-    }
-    
     @objc private func onStatusBarClick() {}
     
     @objc private func openPreferences() {
-        preferencesWindow ??= createPreferencesWindow()
-        NSApp.activate()
-        preferencesWindow.makeKeyAndOrderFront(nil)
+        self.preferencesViewController.show()
     }
     
     @objc private func quit() {

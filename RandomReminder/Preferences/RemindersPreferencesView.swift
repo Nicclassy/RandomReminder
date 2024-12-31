@@ -12,6 +12,7 @@ struct RemindersPreferencesView: View {
         VStack {
             Text("Reminders placeholder text")
         }
+        .frame(width: 300, height: 250)
     }
 }
 

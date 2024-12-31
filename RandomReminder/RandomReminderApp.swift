@@ -13,7 +13,7 @@ struct RandomReminderApp: App {
     
     var body: some Scene {
         Settings {
-            PreferencesView()
+            EmptyView()
         }
     }
 }
