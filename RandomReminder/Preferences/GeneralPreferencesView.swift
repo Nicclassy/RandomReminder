@@ -9,7 +9,7 @@ import SwiftUI
 import LaunchAtLogin
 
 struct GeneralPreferencesView: View {
-    @StateObject var appPreferences = AppPreferences()
+    @StateObject private var appPreferences = AppPreferences()
     
     var body: some View {
         VStack(alignment: .leading) {

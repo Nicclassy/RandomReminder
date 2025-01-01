@@ -24,7 +24,6 @@ final class StatusBarController {
     private func setupView() {
         if let button = statusItem.button {
             button.image = NSImage(systemSymbolName: "questionmark.circle", accessibilityDescription: "Menu Bar Icon")
-            debug("Button loaded")
             button.target = self
             button.action = #selector(onStatusBarClick)
         }

@@ -9,11 +9,15 @@ import Foundation
 import SwiftUI
 
 class AppDelegate: NSObject, NSApplicationDelegate {
-    static private(set) var instance: AppDelegate!
+    static private(set) var shared: AppDelegate!
     var statusBarController: StatusBarController!
     
     func applicationDidFinishLaunching(_ notification: Notification) {
-        AppDelegate.instance = self
+        AppDelegate.shared = self
         statusBarController = .init()
+    }
+    
+    func toggleQuickReminder(isEnabled: Bool) {
+        statusBarController.quickReminderItem.isHidden = !isEnabled
     }
 }

@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct PreferenceCaption: View {
-    var caption: String
+    private var caption: String
     
     init(_ caption: String) {
         self.caption = caption
