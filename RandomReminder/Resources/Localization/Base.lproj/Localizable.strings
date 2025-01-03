@@ -1,0 +1,25 @@
+/* 
+  Localizable.strings
+  RandomReminder
+
+  Created by Luca Napoli on 2/1/2025.
+  
+*/
+
+// MARK: Status Bar
+
+"status-bar.preferences" = "Preferences";
+"status-bar.quit" = "Quit";
+
+// MARK: Preferences tabs
+
+"preferences.tab.general" = "General";
+"preferences.tab.reminders" = "Reminders";
+"preferences.tab.about" = "About";
+
+// MARK: General preferences
+
+"preferences.general.launch-at-login" = "Launch at Login";
+"preferences.general.launch-at-login.caption" = "Automatically start RandomReminder when you login.";
+"preferences.general.quick-reminder-enabled" = "Enable Quick Reminder";
+"preferences.general.quick-reminder-enabled.caption" = "Show Quick Reminder in the menu bar item's menu.";
