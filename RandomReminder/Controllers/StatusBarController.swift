@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-import Combine
 import Settings
 
 final class StatusBarController {
@@ -47,7 +46,7 @@ final class StatusBarController {
         self.quickReminderItem = quickReminderItem
         
         let preferencesMenuItem = NSMenuItem(
-            title: "Preferences",
+            title: L10n.StatusBar.preferences,
             action: #selector(openPreferences),
             keyEquivalent: ","
         )
@@ -56,7 +55,7 @@ final class StatusBarController {
         menu.addItem(.separator())
         
         let quitMenuItem = NSMenuItem(
-            title: "Quit",
+            title: L10n.StatusBar.quit,
             action: #selector(quit),
             keyEquivalent: "q"
         )

@@ -13,17 +13,17 @@ struct GeneralPreferencesView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Toggle("Launch at Login", isOn: appPreferences.$launchAtLogin)
+            Toggle(L10n.Preferences.General.launchAtLogin, isOn: appPreferences.$launchAtLogin)
                 .onChange(of: appPreferences.launchAtLogin) { _, isEnabled in
                     LaunchAtLogin.isEnabled = isEnabled
                 }
-            PreferenceCaption("Automatically start this app when you login.")
+            PreferenceCaption(L10n.Preferences.General.LaunchAtLogin.caption)
             
-            Toggle("Enable quick reminder", isOn: appPreferences.$quickReminderEnabled)
+            Toggle(L10n.Preferences.General.quickReminderEnabled, isOn: appPreferences.$quickReminderEnabled)
                 .onChange(of: appPreferences.quickReminderEnabled) { _, isEnabled in
                     AppDelegate.shared.toggleQuickReminder(isEnabled: isEnabled)
                 }
-            PreferenceCaption("Show Quick Reminder in the menu bar item's menu.")
+            PreferenceCaption(L10n.Preferences.General.QuickReminderEnabled.caption)
         }
         .frame(width: 300, height: 250)
     }
