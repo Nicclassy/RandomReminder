@@ -1,0 +1,5 @@
+strings:
+    inputs: RandomReminder/Resources/Localization/Base.lproj
+    outputs:
+        templateName: structured-swift5
+        output: RandomReminder/Generated/Strings.swift
