@@ -10,7 +10,7 @@ import SwiftUI
 struct DualTimePickerView: View {
     private let earliestHeading = "Earliest time:"
     private let latestHeading = "Latest time:"
-    @StateObject private var appPreferences = AppPreferences()
+    @EnvironmentObject private var appPreferences: AppPreferences
     
     @Binding var earliestDate: Date
     @Binding var latestDate: Date

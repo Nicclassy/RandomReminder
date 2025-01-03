@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct RemindersPreferencesView: View {
+    @EnvironmentObject var appPreferences: AppPreferences
+    
     var body: some View {
         VStack {
             Text("Reminders placeholder text")

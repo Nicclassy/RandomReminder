@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct AboutPreferencesView: View {
+    @EnvironmentObject var appPreferences: AppPreferences
+    
     var body: some View {
         VStack {
             Text("About placeholder text")

@@ -11,7 +11,7 @@ import SwiftUI
 struct QuickReminderView: View {
     @State private var earliestDate: Date
     @State private var latestDate: Date
-    @StateObject private var appPreferences = AppPreferences()
+    @EnvironmentObject private var appPreferences: AppPreferences
     
     init(earliestDate: Date = Date(), latestDate: Date? = nil) {
         self.earliestDate = earliestDate

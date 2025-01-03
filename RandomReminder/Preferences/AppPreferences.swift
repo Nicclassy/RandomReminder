@@ -15,6 +15,10 @@ enum Keys {
 }
 
 final class AppPreferences: ObservableObject {
+    static let shared = AppPreferences()
+    
+    private init() {}
+    
     @AppStorage(Keys.launchAtLogin) var launchAtLogin = false
     @AppStorage(Keys.quickReminderEnabled) var quickReminderEnabled = true
     @AppStorage(Keys.quickReminderStarted) var quickReminderStarted = false

@@ -10,7 +10,18 @@ import SwiftUI
 import Settings
 
 final class PreferencesViewController {
-    private let windowController: SettingsWindowController
+    private lazy var windowController: SettingsWindowController = {
+        SettingsWindowController(
+            panes: [
+                GeneralPreferencesViewController(),
+                RemindersPreferencesViewController(),
+                AboutPreferencesViewController()
+            ],
+            style: .toolbarItems,
+            animated: false,
+            hidesToolbarForSingleItem: false
+        )
+    }()
     
     let GeneralPreferencesViewController: () -> SettingsPane = {
         Settings.PaneHostingController(
@@ -20,6 +31,7 @@ final class PreferencesViewController {
                 toolbarIcon: NSImage(systemSymbolName: "gear", accessibilityDescription: "General Preferences")!
             ) {
                 GeneralPreferencesView()
+                    .environmentObject(AppPreferences.shared)
             }
         )
     }
@@ -32,6 +44,7 @@ final class PreferencesViewController {
                 toolbarIcon: NSImage(systemSymbolName: "clock.badge.exclamationmark", accessibilityDescription: "Reminder Preferences")!
             ) {
                 RemindersPreferencesView()
+                    .environmentObject(AppPreferences.shared)
             }
         )
     }
@@ -44,24 +57,13 @@ final class PreferencesViewController {
                 toolbarIcon: NSImage(systemSymbolName: "info.circle", accessibilityDescription: "About Preferences")!
             ) {
                 AboutPreferencesView()
+                    .environmentObject(AppPreferences.shared)
             }
-        )
-    }
-    
-    init() {
-        self.windowController = SettingsWindowController(
-            panes: [
-                GeneralPreferencesViewController(),
-                RemindersPreferencesViewController(),
-                AboutPreferencesViewController()
-            ],
-            style: .toolbarItems,
-            animated: false,
-            hidesToolbarForSingleItem: false
         )
     }
     
     func show() {
         self.windowController.show()
+        self.windowController.window?.center()
     }
 }

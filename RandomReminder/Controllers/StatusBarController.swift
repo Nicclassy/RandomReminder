@@ -14,8 +14,6 @@ final class StatusBarController {
     lazy var preferencesViewController = PreferencesViewController()
     weak var quickReminderItem: NSMenuItem!
     
-    private let appPreferences = AppPreferences()
-    
     init() {
         setupView()
     }
@@ -34,13 +32,13 @@ final class StatusBarController {
         let menu = NSMenu()
         menu.autoenablesItems = false
         
-        let quickReminderView = QuickReminderView()
+        let quickReminderView = QuickReminderView().environmentObject(AppPreferences.shared)
         let controller = NSHostingController(rootView: quickReminderView)
         controller.view.frame.size = CGSize(width: 200, height: 100)
         
         let quickReminderItem = NSMenuItem()
         quickReminderItem.view = controller.view
-        quickReminderItem.isHidden = !appPreferences.quickReminderEnabled
+        quickReminderItem.isHidden = !AppPreferences.shared.quickReminderEnabled
         menu.addItem(quickReminderItem)
         menu.addItem(.separator())
         self.quickReminderItem = quickReminderItem
