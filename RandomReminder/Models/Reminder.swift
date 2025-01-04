@@ -22,11 +22,15 @@ class ReminderID {
 struct Reminder: Codable {
     var id: Int = reminderID()
     var title: String
-    var text: String?
+    var text: String
     var audioFile: URL?
     var earliestDate: Date
     var latestDate: Date
     var reminderCount: Int
     var totalReminders: Int
     var enabled: Bool
+    
+    func durationInSeconds() -> Float {
+        Float(self.earliestDate.distance(to: self.latestDate))
+    }
 }
