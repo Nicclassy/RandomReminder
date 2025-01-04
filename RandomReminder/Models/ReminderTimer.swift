@@ -11,42 +11,49 @@ import SwiftUI
 class ReminderTimer: ObservableObject {
     let reminder: Reminder
     let probability: Float
-    let interval: DispatchTimeInterval
-    let timer: DispatchSourceTimer
+    let interval: ReminderTimeInterval
     
-    var running: Bool = false
+    var onReminderActivation: () -> Void
+    var thread: Thread? = nil
+    var running: Bool = true
     var activated: Bool = false
     
-    init(reminder: Reminder, every frequency: DispatchTimeInterval, onReminderActivation: @escaping () -> Void = {}) {
+    init(reminder: Reminder, every interval: ReminderTimeInterval, onReminderActivation: @escaping () -> Void = {}) {
         self.reminder = reminder
-        self.interval = frequency
-        self.probability = frequency.seconds() / reminder.durationInSeconds()
-        
-        let queue = DispatchQueue(label: "ReminderTimerQueue-\(reminder.id)", qos: .background)
-        self.timer = DispatchSource.makeTimerSource(queue: queue)
+        self.interval = interval
+        self.onReminderActivation = onReminderActivation
+        self.probability = interval.seconds() / reminder.durationInSeconds()
     }
     
-    func activateReminder() -> Bool {
+    func start() {
+        self.thread = Thread { [unowned self] in
+            while self.running && Date() < self.reminder.latestDate {
+                if self.activateReminder() {
+                    debug("Activated '\(self.reminder.title)'!")
+                    self.onReminderActivation()
+                    self.stop()
+                } else {
+                    debug("Failed activation of \(self.reminder.title)")
+                    Thread.sleep(forTimeInterval: .init(self.interval.seconds()))
+                }
+            }
+            
+            if !self.activated {
+                self.onReminderActivation()
+                self.stop()
+            }
+        }
+        self.thread!.start()
+    }
+    
+    func stop() {
+        self.running = false
+        self.activated = true
+        self.thread?.cancel()
+        self.thread = nil
+    }
+    
+    private func activateReminder() -> Bool {
         Float.random(in: 0...1) < self.probability
-    }
-    
-    func activate() {
-        self.timer.schedule(deadline: .now(), repeating: interval)
-        self.timer.setEventHandler { [weak self] in
-            guard let self else { return }
-            self.fire()
-        }
-        self.timer.activate()
-    }
-    
-    func fire() {
-        debug("Fired reminder '\(self.reminder.title)' (\(self.reminder.id))")
-        if self.activateReminder() {
-            debug("Reminder '\(self.reminder.title)' activated!")
-            self.timer.cancel()
-        } else if Date() >= self.reminder.latestDate {
-            debug("Reminder '\(self.reminder.title)' was not activated.")
-            self.timer.cancel()
-        }
     }
 }
