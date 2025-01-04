@@ -14,6 +14,7 @@ final class PreferencesViewController {
         SettingsWindowController(
             panes: [
                 GeneralPreferencesViewController(),
+                SchedulePreferencesViewController(),
                 RemindersPreferencesViewController(),
                 AboutPreferencesViewController()
             ],
@@ -28,9 +29,28 @@ final class PreferencesViewController {
             pane: Settings.Pane(
                 identifier: .general,
                 title: "General",
-                toolbarIcon: NSImage(systemSymbolName: "gear", accessibilityDescription: "General Preferences")!
+                toolbarIcon: NSImage(
+                    systemSymbolName: "gear",
+                    accessibilityDescription: "General Preferences"
+                )!
             ) {
                 GeneralPreferencesView()
+                    .environmentObject(AppPreferences.shared)
+            }
+        )
+    }
+    
+    let SchedulePreferencesViewController: () -> SettingsPane = {
+        Settings.PaneHostingController(
+            pane: Settings.Pane(
+                identifier: .schedule,
+                title: "Schedule",
+                toolbarIcon: NSImage(
+                    systemSymbolName: "timer",
+                    accessibilityDescription: "Schedule Preferences"
+                )!
+            ) {
+                SchedulePreferencesView()
                     .environmentObject(AppPreferences.shared)
             }
         )
@@ -41,7 +61,10 @@ final class PreferencesViewController {
             pane: Settings.Pane(
                 identifier: .reminders,
                 title: "Reminders",
-                toolbarIcon: NSImage(systemSymbolName: "clock.badge.exclamationmark", accessibilityDescription: "Reminder Preferences")!
+                toolbarIcon: NSImage(
+                    systemSymbolName: "calendar.badge.exclamationmark",
+                    accessibilityDescription: "Reminder Preferences"
+                )!
             ) {
                 RemindersPreferencesView()
                     .environmentObject(AppPreferences.shared)
@@ -54,7 +77,10 @@ final class PreferencesViewController {
             pane: Settings.Pane(
                 identifier: .about,
                 title: "About",
-                toolbarIcon: NSImage(systemSymbolName: "info.circle", accessibilityDescription: "About Preferences")!
+                toolbarIcon: NSImage(
+                    systemSymbolName: "info.circle",
+                    accessibilityDescription: "About Preferences"
+                )!
             ) {
                 AboutPreferencesView()
                     .environmentObject(AppPreferences.shared)

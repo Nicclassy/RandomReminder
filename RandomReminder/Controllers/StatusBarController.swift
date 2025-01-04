@@ -62,7 +62,9 @@ final class StatusBarController {
         return menu
     }
     
-    @objc private func onStatusBarClick() {}
+    @objc private func onStatusBarClick() {
+        debug("Status bar item clicked")
+    }
     
     @objc private func openPreferences() {
         self.preferencesViewController.show()
