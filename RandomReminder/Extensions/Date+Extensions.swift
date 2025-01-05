@@ -24,6 +24,14 @@ extension Date {
         Calendar.current.date(byAdding: .minute, value: -minutes, to: self)!
     }
     
+    static func earliest(date: Date = Date()) -> Self {
+        Calendar.current.startOfDay(for: date)
+    }
+    
+    static func latest(date: Date = Date()) -> Self {
+        Calendar.current.date(byAdding: .day, value: 1, to: earliest())!.subtractMinutes(1)
+    }
+    
     func sameTimeToday() -> Self? {
         let calendar = Calendar.current
         let today = Date()

@@ -12,6 +12,9 @@
 		813F30EE2D261FD300EF6DD1 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813F30EC2D261FD300EF6DD1 /* PreferencesViewController.swift */; };
 		813F30F62D27D7DA00EF6DD1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 813F30F42D27D7DA00EF6DD1 /* Localizable.strings */; };
 		813F30F92D27D86500EF6DD1 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813F30F72D27D86500EF6DD1 /* Strings.swift */; };
+		813F30FD2D292A0000EF6DD1 /* ReminderTimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813F30FC2D2929FF00EF6DD1 /* ReminderTimeInterval.swift */; };
+		813F30FF2D292BD200EF6DD1 /* ReminderTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813F30FE2D292BD200EF6DD1 /* ReminderTimerView.swift */; };
+		813F31012D29EFCD00EF6DD1 /* SchedulePreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813F31002D29EFCD00EF6DD1 /* SchedulePreferencesView.swift */; };
 		8163F5D32D1241D40052A016 /* RandomReminderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8163F5D22D1241D40052A016 /* RandomReminderApp.swift */; };
 		8163F5D72D1241D50052A016 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8163F5D62D1241D50052A016 /* Assets.xcassets */; };
 		8163F5DA2D1241D50052A016 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8163F5D92D1241D50052A016 /* Preview Assets.xcassets */; };
@@ -43,6 +46,9 @@
 		813F30EC2D261FD300EF6DD1 /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
 		813F30F32D27D7DA00EF6DD1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Localizable.strings; sourceTree = "<group>"; };
 		813F30F72D27D86500EF6DD1 /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
+		813F30FC2D2929FF00EF6DD1 /* ReminderTimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTimeInterval.swift; sourceTree = "<group>"; };
+		813F30FE2D292BD200EF6DD1 /* ReminderTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTimerView.swift; sourceTree = "<group>"; };
+		813F31002D29EFCD00EF6DD1 /* SchedulePreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulePreferencesView.swift; sourceTree = "<group>"; };
 		8163F5CF2D1241D40052A016 /* RandomReminder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RandomReminder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8163F5D22D1241D40052A016 /* RandomReminderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomReminderApp.swift; sourceTree = "<group>"; };
 		8163F5D62D1241D50052A016 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -182,6 +188,7 @@
 				81B525F82D1925FF008D36F0 /* QuickReminderView.swift */,
 				81B525FF2D1A10F8008D36F0 /* TimePickerView.swift */,
 				81B526052D1A4EF7008D36F0 /* DualTimePickerView.swift */,
+				813F30FE2D292BD200EF6DD1 /* ReminderTimerView.swift */,
 			);
 			name = Views;
 			path = RandomReminder/Views;
@@ -193,6 +200,7 @@
 				81B525FB2D19277B008D36F0 /* ReminderTimer.swift */,
 				81B525FD2D1928BB008D36F0 /* TimeOnly.swift */,
 				81B5260F2D20068F008D36F0 /* Reminder.swift */,
+				813F30FC2D2929FF00EF6DD1 /* ReminderTimeInterval.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -201,9 +209,10 @@
 			isa = PBXGroup;
 			children = (
 				8163F6142D13A9530052A016 /* GeneralPreferencesView.swift */,
-				81B526092D1ABE4D008D36F0 /* PreferenceCaption.swift */,
-				81B525F22D18D7E7008D36F0 /* AboutPreferencesView.swift */,
+				813F31002D29EFCD00EF6DD1 /* SchedulePreferencesView.swift */,
 				81B525F42D18D885008D36F0 /* RemindersPreferencesView.swift */,
+				81B525F22D18D7E7008D36F0 /* AboutPreferencesView.swift */,
+				81B526092D1ABE4D008D36F0 /* PreferenceCaption.swift */,
 				81B526072D1ABBC0008D36F0 /* AppPreferences.swift */,
 			);
 			name = Preferences;
@@ -239,6 +248,7 @@
 				8163F5CB2D1241D40052A016 /* Sources */,
 				8163F5CC2D1241D40052A016 /* Frameworks */,
 				8163F5CD2D1241D40052A016 /* Resources */,
+				813F31022D2A830000EF6DD1 /* SwiftGen */,
 			);
 			buildRules = (
 			);
@@ -305,6 +315,27 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		813F31022D2A830000EF6DD1 /* SwiftGen */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftGen;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftgen > /dev/null; then\n  swiftgen\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		8163F5CB2D1241D40052A016 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -322,9 +353,12 @@
 				8163F60E2D13A7540052A016 /* AppDelegate.swift in Sources */,
 				81B525F32D18D7E7008D36F0 /* AboutPreferencesView.swift in Sources */,
 				8163F5D32D1241D40052A016 /* RandomReminderApp.swift in Sources */,
+				813F30FF2D292BD200EF6DD1 /* ReminderTimerView.swift in Sources */,
 				813F30F92D27D86500EF6DD1 /* Strings.swift in Sources */,
 				81B526002D1A10F8008D36F0 /* TimePickerView.swift in Sources */,
+				813F30FD2D292A0000EF6DD1 /* ReminderTimeInterval.swift in Sources */,
 				81B526062D1A4EF7008D36F0 /* DualTimePickerView.swift in Sources */,
+				813F31012D29EFCD00EF6DD1 /* SchedulePreferencesView.swift in Sources */,
 				81B525F52D18D885008D36F0 /* RemindersPreferencesView.swift in Sources */,
 				81B526132D2009AE008D36F0 /* ReminderSerializer.swift in Sources */,
 				81B525F72D18E164008D36F0 /* Constants.swift in Sources */,
@@ -354,6 +388,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -383,6 +418,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -417,6 +453,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -446,6 +483,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -476,6 +514,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RandomReminder/Preview Content\"";
 				DEVELOPMENT_TEAM = 79965ZZ2B4;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -503,6 +542,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"RandomReminder/Preview Content\"";
 				DEVELOPMENT_TEAM = 79965ZZ2B4;
 				ENABLE_HARDENED_RUNTIME = YES;

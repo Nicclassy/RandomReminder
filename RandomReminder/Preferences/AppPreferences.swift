@@ -12,6 +12,8 @@ enum Keys {
     static let launchAtLogin = "launchAtLogin"
     static let quickReminderEnabled = "quickReminderEnabled"
     static let quickReminderStarted = "quickReminderStarted"
+    static let defaultStartTime = "defaultStartTime"
+    static let defaultEndTime = "defaultEndTime"
 }
 
 final class AppPreferences: ObservableObject {
@@ -22,4 +24,6 @@ final class AppPreferences: ObservableObject {
     @AppStorage(Keys.launchAtLogin) var launchAtLogin = false
     @AppStorage(Keys.quickReminderEnabled) var quickReminderEnabled = true
     @AppStorage(Keys.quickReminderStarted) var quickReminderStarted = false
+    @AppStorage(Keys.defaultStartTime) var defaultEarliestDate: Double = 0
+    @AppStorage(Keys.defaultEndTime) var defaultLatestDate: Double = 0
 }
