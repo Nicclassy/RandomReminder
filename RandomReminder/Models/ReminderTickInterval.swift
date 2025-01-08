@@ -1,5 +1,5 @@
 //
-//  ReminderTimeInterval.swift
+//  ReminderTickInterval.swift
 //  RandomReminder
 //
 //  Created by Luca Napoli on 4/1/2025.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ReminderTimeInterval {
+enum ReminderTickInterval {
     case hours(Int)
     case minutes(Int)
     case seconds(Int)

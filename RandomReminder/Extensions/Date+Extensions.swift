@@ -16,20 +16,26 @@ extension Date {
         Calendar.current.component(.minute, from: self)
     }
     
+    var isDistant: Bool {
+        self == .distantPast || self == .distantFuture
+    }
+    
     func addMinutes(_ minutes: Int) -> Self {
-        Calendar.current.date(byAdding: .minute, value: minutes, to: self)!
+        // This method and the method below are saturating additions.
+        // This is done by checking for a distant date.
+        self.isDistant ? self : Calendar.current.date(byAdding: .minute, value: minutes, to: self)!
     }
     
     func subtractMinutes(_ minutes: Int) -> Self {
-        Calendar.current.date(byAdding: .minute, value: -minutes, to: self)!
+        self.isDistant ? self : Calendar.current.date(byAdding: .minute, value: -minutes, to: self)!
     }
     
-    static func earliest(date: Date = Date()) -> Self {
+    static func startOfDay(date: Date = Date()) -> Self {
         Calendar.current.startOfDay(for: date)
     }
     
-    static func latest(date: Date = Date()) -> Self {
-        Calendar.current.date(byAdding: .day, value: 1, to: earliest())!.subtractMinutes(1)
+    static func endOfDay(date: Date = Date()) -> Self {
+        Calendar.current.date(byAdding: .day, value: 1, to: startOfDay())!.subtractMinutes(1)
     }
     
     func sameTimeToday() -> Self? {
