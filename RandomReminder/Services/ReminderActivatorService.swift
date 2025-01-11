@@ -1,5 +1,5 @@
 //
-//  ReminderTimer.swift
+//  ReminderTimerService.swift
 //  RandomReminder
 //
 //  Created by Luca Napoli on 23/12/2024.
@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-final class ReminderTimer: ObservableObject {
+final class ReminderActivatorService {
     var reminder: RandomReminder
     let interval: ReminderTickInterval
     let probability: Float
@@ -22,37 +22,33 @@ final class ReminderTimer: ObservableObject {
         self.reminder = reminder
         self.interval = interval
         self.onReminderActivation = onReminderActivation
-        self.probability = Float(reminder.totalReminders) * interval.seconds() / reminder.durationInSeconds()
+        self.probability = Float(reminder.counts.totalReminders) * interval.seconds() / reminder.durationInSeconds()
     }
     
     func start() {
         // Start when appropriate time
         self.thread = Thread { [unowned self] in
             let endRemindersDate = self.reminder.interval.latest.addMinutes(1)
+            let activateReminder = self.activateReminder()
             
             while self.running && Date() < endRemindersDate {
-                let activateReminder = self.activateReminder()
-                let activateFinalReminder = (
-                    activateReminder
-                    && self.reminder.timesReminded == self.reminder.totalReminders - 1
-                )
-                if activateFinalReminder {
-                    debug("Activated final reminder for '\(self.reminder.title)'")
+                if activateReminder && self.reminder.isFinalActivation() {
+                    FancyLogger.info("Activated final reminder for '\(self.reminder)'")
                     self.onReminderActivation()
                     self.stop()
                 } else if activateReminder {
-                    debug("Activated '\(self.reminder.title)'!")
+                    FancyLogger.info("Activated '\(self.reminder)'!")
                     self.onReminderActivation()
                 } else {
-                    debug("Retrying '\(self.reminder.title)'")
+                    FancyLogger.info("Retrying '\(self.reminder)'")
                     Thread.sleep(forTimeInterval: .init(self.interval.seconds()))
                 }
             }
             
             if !self.finished {
-                debug("Reminder '\(self.reminder.title)' did not finish")
-                self.finished = true
+                FancyLogger.info("Reminder '\(self.reminder)' did not finish")
                 self.onReminderActivation()
+                self.finished = true
                 self.stop()
             }
         }
