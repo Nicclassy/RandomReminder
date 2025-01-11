@@ -32,11 +32,17 @@ struct RandomReminder: Codable, CustomStringConvertible {
     }
     
     var interval: ReminderInterval {
-        self.reminderInterval.value!
+        // AnyReminderInterval is only for serialisation/deserialisation
+        // so instead get the type-erased protocol value for operations
+        self.reminderInterval.value
     }
     
     func durationInSeconds() -> Float {
         Float(self.interval.earliest.distance(to: self.interval.latest))
+    }
+    
+    func isFinalActivation() -> Bool {
+        self.counts.timesReminded == self.counts.totalReminders - 1
     }
     
     mutating func activate() {

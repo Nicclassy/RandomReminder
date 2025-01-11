@@ -13,10 +13,10 @@ protocol ReminderInterval: Codable {
     var isFinite: Bool { get }
 }
 
-struct ReminderTimeInterval: Codable, ReminderInterval {
+struct ReminderTimeInterval: ReminderInterval {
     var earliestTime: TimeOnly
     var latestTime: TimeOnly
-    var repeatInterval: RepetitionInterval
+    var repeatInterval: RepeatInterval
     
     var earliest: Date {
         .distantPast
