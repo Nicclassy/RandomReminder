@@ -8,31 +8,24 @@
 import Foundation
 import SwiftUI
 
-struct ReminderSerializer {
-    static private let remindersFile = "reminders"
-    static private let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        .first?
-        .appendingPathComponent(remindersFile)
-        .appendingPathExtension("json")
-    
-    static func load<T: Codable>() -> T? {
-        if let url, let data = try? Data(contentsOf: url) {
+final class ReminderSerializer {
+    static func load<T: Codable>(filename: String) -> T? {
+        if let data = try? Data(contentsOf: StoredReminders.documentsUrl.appendingPathComponent(filename)) {
             try? JSONDecoder().decode(T.self, from: data)
         } else {
             nil
         }
     }
     
-    static func save<T: Codable>(reminders: T) {
-        guard let url else { return }
+    static func save<T: Codable>(_ value: T, filename: String) {
+        guard let data = try? JSONEncoder.applicationDefault().encode(value) else {
+            return
+        }
         
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         do {
-            let data = try encoder.encode(reminders)
-            try data.write(to: url, options: [.atomic])
+            try data.write(to: StoredReminders.documentsUrl.appendingPathComponent(filename), options: .atomic)
         } catch let error {
-            err("Error serializing reminders:", error)
+            FancyLogger.warn("Error writing reminder data:", error)
         }
     }
 }

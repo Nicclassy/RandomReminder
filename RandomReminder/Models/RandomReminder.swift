@@ -20,12 +20,41 @@ class ReminderID {
 }
 
 struct RandomReminder: Codable, CustomStringConvertible {
-    var id: Int = reminderID()
+    var id: Int
     var content: ReminderContent
-    var activationEvents: [ReminderActivationEvent]
     var reminderInterval: AnyReminderInterval
     var counts: ReminderCounts
     var state: ReminderState
+    var activationEvents: [ReminderActivationEvent]
+    
+    init(id: Int, 
+         content: ReminderContent,
+         reminderInterval: AnyReminderInterval,
+         counts: ReminderCounts,
+         state: ReminderState,
+         activationEvents: [ReminderActivationEvent]) {
+        self.id = id
+        self.content = content
+        self.reminderInterval = reminderInterval
+        self.counts = counts
+        self.state = state
+        self.activationEvents = activationEvents
+    }
+    
+    init(title: String,
+         text: String,
+         interval: ReminderInterval,
+         totalReminders: Int,
+         activationEvents: [ReminderActivationEvent]? = nil) {
+        self.init(
+            id: reminderID(),
+            content: ReminderContent(title: title, text: text),
+            reminderInterval: AnyReminderInterval(interval),
+            counts: ReminderCounts(totalReminders: totalReminders),
+            state: .disabled,
+            activationEvents: activationEvents ?? []
+        )
+    }
     
     var description: String {
         self.content.title

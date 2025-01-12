@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+extension RandomReminder {
+    func filename() -> URL {
+        URL(string: String(describing: self.id))!
+            .appendingPathExtension(StoredReminders.fileExtension)
+    }
+}
