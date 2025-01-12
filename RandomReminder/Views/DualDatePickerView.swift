@@ -1,5 +1,5 @@
 //
-//  DualTimePickerView.swift
+//  DualDatePickerView.swift
 //  RandomReminder
 //
 //  Created by Luca Napoli on 24/12/2024.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DualTimePickerView: View {
+struct DualDatePickerView: View {
     let earliestHeading: String
     let latestHeading: String
     let displayedComponents: DatePickerComponents
