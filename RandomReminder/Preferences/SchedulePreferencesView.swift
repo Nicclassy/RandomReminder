@@ -12,23 +12,24 @@ struct SchedulePreferencesView: View {
     
     var defaultEarliestDate: Binding<Date> {
         Binding(
-            get: { Date(timeIntervalSince1970: intervalOrDefault(appPreferences.defaultEarliestDate, or: Date.earliest())) },
+            get: { Date(timeIntervalSince1970: intervalOrDefault(appPreferences.defaultEarliestDate, or: Date.startOfDay())) },
             set: { appPreferences.defaultEarliestDate = $0.timeIntervalSince1970 }
         )
     }
         
     var defaultLatestDate: Binding<Date> {
         Binding(
-            get: { Date(timeIntervalSince1970: intervalOrDefault(appPreferences.defaultLatestDate, or: Date.latest())) },
+            get: { Date(timeIntervalSince1970: intervalOrDefault(appPreferences.defaultLatestDate, or: Date.endOfDay())) },
             set: { appPreferences.defaultLatestDate = $0.timeIntervalSince1970 }
         )
     }
     
     var body: some View {
         VStack(alignment: .leading) {
-            DualTimePickerView(
+            DualDatePickerView(
                 earliestHeading: L10n.TimePicker.EarliestDefaultTime.heading,
                 latestHeading: L10n.TimePicker.LatestDefaultTime.heading,
+                displayedComponents: .hourAndMinute,
                 earliestDate: defaultEarliestDate,
                 latestDate: defaultLatestDate
             )

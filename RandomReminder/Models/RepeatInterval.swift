@@ -1,5 +1,5 @@
 //
-//  RepetitionInterval.swift
+//  RepeatInterval.swift
 //  RandomReminder
 //
 //  Created by Luca Napoli on 8/1/2025.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum RepetitionInterval: Codable {
+enum RepeatInterval: Codable {
     case minutes(Int)
     case hours(Int)
     case days(Int)

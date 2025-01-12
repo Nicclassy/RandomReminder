@@ -63,7 +63,7 @@ final class StatusBarController {
     }
     
     @objc private func onStatusBarClick() {
-        debug("Status bar item clicked")
+        FancyLogger.info("Status bar item clicked")
     }
     
     @objc private func openPreferences() {

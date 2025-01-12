@@ -39,7 +39,7 @@ fileprivate func termEnvValueExists() -> Bool {
     ProcessInfo.processInfo.environment["TERM"] != nil
 }
 
-class ColourString: CustomStringConvertible {
+final class ColourString: CustomStringConvertible {
     static let colourStrings: Bool = true
     
     let code: String
@@ -59,7 +59,6 @@ class ColourString: CustomStringConvertible {
         } else {
             String(describing: string)
         }
-        
     }
     
     static let reset = ansi(0)

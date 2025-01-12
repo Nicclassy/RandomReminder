@@ -10,6 +10,16 @@ import Foundation
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
 internal enum L10n {
+  internal enum DatePicker {
+    internal enum EarliestDate {
+      /// Earliest date:
+      internal static let heading = L10n.tr("Localizable", "date-picker.earliest-date.heading", fallback: "Earliest date:")
+    }
+    internal enum LatestDate {
+      /// Latest date:
+      internal static let heading = L10n.tr("Localizable", "date-picker.latest-date.heading", fallback: "Latest date:")
+    }
+  }
   internal enum Preferences {
     internal enum General {
       /// Launch at Login
@@ -42,6 +52,24 @@ internal enum L10n {
     internal static let preferences = L10n.tr("Localizable", "status-bar.preferences", fallback: "Preferences")
     /// Quit
     internal static let quit = L10n.tr("Localizable", "status-bar.quit", fallback: "Quit")
+  }
+  internal enum TimePicker {
+    internal enum EarliestDefaultTime {
+      /// Default earliest time:
+      internal static let heading = L10n.tr("Localizable", "time-picker.earliest-default-time.heading", fallback: "Default earliest time:")
+    }
+    internal enum EarliestTime {
+      /// Earliest time:
+      internal static let heading = L10n.tr("Localizable", "time-picker.earliest-time.heading", fallback: "Earliest time:")
+    }
+    internal enum LatestDefaultTime {
+      /// Default latest time:
+      internal static let heading = L10n.tr("Localizable", "time-picker.latest-default-time.heading", fallback: "Default latest time:")
+    }
+    internal enum LatestTime {
+      /// Latest time:
+      internal static let heading = L10n.tr("Localizable", "time-picker.latest-time.heading", fallback: "Latest time:")
+    }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
