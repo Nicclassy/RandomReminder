@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ReminderManager: ObservableObject {
+final class ReminderManager: ObservableObject {
     @Published var reminders: [RandomReminder]
     
     init(_ reminders: [RandomReminder]) {
@@ -15,8 +15,7 @@ class ReminderManager: ObservableObject {
     }
     
     convenience init() {
-        let path = StoredReminders.documentsUrl.path()
-        let files = try! FileManager.default.contentsOfDirectory(atPath: path)
+        let files = try! FileManager.default.contentsOfDirectory(atPath: StoredReminders.url.path())
         let reminders: [RandomReminder] = files.compactMap { filename in
             StoredReminders.filenameFormat.contains(captureNamed: filename)
                 ? ReminderSerializer.load(filename: filename)

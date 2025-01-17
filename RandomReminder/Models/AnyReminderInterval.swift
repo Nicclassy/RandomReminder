@@ -3,8 +3,7 @@
 //  RandomReminder
 //
 //  Created by Luca Napoli on 8/1/2025.
-//  Credit: https://gist.github.com/sanjeevworkstation/3d1e8bd94d4ed83182fb4c2c836e187f
-//
+//  Credits: https://gist.github.com/sanjeevworkstation/3d1e8bd94d4ed83182fb4c2c836e187f
 
 import Foundation
 
@@ -16,9 +15,12 @@ struct AnyReminderInterval: Codable {
     }
     
     init(from decoder: any Decoder) throws {
-        if let timeInterval = try? decoder.singleValueContainer().decode(ReminderTimeInterval.self) {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        FancyLogger.info(container.allKeys)
+        if let timeInterval = try? container.decode(ReminderTimeInterval.self, forKey: .timeInterval) {
             self.init(timeInterval)
-        } else if let dateInterval = try? decoder.singleValueContainer().decode(ReminderDateInterval.self) {
+        } else if let dateInterval = try? container.decode(ReminderDateInterval.self, forKey: .dateInterval) {
             self.init(dateInterval)
         } else {
             throw AnyReminderIntervalError.missingValue
@@ -27,6 +29,7 @@ struct AnyReminderInterval: Codable {
     
     func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        
         if let timeInterval = self.value as? ReminderTimeInterval {
             try container.encode(timeInterval, forKey: .timeInterval)
         } else if let dateInterval = self.value as? ReminderDateInterval {
@@ -41,7 +44,7 @@ struct AnyReminderInterval: Codable {
         case dateInterval
     }
     
-    enum AnyReminderIntervalError: Error {
+    enum AnyReminderIntervalError: Swift.Error {
         case missingValue
         case unknownType
     }

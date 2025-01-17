@@ -10,10 +10,15 @@ import SwiftUI
 
 final class ReminderSerializer {
     static func load<T: Codable>(filename: String) -> T? {
-        if let data = try? Data(contentsOf: StoredReminders.documentsUrl.appendingPathComponent(filename)) {
-            try? JSONDecoder().decode(T.self, from: data)
-        } else {
-            nil
+        guard let data = try? Data(contentsOf: StoredReminders.url.appendingPathComponent(filename)) else {
+            return nil
+        }
+        
+        do {
+            return try JSONDecoder.applicationDefault().decode(T.self, from: data)
+        } catch let error {
+            FancyLogger.error("Error loading reminder data:", error)
+            return nil
         }
     }
     
@@ -22,10 +27,24 @@ final class ReminderSerializer {
             return
         }
         
+        if !FileManager.default.directoryExists(atPath: StoredReminders.url.path()) {
+            createRemindersDirectory()
+        }
+        
+        let saveUrl = StoredReminders.url.appendingPathComponent(filename)
         do {
-            try data.write(to: StoredReminders.documentsUrl.appendingPathComponent(filename), options: .atomic)
+            try data.write(to: saveUrl, options: .atomic)
+            FancyLogger.info("Succesfully saved reminder to \(saveUrl.path())")
         } catch let error {
-            FancyLogger.warn("Error writing reminder data:", error)
+            FancyLogger.error("Error saving reminder data:", error)
+        }
+    }
+    
+    private static func createRemindersDirectory() {
+        do {
+            try FileManager.default.createDirectory(at: StoredReminders.url, withIntermediateDirectories: false)
+        } catch let error {
+            FancyLogger.error("Error creating directory:", error)
         }
     }
 }
