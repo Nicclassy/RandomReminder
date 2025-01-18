@@ -10,24 +10,24 @@ import Foundation
 protocol ReminderInterval: Codable {
     var earliest: Date { get }
     var latest: Date { get }
-    var isFinite: Bool { get }
+    var repeatInterval: RepeatInterval { get }
 }
 
 struct ReminderTimeInterval: ReminderInterval {
     var earliestTime: TimeOnly
     var latestTime: TimeOnly
-    var repeatInterval: RepeatInterval
+    var interval: RepeatInterval
     
     var earliest: Date {
-        .distantPast
+        self.earliestTime.dateToday()
     }
     
     var latest: Date {
-        .distantFuture
+        self.latestTime.dateToday()
     }
     
-    var isFinite: Bool {
-        false
+    var repeatInterval: RepeatInterval {
+        self.interval
     }
 }
 
@@ -43,7 +43,7 @@ struct ReminderDateInterval: ReminderInterval {
         self.latestDate
     }
     
-    var isFinite: Bool {
-        true
+    var repeatInterval: RepeatInterval {
+        .noRepeat
     }
 }

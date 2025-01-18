@@ -13,4 +13,5 @@ enum RepeatInterval: Codable {
     case days(Int)
     case weeks(Int)
     case months(Int)
+    case noRepeat
 }
