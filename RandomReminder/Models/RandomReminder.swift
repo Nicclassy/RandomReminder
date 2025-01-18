@@ -7,27 +7,15 @@
 
 import Foundation
 
-func reminderID() -> Int {
-    defer {
-        ReminderID.id += 1
-    }
-    return ReminderID.id
-}
-
-class ReminderID {
-    static var quickReminder = 0
-    static var id = 1
-}
-
 struct RandomReminder: Codable, CustomStringConvertible {
-    var id: Int
+    var id: ReminderID
     var content: ReminderContent
     var reminderInterval: AnyReminderInterval
     var counts: ReminderCounts
     var state: ReminderState
     var activationEvents: [ReminderActivationEvent]
     
-    init(id: Int, 
+    init(id: ReminderID,
          content: ReminderContent,
          reminderInterval: AnyReminderInterval,
          counts: ReminderCounts,
@@ -47,7 +35,7 @@ struct RandomReminder: Codable, CustomStringConvertible {
          totalReminders: Int,
          activationEvents: [ReminderActivationEvent]? = nil) {
         self.init(
-            id: reminderID(),
+            id: ReminderID.nextAvailable(),
             content: ReminderContent(title: title, text: text),
             reminderInterval: AnyReminderInterval(interval),
             counts: ReminderCounts(totalReminders: totalReminders),
@@ -80,5 +68,23 @@ struct RandomReminder: Codable, CustomStringConvertible {
     
     mutating func reset() {
         self.counts.timesReminded = 0
+    }
+}
+
+extension RandomReminder {
+    func filename() -> String {
+        URL(string: String(describing: self.id))!
+            .appendingPathExtension(StoredReminders.fileExtension)
+            .path()
+    }
+}
+
+extension RandomReminder: Hashable, Equatable {
+    static func == (lhs: RandomReminder, rhs: RandomReminder) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.id)
     }
 }
