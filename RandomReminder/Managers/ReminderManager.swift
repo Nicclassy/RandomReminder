@@ -10,17 +10,52 @@ import Foundation
 final class ReminderManager: ObservableObject {
     @Published var reminders: [RandomReminder]
     
+    lazy var reminderIds: Set<ReminderID> = {
+        let ids: [ReminderID] = Self.reminderFileNames().compactMap { filename in
+            guard let match = try? StoredReminders.filenamePattern.firstMatch(in: filename),
+                let filenameId = Int(filename[match.range])
+            else {
+                FancyLogger.warn("Filename \(filename) is being skipped because it contains no valid regex matches")
+                return nil
+            }
+            
+            return ReminderID(filenameId)
+        }
+        
+        return Set(ids)
+    }()
+    
+    
     init(_ reminders: [RandomReminder]) {
         self.reminders = reminders
     }
     
     convenience init() {
-        let files = try! FileManager.default.contentsOfDirectory(atPath: StoredReminders.url.path())
-        let reminders: [RandomReminder] = files.compactMap { filename in
-            StoredReminders.filenameFormat.contains(captureNamed: filename)
-                ? ReminderSerializer.load(filename: filename)
-                : nil
+        let reminders: [RandomReminder] = Self.reminderFileNames().compactMap { filename in
+            if let reminder: RandomReminder = ReminderSerializer.load(filename: filename) {
+                return reminder
+            } else {
+                FancyLogger.warn("Reminder with filename \(filename) was not loaded")
+                return nil
+            }
         }
+        
         self.init(reminders)
+    }
+    
+    func addReminder(_ reminder: RandomReminder) {
+        self.reminders.append(reminder)
+        self.reminderIds.insert(reminder.id)
+    }
+    
+    func removeReminder(_ reminder: RandomReminder) {
+        let index = self.reminders.firstIndex(of: reminder)!
+        self.reminders.remove(at: index)
+        self.reminderIds.remove(reminder.id)
+    }
+    
+    static func reminderFileNames() -> [String] {
+        let filenames = try! FileManager.default.contentsOfDirectory(atPath: StoredReminders.url.path())
+        return filenames.filter { StoredReminders.filenamePattern.contains(captureNamed: $0) }
     }
 }
