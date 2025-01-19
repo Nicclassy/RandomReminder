@@ -16,11 +16,6 @@ struct ReminderID: Codable {
     init(_ value: Int) {
         self.value = value
     }
-    
-    static func nextAvailable() -> Self {
-        #error ("TODO: Implement this properly")
-        return firstAvailableId
-    }
 }
 
 extension ReminderID: ExpressibleByIntegerLiteral {
@@ -39,4 +34,20 @@ extension ReminderID: Equatable, Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(self.value)
     }
+}
+
+extension ReminderID: Comparable {
+    static func < (lhs: ReminderID, rhs: ReminderID) -> Bool {
+        lhs.value < rhs.value
+    }
+}
+
+extension ReminderID: Strideable {
+    func distance(to other: ReminderID) -> Int {
+        other.value - self.value
+    }
+   
+   func advanced(by n: Int) -> ReminderID {
+       ReminderID(self.value + n)
+   }
 }

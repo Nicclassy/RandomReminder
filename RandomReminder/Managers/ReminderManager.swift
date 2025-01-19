@@ -8,7 +8,13 @@
 import Foundation
 
 final class ReminderManager: ObservableObject {
+    static let shared = ReminderManager()
+    
     @Published var reminders: [RandomReminder]
+    
+    var quickReminder: RandomReminder? {
+        reminders.first { $0.id == ReminderID.quickReminderId }
+    }
     
     lazy var reminderIds: Set<ReminderID> = {
         let ids: [ReminderID] = Self.reminderFileNames().compactMap { filename in
@@ -25,7 +31,6 @@ final class ReminderManager: ObservableObject {
         return Set(ids)
     }()
     
-    
     init(_ reminders: [RandomReminder]) {
         self.reminders = reminders
     }
@@ -41,6 +46,10 @@ final class ReminderManager: ObservableObject {
         }
         
         self.init(reminders)
+    }
+    
+    func nextAvailableId() -> ReminderID {
+        (ReminderID.firstAvailableId...).first { !reminderIds.contains($0) }!
     }
     
     func addReminder(_ reminder: RandomReminder) {
