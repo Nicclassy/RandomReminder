@@ -13,8 +13,8 @@ struct TimeOnly: Codable {
     
     init(hour: Int, minute: Int) {
         // Not needed but might as well have these sanity checks
-        assert(hour < 24)
-        assert(minute < 60)
+        assert(hour >= 0 && hour < 24)
+        assert(minute >= 0 && minute < 60)
         self.hour = hour
         self.minute = minute
     }
@@ -23,11 +23,15 @@ struct TimeOnly: Codable {
         self.init(hour: date.hour, minute: date.minute)
     }
     
-    func onDate(date: Date = Date()) -> Date {
+    func onDate(date: Date) -> Date {
         let calendar = Calendar.current
         var components = calendar.dateComponents([.day, .year], from: date)
         components.hour = self.hour
         components.minute = self.minute
         return calendar.date(from: components)!
+    }
+    
+    func dateToday() -> Date {
+        self.onDate(date: Date())
     }
 }

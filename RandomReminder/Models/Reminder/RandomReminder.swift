@@ -35,7 +35,7 @@ struct RandomReminder: Codable, CustomStringConvertible {
          totalReminders: Int,
          activationEvents: [ReminderActivationEvent]? = nil) {
         self.init(
-            id: ReminderID.nextAvailable(),
+            id: ReminderManager.shared.nextAvailableId(),
             content: ReminderContent(title: title, text: text),
             reminderInterval: AnyReminderInterval(interval),
             counts: ReminderCounts(totalReminders: totalReminders),
