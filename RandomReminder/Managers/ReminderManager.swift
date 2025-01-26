@@ -6,15 +6,12 @@
 //
 
 import Foundation
+import SwiftUI
 
 final class ReminderManager: ObservableObject {
     static let shared = ReminderManager()
     
     @Published var reminders: [RandomReminder]
-    
-    var quickReminder: RandomReminder? {
-        reminders.first { $0.id == ReminderID.quickReminderId }
-    }
     
     lazy var reminderIds: Set<ReminderID> = {
         let ids: [ReminderID] = Self.reminderFileNames().compactMap { filename in
@@ -46,6 +43,10 @@ final class ReminderManager: ObservableObject {
         }
         
         self.init(reminders)
+    }
+    
+    var quickReminder: RandomReminder? {
+        return reminders.first { $0.id == ReminderID.quickReminderId }
     }
     
     func nextAvailableId() -> ReminderID {
