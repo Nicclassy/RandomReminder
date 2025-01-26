@@ -17,7 +17,7 @@ let infoColours = FancyLogger.Colours(
     string: hex("FFCFD2")
 )
 
-let warnColours = FancyLogger.Colours(
+let errorColours = FancyLogger.Colours(
     file: hex("FFA5AB"),
     function: hex("721036"),
     line: hex("450920"),
@@ -44,12 +44,19 @@ final class FancyLogger {
         let string: ColourString
     }
     
+    @available(*, unavailable)
+    private init() {}
+    
     static func info(_ args: Any..., file: String = #file, function: String = #function, line: Int = #line) {
         FancyLoggerHelper.printer(args, colours: infoColours, file: file, function: function, line: line)
     }
-
+    
     static func warn(_ args: Any..., file: String = #file, function: String = #function, line: Int = #line) {
-        FancyLoggerHelper.printer(args, colours: warnColours, file: file, function: function, line: line)
+        FancyLoggerHelper.printer(args, colours: errorColours, file: file, function: function, line: line)
+    }
+
+    static func error(_ args: Any..., file: String = #file, function: String = #function, line: Int = #line) {
+        FancyLoggerHelper.printer(args, colours: errorColours, file: file, function: function, line: line)
     }
 }
 

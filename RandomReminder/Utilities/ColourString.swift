@@ -16,37 +16,35 @@ func hex(_ hex: String) -> ColourString {
 }
 
 func rgb(_ r: Int, _ g: Int, _ b: Int) -> ColourString {
-    // Approximate each colour to its closest xterm256-colour code
-    let xtermRed = r / 51
-    let xtermGreen = g / 51
-    let xtermBlue = b / 51
-    let xtermColour = 16 + 36 * xtermRed + 6 * xtermGreen + xtermBlue
-    return xterm256(xtermColour)
+    ColourString(code: String(format: "\u{001B}[38;2;%d;%d;%dm", r, g, b))
+}
+
+func xterm256(_ id: Int) -> ColourString {
+    ColourString(code: String(format: "\u{001B}[38;5;%dm", id))
 }
 
 func ansi(_ ansi: Int) -> ColourString {
     ColourString(code: String(format: "\u{001B}[%dm", ansi))
 }
 
-fileprivate func xterm256(_ xtermColour: Int) -> ColourString {
-    // Because xterm256-colour only supports 255 colours, not all colours
-    // cannot be accurately represented. Colours are therefore approximated in the
-    // above rgb function.
-    ColourString(code: String(format: "\u{001B}[38;5;%dm", xtermColour))
-}
-
 fileprivate func termEnvValueExists() -> Bool {
     ProcessInfo.processInfo.environment["TERM"] != nil
 }
 
-final class ColourString: CustomStringConvertible {
+struct ColourString: CustomStringConvertible {
     static let colourStrings: Bool = true
     
-    let code: String
+    static let red = ansi(31)
+    static let blue = ansi(34)
+    static let black = ansi(30)
+    static let green = ansi(32)
+    static let yellow = ansi(33)
+    static let magenta = ansi(35)
+    static let cyan = ansi(36)
+    static let white = ansi(97)
+    static let reset = ansi(0)
     
-    init(code: String) {
-        self.code = code
-    }
+    let code: String
     
     var description: String {
         self.code
@@ -60,15 +58,4 @@ final class ColourString: CustomStringConvertible {
             String(describing: string)
         }
     }
-    
-    static let reset = ansi(0)
-    
-    static let red = ansi(31)
-    static let blue = ansi(34)
-    static let black = ansi(30)
-    static let green = ansi(32)
-    static let yellow = ansi(33)
-    static let magenta = ansi(35)
-    static let cyan = ansi(36)
-    static let white = ansi(97)
 }
