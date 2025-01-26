@@ -1,5 +1,5 @@
 {
-  "originHash" : "d5126613f7974d30165d8b379da05a61f9f32f0936e81d7bfa64db1a4d2de630",
+  "originHash" : "afe0f261b5e7d478583d4e3ebdcf66c726da7e7a919ff109b69179f4fa49e974",
   "pins" : [
     {
       "identity" : "launchatlogin-modern",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "879ea83a7bbc6dbebf62bed8c547f090146372a6",
         "version" : "3.1.1"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections.git",
+      "state" : {
+        "revision" : "671108c96644956dddcd89dd59c203dcdb36cec7",
+        "version" : "1.1.4"
       }
     }
   ],
