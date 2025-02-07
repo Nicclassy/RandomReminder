@@ -23,6 +23,10 @@ struct TimeOnly: Codable {
         self.init(hour: date.hour, minute: date.minute)
     }
     
+    init(timeIntervalSince1970: TimeInterval) {
+        self.init(from: Date(timeIntervalSince1970: timeIntervalSince1970))
+    }
+    
     func onDate(date: Date) -> Date {
         let calendar = Calendar.current
         var components = calendar.dateComponents([.day, .year], from: date)

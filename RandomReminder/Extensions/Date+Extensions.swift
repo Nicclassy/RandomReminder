@@ -21,8 +21,8 @@ extension Date {
     }
     
     func addMinutes(_ minutes: Int) -> Self {
-        // This method and the method below are saturating additions.
-        // This is done by checking for a distant date.
+        // This method and the method below are saturating operations.
+        // This operation is saturating because of the distant date check
         self.isDistant ? self : Calendar.current.date(byAdding: .minute, value: minutes, to: self)!
     }
     
@@ -35,7 +35,10 @@ extension Date {
     }
     
     static func endOfDay(date: Date = Date()) -> Self {
-        Calendar.current.date(byAdding: .day, value: 1, to: startOfDay())!.subtractMinutes(1)
+        // As a consequence of this design, start/end times must be in the domain [start, end].
+        // While it is possible to do [start, end) (e.g. start is 12am and end is 12am),
+        // this is a more confusing alternative
+        Calendar.current.date(byAdding: .day, value: 1, to: startOfDay().subtractMinutes(1))!
     }
     
     func sameTimeToday() -> Self? {

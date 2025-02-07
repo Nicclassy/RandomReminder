@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RandomReminder: Codable, CustomStringConvertible {
+final class RandomReminder: Codable, CustomStringConvertible {
     var id: ReminderID
     var content: ReminderContent
     var reminderInterval: AnyReminderInterval
@@ -15,12 +15,14 @@ struct RandomReminder: Codable, CustomStringConvertible {
     var state: ReminderState
     var activationEvents: [ReminderActivationEvent]
     
-    init(id: ReminderID,
-         content: ReminderContent,
-         reminderInterval: AnyReminderInterval,
-         counts: ReminderCounts,
-         state: ReminderState,
-         activationEvents: [ReminderActivationEvent]) {
+    init(
+        id: ReminderID,
+        content: ReminderContent,
+        reminderInterval: AnyReminderInterval,
+        counts: ReminderCounts,
+        state: ReminderState,
+        activationEvents: [ReminderActivationEvent]
+    ) {
         self.id = id
         self.content = content
         self.reminderInterval = reminderInterval
@@ -29,17 +31,20 @@ struct RandomReminder: Codable, CustomStringConvertible {
         self.activationEvents = activationEvents
     }
     
-    init(title: String,
-         text: String,
-         interval: ReminderInterval,
-         totalReminders: Int,
-         activationEvents: [ReminderActivationEvent]? = nil) {
+    convenience init(
+        id: ReminderID = ReminderManager.shared.nextAvailableId(),
+        title: String,
+        text: String,
+        interval: ReminderInterval,
+        totalReminders: Int,
+        activationEvents: [ReminderActivationEvent]? = nil
+    ) {
         self.init(
-            id: ReminderManager.shared.nextAvailableId(),
+            id: id,
             content: ReminderContent(title: title, text: text),
             reminderInterval: AnyReminderInterval(interval),
             counts: ReminderCounts(totalReminders: totalReminders),
-            state: .disabled,
+            state: .enabled,
             activationEvents: activationEvents ?? []
         )
     }
@@ -62,11 +67,11 @@ struct RandomReminder: Codable, CustomStringConvertible {
         self.counts.timesReminded == self.counts.totalReminders - 1
     }
     
-    mutating func activate() {
+    func activate() {
         self.counts.timesReminded += 1
     }
     
-    mutating func reset() {
+    func reset() {
         self.counts.timesReminded = 0
     }
 }

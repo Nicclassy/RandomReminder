@@ -44,7 +44,7 @@ final class ReminderSerializer {
         do {
             try FileManager.default.createDirectory(at: StoredReminders.url, withIntermediateDirectories: false)
         } catch let error {
-            FancyLogger.error("Error creating directory:", error)
+            FancyLogger.error("Error creating reminders directory:", error)
         }
     }
 }
