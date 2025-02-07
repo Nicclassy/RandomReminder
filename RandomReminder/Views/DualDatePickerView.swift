@@ -12,15 +12,10 @@ struct DualDatePickerView: View {
     let latestHeading: String
     let displayedComponents: DatePickerComponents
     
-    @EnvironmentObject private var appPreferences: AppPreferences
-    
     @Binding var earliestDate: Date
     @Binding var latestDate: Date
+    @Binding var active: Bool
     
-    // Limiting the chosen dates to be within these ranges has the disadvantage
-    // that reminders cannot be across multiple days. However,
-    // this has the advantage that the dates are much easier to validate and it is
-    // guaranteed that the earliest date is before the latest date
     var earliestDateRange: ClosedRange<Date> {
         Date.distantPast...latestDate.subtractMinutes(1)
     }
@@ -39,7 +34,7 @@ struct DualDatePickerView: View {
                         selection: $earliestDate,
                         displayedComponents: displayedComponents
                     )
-                    .disabled(appPreferences.quickReminderStarted)
+                    .disabled(!active)
                     .labelsHidden()
                 }
                 GridRow {
@@ -50,7 +45,7 @@ struct DualDatePickerView: View {
                         in: latestDateRange,
                         displayedComponents: displayedComponents
                     )
-                    .disabled(appPreferences.quickReminderStarted)
+                    .disabled(!active)
                     .labelsHidden()
                 }
             }
