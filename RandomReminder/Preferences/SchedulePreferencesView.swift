@@ -12,15 +12,15 @@ struct SchedulePreferencesView: View {
     
     var defaultEarliestDate: Binding<Date> {
         Binding(
-            get: { Date(timeIntervalSince1970: intervalOrDefault(appPreferences.defaultEarliestDate, or: Date.startOfDay())) },
-            set: { appPreferences.defaultEarliestDate = $0.timeIntervalSince1970 }
+            get: { Date(timeIntervalSince1970: intervalOrDefault(interval: appPreferences.defaultEarliestTime, default: Date.startOfDay())) },
+            set: { appPreferences.defaultEarliestTime = $0.timeIntervalSince1970 }
         )
     }
         
     var defaultLatestDate: Binding<Date> {
         Binding(
-            get: { Date(timeIntervalSince1970: intervalOrDefault(appPreferences.defaultLatestDate, or: Date.endOfDay())) },
-            set: { appPreferences.defaultLatestDate = $0.timeIntervalSince1970 }
+            get: { Date(timeIntervalSince1970: intervalOrDefault(interval: appPreferences.defaultLatestTime, default: Date.endOfDay())) },
+            set: { appPreferences.defaultLatestTime = $0.timeIntervalSince1970 }
         )
     }
     
@@ -31,13 +31,14 @@ struct SchedulePreferencesView: View {
                 latestHeading: L10n.TimePicker.LatestDefaultTime.heading,
                 displayedComponents: .hourAndMinute,
                 earliestDate: defaultEarliestDate,
-                latestDate: defaultLatestDate
+                latestDate: defaultLatestDate,
+                active: .constant(true)
             )
         }
         .frame(width: 300, height: 250)
     }
     
-    private func intervalOrDefault(_ interval: TimeInterval, or date: @autoclosure () -> Date) -> TimeInterval {
+    private func intervalOrDefault(interval: TimeInterval, default date: @autoclosure () -> Date) -> TimeInterval {
         interval == 0 ? date().timeIntervalSince1970 : interval
     }
 }

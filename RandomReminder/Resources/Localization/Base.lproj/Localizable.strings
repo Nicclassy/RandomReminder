@@ -11,13 +11,22 @@
 "status-bar.preferences" = "Preferences";
 "status-bar.quit" = "Quit";
 
-// MARK: Preferences tabs
+// MARK: Dual Date/Time Pickers
+
+"time-picker.earliest-default-time.heading" = "Default earliest time:";
+"time-picker.latest-default-time.heading" = "Default latest time:";
+"time-picker.earliest-time.heading" = "Earliest time:";
+"time-picker.latest-time.heading" = "Latest time:";
+"date-picker.earliest-date.heading" = "Earliest date:";
+"date-picker.latest-date.heading" = "Latest date:";
+
+// MARK: Preferences Tabs
 
 "preferences.tab.general" = "General";
 "preferences.tab.reminders" = "Reminders";
 "preferences.tab.about" = "About";
 
-// MARK: General preferences
+// MARK: General Preferences
 
 "preferences.general.launch-at-login" = "Launch at Login";
 "preferences.general.launch-at-login.caption" = "Automatically start RandomReminder when you login.";
