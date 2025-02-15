@@ -7,11 +7,11 @@
 
 import Foundation
 
-enum RepeatInterval: Codable {
-    case minutes(Int)
-    case hours(Int)
-    case days(Int)
-    case weeks(Int)
-    case months(Int)
-    case noRepeat
+enum RepeatInterval: Codable, Equatable, Hashable, CaseIterable {
+    case none
+    case minute
+    case hour
+    case day
+    case week
+    case month
 }
