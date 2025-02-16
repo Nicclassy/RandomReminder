@@ -10,6 +10,13 @@ import SwiftUI
 struct ReminderCreationView: View {
     @StateObject private var builder = ReminderBuilder()
     @State private var recurringEnabled = false
+    
+    @State private var earliestDate: Date = Date()
+    @State private var latestDate: Date = Date().addMinutes(60)
+    
+    var totalRemindersRange: ClosedRange<Int> {
+        ReminderConstants.minReminders...ReminderConstants.maxReminders
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -21,11 +28,13 @@ struct ReminderCreationView: View {
             Text("Reminder description:")
             TextField("Description", text: $builder.text)
             
-            Grid {
+            Grid(alignment: .leading) {
                 GridRow {
-                    Text("Number of reminders:")
-                    StepperTextField(value: $builder.totalReminders)
-                        .frame(width: 55)
+                    HStack {
+                        Text("Number of reminders:")
+                        StepperTextField(value: $builder.totalReminders, range: totalRemindersRange)
+                            .frame(width: 55)
+                    }
                     HStack(spacing: 0) {
                         Toggle("Recurring every", isOn: $recurringEnabled)
                         Picker("", selection: $builder.repeatInterval) {
@@ -36,10 +45,34 @@ struct ReminderCreationView: View {
                             }
                         }
                         .disabled(!recurringEnabled)
+                        .frame(width: 120)
                     }
                 }
+                
+                GridRow {
+                    Text("Earliest date:")
+                    Text("Latest date:")
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                GridRow {
+                    let picker = DualDatePicker(
+                        displayedComponents: [.date, .hourAndMinute],
+                        earliestDate: $earliestDate, latestDate: $latestDate,
+                        active: .constant(true)
+                    )
+                    
+                    VStack {
+                        picker.earliestDatePicker
+                    }
+                    VStack {
+                        picker.latestDatePicker
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
+        .border(.blue)
         .padding()
     }
 }
