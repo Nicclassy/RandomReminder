@@ -7,21 +7,67 @@
 
 import SwiftUI
 
-struct DualDatePickerView: View {
-    let earliestHeading: String
-    let latestHeading: String
+struct DualDatePicker {
     let displayedComponents: DatePickerComponents
     
     @Binding var earliestDate: Date
     @Binding var latestDate: Date
     @Binding var active: Bool
     
-    var earliestDateRange: ClosedRange<Date> {
+    private var earliestDateRange: ClosedRange<Date> {
         Date.distantPast...latestDate.subtractMinutes(1)
     }
     
-    var latestDateRange: ClosedRange<Date> {
+    private var latestDateRange: ClosedRange<Date> {
         earliestDate.addMinutes(1)...Date.distantFuture
+    }
+    
+    var earliestDatePicker: some View {
+        DatePicker(
+            "",
+            selection: $earliestDate,
+            displayedComponents: displayedComponents
+        )
+        .disabled(!active)
+        .labelsHidden()
+    }
+    
+    var latestDatePicker: some View {
+        DatePicker(
+            "",
+            selection: $latestDate,
+            in: latestDateRange,
+            displayedComponents: displayedComponents
+        )
+        .disabled(!active)
+        .labelsHidden()
+    }
+}
+
+struct DualDatePickerView: View {
+    let earliestHeading: String
+    let latestHeading: String
+    let picker: DualDatePicker
+    
+    init(earliestHeading: String, latestHeading: String, picker: DualDatePicker) {
+        self.earliestHeading = earliestHeading
+        self.latestHeading = latestHeading
+        self.picker = picker
+    }
+    
+    init(
+        earliestHeading: String, latestHeading: String, 
+        displayedComponents: DatePickerComponents, 
+        earliestDate: Binding<Date>, latestDate: Binding<Date>,
+        active: Binding<Bool>
+    ) {
+        self.init(
+            earliestHeading: earliestHeading, latestHeading: latestHeading,
+            picker: DualDatePicker(
+                displayedComponents: displayedComponents, 
+                earliestDate: earliestDate, latestDate: latestDate, active: active
+            )
+        )
     }
     
     var body: some View {
@@ -29,24 +75,11 @@ struct DualDatePickerView: View {
             Grid(alignment: .leading) {
                 GridRow {
                     Text(earliestHeading)
-                    DatePicker(
-                        "",
-                        selection: $earliestDate,
-                        displayedComponents: displayedComponents
-                    )
-                    .disabled(!active)
-                    .labelsHidden()
+                    picker.earliestDatePicker
                 }
                 GridRow {
                     Text(latestHeading)
-                    DatePicker(
-                        "",
-                        selection: $latestDate,
-                        in: latestDateRange,
-                        displayedComponents: displayedComponents
-                    )
-                    .disabled(!active)
-                    .labelsHidden()
+                    picker.latestDatePicker
                 }
             }
         }
