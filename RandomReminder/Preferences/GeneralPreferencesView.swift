@@ -31,4 +31,5 @@ struct GeneralPreferencesView: View {
 
 #Preview {
     GeneralPreferencesView()
+        .environmentObject(AppPreferences.shared)
 }

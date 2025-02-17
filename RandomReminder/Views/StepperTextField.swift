@@ -26,8 +26,8 @@ struct StepperTextField: View {
         }
     }
     
-    private func constrainValue(_ value: Int, orElse: Int) -> Int {
-        range.contains(value) ? value : orElse
+    private func constrainValue(_ value: Int, orElse defaultValue: Int) -> Int {
+        range.contains(value) ? value : defaultValue
     }
 }
 

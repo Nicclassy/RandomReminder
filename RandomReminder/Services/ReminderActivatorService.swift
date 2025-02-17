@@ -26,12 +26,11 @@ final class ReminderActivatorService {
     }
     
     func start() {
-        // Start when appropriate time
         self.thread = Thread { [unowned self] in
             let endRemindersDate = self.reminder.interval.latest.addMinutes(1)
-            let activateReminder = self.activateReminder()
             
             while self.running && Date() < endRemindersDate {
+                let activateReminder = self.activateReminder()
                 if activateReminder && self.reminder.isFinalActivation() {
                     FancyLogger.info("Activated final reminder for '\(self.reminder)'")
                     self.onReminderActivation()

@@ -8,6 +8,7 @@
 import Foundation
 
 enum ReminderState: Codable {
+    case started
     case enabled
     case disabled
 }

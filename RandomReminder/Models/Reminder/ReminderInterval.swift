@@ -44,6 +44,6 @@ struct ReminderDateInterval: ReminderInterval {
     }
     
     var repeatInterval: RepeatInterval {
-        .noRepeat
+        .none
     }
 }

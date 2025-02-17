@@ -12,7 +12,7 @@ struct DualDatePicker {
     
     @Binding var earliestDate: Date
     @Binding var latestDate: Date
-    @Binding var active: Bool
+    @Binding var enabled: Bool
     
     private var earliestDateRange: ClosedRange<Date> {
         Date.distantPast...latestDate.subtractMinutes(1)
@@ -28,7 +28,7 @@ struct DualDatePicker {
             selection: $earliestDate,
             displayedComponents: displayedComponents
         )
-        .disabled(!active)
+        .disabled(!enabled)
         .labelsHidden()
     }
     
@@ -39,7 +39,7 @@ struct DualDatePicker {
             in: latestDateRange,
             displayedComponents: displayedComponents
         )
-        .disabled(!active)
+        .disabled(!enabled)
         .labelsHidden()
     }
 }
@@ -59,13 +59,13 @@ struct DualDatePickerView: View {
         earliestHeading: String, latestHeading: String, 
         displayedComponents: DatePickerComponents, 
         earliestDate: Binding<Date>, latestDate: Binding<Date>,
-        active: Binding<Bool>
+        enabled: Binding<Bool>
     ) {
         self.init(
             earliestHeading: earliestHeading, latestHeading: latestHeading,
             picker: DualDatePicker(
                 displayedComponents: displayedComponents, 
-                earliestDate: earliestDate, latestDate: latestDate, active: active
+                earliestDate: earliestDate, latestDate: latestDate, enabled: enabled
             )
         )
     }

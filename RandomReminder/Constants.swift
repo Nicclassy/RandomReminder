@@ -27,3 +27,10 @@ enum StoredReminders {
         /$/
     }
 }
+
+enum ReminderConstants {
+    static let minReminders = 1
+    static let maxReminders = 100
+    
+    static let numberFormatter = NumberFormatter()
+}
