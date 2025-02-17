@@ -9,13 +9,28 @@ import SwiftUI
 
 struct ReminderCreationView: View {
     @StateObject private var builder = ReminderBuilder()
-    @State private var recurringEnabled = false
+    @State private var repeatingEnabled = false
+    @State private var timesOnly = false
     
-    @State private var earliestDate: Date = Date()
-    @State private var latestDate: Date = Date().addMinutes(60)
+    @State private var showTimesOnlyHelpPopover = false
+    
+    @State private var earliestDate = Date()
+    @State private var latestDate = Date().addMinutes(60)
     
     var totalRemindersRange: ClosedRange<Int> {
         ReminderConstants.minReminders...ReminderConstants.maxReminders
+    }
+    
+    var earliestText: String {
+        timesOnly ? "Earliest time:" : "Earliest date:"
+    }
+    
+    var latestText: String {
+        timesOnly ? "Latest time:" : "Latest date:"
+    }
+    
+    var datePickerComponents: DatePickerComponents {
+        timesOnly ? .hourAndMinute : [.date, .hourAndMinute]
     }
 
     var body: some View {
@@ -35,39 +50,46 @@ struct ReminderCreationView: View {
                         StepperTextField(value: $builder.totalReminders, range: totalRemindersRange)
                             .frame(width: 55)
                     }
-                    HStack(spacing: 0) {
-                        Toggle("Recurring every", isOn: $recurringEnabled)
-                        Picker("", selection: $builder.repeatInterval) {
-                            ForEach(RepeatInterval.allCases, id: \.self) { value in
-                                if value != .none {
-                                    Text(String(describing: value)).tag(value)
+                    VStack(alignment: .leading) {
+                        HStack(spacing: 0) {
+                            Toggle("Repeating every", isOn: $repeatingEnabled)
+                            Picker("", selection: $builder.repeatInterval) {
+                                ForEach(RepeatInterval.allCases, id: \.self) { value in
+                                    if value != .none {
+                                        Text(String(describing: value)).tag(value)
+                                    }
                                 }
                             }
+                            .disabled(!repeatingEnabled)
+                            .frame(width: 120)
                         }
-                        .disabled(!recurringEnabled)
-                        .frame(width: 120)
+                        HStack {
+                            Toggle("Use times only", isOn: $timesOnly)
+                            HelpLink() {
+                                showTimesOnlyHelpPopover.toggle()
+                            }
+                            .popover(isPresented: $showTimesOnlyHelpPopover) {
+                                Text("The created reminder will occur daily between the specified times.")
+                                    .padding()
+                            }
+                        }
                     }
                 }
+                .padding(.bottom, 10)
                 
                 GridRow {
-                    Text("Earliest date:")
-                    Text("Latest date:")
+                    Text(earliestText)
+                    Text(latestText)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-
                 GridRow {
                     let picker = DualDatePicker(
-                        displayedComponents: [.date, .hourAndMinute],
+                        displayedComponents: datePickerComponents,
                         earliestDate: $earliestDate, latestDate: $latestDate,
-                        active: .constant(true)
+                        enabled: .constant(true)
                     )
-                    
-                    VStack {
-                        picker.earliestDatePicker
-                    }
-                    VStack {
-                        picker.latestDatePicker
-                    }
+                    picker.earliestDatePicker
+                    picker.latestDatePicker
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
