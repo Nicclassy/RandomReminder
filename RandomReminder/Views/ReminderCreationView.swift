@@ -65,7 +65,7 @@ struct ReminderCreationView: View {
                         }
                         HStack {
                             Toggle("Use times only", isOn: $timesOnly)
-                            HelpLink() {
+                            HelpLink {
                                 showTimesOnlyHelpPopover.toggle()
                             }
                             .popover(isPresented: $showTimesOnlyHelpPopover) {

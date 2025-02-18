@@ -29,7 +29,7 @@ struct QuickReminderView: View {
                 displayedComponents: .hourAndMinute,
                 earliestDate: $earliestDate,
                 latestDate: $latestDate,
-                active: quickReminderManager.quickReminderEnabled
+                enabled: quickReminderManager.quickReminderEnabled
             )
             HStack {
                 Spacer()

@@ -32,7 +32,7 @@ struct SchedulePreferencesView: View {
                 displayedComponents: .hourAndMinute,
                 earliestDate: defaultEarliestDate,
                 latestDate: defaultLatestDate,
-                active: .constant(true)
+                enabled: .constant(true)
             )
         }
         .frame(width: 300, height: 250)
