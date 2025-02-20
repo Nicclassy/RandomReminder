@@ -5,11 +5,22 @@
 //  Created by Luca Napoli on 19/2/2025.
 //
 
-import Foundation
-
 struct ReminderDayOptions: OptionSet, CaseIterable, Codable {
-    let rawValue: Int
+    var rawValue: Int
     
+    // TODO: Localise weekday names
+    var name: String {
+        return switch self {
+        case .monday: "Monday"
+        case .tuesday: "Tuesday"
+        case .wednesday: "Wednesday"
+        case .thursday: "Thursday"
+        case .friday: "Friday"
+        case .saturday: "Saturday"
+        case .sunday: "Sunday"
+        default: ""
+        }
+    }
     static let monday: Self = .init(rawValue: 1 << 0)
     static let tuesday: Self = .init(rawValue: 1 << 1)
     static let wednesday: Self = .init(rawValue: 1 << 2)

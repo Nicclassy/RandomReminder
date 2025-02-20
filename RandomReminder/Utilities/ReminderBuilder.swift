@@ -13,12 +13,13 @@ final class ReminderBuilder: ObservableObject {
     @Published var totalReminders: Int = 0
     @Published var earliest: Date = Date()
     @Published var latest: Date = Date().addMinutes(60)
+    @Published var days: ReminderDayOptions = []
     @Published var repeatInterval: RepeatInterval = .none
     @Published var activationEvents: [ReminderActivationEvent] = []
     
     init() {}
     
-    func build() -> RandomReminder {
+    func build(specificDays: Bool) -> RandomReminder {
         let reminderInterval: ReminderInterval = if repeatInterval != .none {
             ReminderTimeInterval(
                 earliestTime: TimeOnly(from: earliest),
@@ -28,6 +29,12 @@ final class ReminderBuilder: ObservableObject {
             ReminderDateInterval(earliestDate: earliest, latestDate: latest)
         }
         
-        return RandomReminder(title: title, text: text, interval: reminderInterval, totalReminders: totalReminders)
+        return RandomReminder(
+            title: title,
+            text: text,
+            interval: reminderInterval,
+            days: specificDays ? days : [],
+            totalReminders: totalReminders
+        )
     }
 }

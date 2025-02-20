@@ -7,12 +7,21 @@
 
 import Foundation
 import RegexBuilder
+import SwiftUI
 
 // An implementation of C#'s null-coalescing assignment operator
 infix operator ??=: AssignmentPrecedence
 
 func ??=<T>(lhs: inout T?, rhs: T) {
     lhs = lhs ?? rhs
+}
+
+// Negate bindings
+prefix func ! (value: Binding<Bool>) -> Binding<Bool> {
+    .init(
+        get: { !value.wrappedValue },
+        set: { value.wrappedValue = $0 }
+    )
 }
 
 enum StoredReminders {
@@ -30,7 +39,9 @@ enum StoredReminders {
 
 enum ReminderConstants {
     static let minReminders = 1
-    static let maxReminders = 100
+    static let maxReminders = 999
+    
+    static let reminderDayChunkSize = 3
     
     static let numberFormatter = NumberFormatter()
 }
