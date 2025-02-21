@@ -14,7 +14,7 @@ final class RandomReminder: Codable, CustomStringConvertible {
     var days: ReminderDayOptions
     var counts: ReminderCounts
     var state: ReminderState
-    var activationEvents: [ReminderActivationEvent]
+    var activationEvents: ReminderActivationEvents
     
     init(
         id: ReminderID,
@@ -23,7 +23,7 @@ final class RandomReminder: Codable, CustomStringConvertible {
         days: ReminderDayOptions,
         counts: ReminderCounts,
         state: ReminderState,
-        activationEvents: [ReminderActivationEvent]
+        activationEvents: ReminderActivationEvents
     ) {
         self.id = id
         self.content = content
@@ -41,7 +41,7 @@ final class RandomReminder: Codable, CustomStringConvertible {
         interval: ReminderInterval,
         days: ReminderDayOptions? = nil,
         totalReminders: Int,
-        activationEvents: [ReminderActivationEvent]? = nil
+        activationEvents: ReminderActivationEvents? = nil
     ) {
         self.init(
             id: id,
@@ -50,7 +50,7 @@ final class RandomReminder: Codable, CustomStringConvertible {
             days: days ?? [],
             counts: ReminderCounts(totalReminders: totalReminders),
             state: .enabled,
-            activationEvents: activationEvents ?? []
+            activationEvents: activationEvents ?? ReminderActivationEvents()
         )
     }
     

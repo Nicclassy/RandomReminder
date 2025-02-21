@@ -15,7 +15,7 @@ final class ReminderBuilder: ObservableObject {
     @Published var latest: Date = Date().addMinutes(60)
     @Published var days: ReminderDayOptions = []
     @Published var repeatInterval: RepeatInterval = .none
-    @Published var activationEvents: [ReminderActivationEvent] = []
+    @Published var activationEvents: ReminderActivationEvents = .init()
     
     init() {}
     

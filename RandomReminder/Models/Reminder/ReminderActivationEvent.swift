@@ -8,32 +8,42 @@
 import Foundation
 import AppKit
 
-private func playAudioFile(url: URL) {
-    
+protocol ReminderActivationEvent: Codable {
+    func show(for reminder: RandomReminder)
 }
 
-private func displayAlert(for reminder: RandomReminder) {
-    let alert = NSAlert()
-    alert.messageText = reminder.content.title
-    alert.informativeText = reminder.content.text
-    alert.alertStyle = .informational
-    alert.runModal()
-}
-
-private func displayNotification(for reminder: RandomReminder) {
-    
-}
-
-enum ReminderActivationEvent: Codable {
-    case audioFile(URL)
-    case alert
-    case notification
-    
+final class ReminderAlert: ReminderActivationEvent {
     func show(for reminder: RandomReminder) {
-        switch self {
-        case .audioFile(let url): playAudioFile(url: url)
-        case .alert: displayAlert(for: reminder)
-        case .notification: displayNotification(for: reminder)
-        }
+        let alert = NSAlert()
+        alert.messageText = reminder.content.title
+        alert.informativeText = reminder.content.text
+        alert.alertStyle = .informational
+        alert.runModal()
+    }
+}
+
+final class ReminderNotification: ReminderActivationEvent {
+    func show(for reminder: RandomReminder) {}
+}
+
+final class ReminderAudioFile: ReminderActivationEvent {
+    let name: String
+    let url: URL
+    
+    init(name: String, url: URL) {
+        self.name = name
+        self.url = url
+    }
+    
+    func show(for reminder: RandomReminder) {}
+}
+
+extension ReminderAudioFile: Equatable, Hashable {
+    static func == (lhs: ReminderAudioFile, rhs: ReminderAudioFile) -> Bool {
+        lhs.url == rhs.url
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(url)
     }
 }
