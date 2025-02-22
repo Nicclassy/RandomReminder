@@ -31,8 +31,7 @@ struct SchedulePreferencesView: View {
                 latestHeading: L10n.TimePicker.LatestDefaultTime.heading,
                 displayedComponents: .hourAndMinute,
                 earliestDate: defaultEarliestDate,
-                latestDate: defaultLatestDate,
-                enabled: .constant(true)
+                latestDate: defaultLatestDate
             )
         }
         .frame(width: 300, height: 250)
