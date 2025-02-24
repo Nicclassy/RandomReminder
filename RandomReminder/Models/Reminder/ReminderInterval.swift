@@ -11,6 +11,7 @@ protocol ReminderInterval: Codable {
     var earliest: Date { get }
     var latest: Date { get }
     var repeatInterval: RepeatInterval { get }
+    var isInfinite: Bool { get }
 }
 
 struct ReminderTimeInterval: ReminderInterval {
@@ -19,15 +20,19 @@ struct ReminderTimeInterval: ReminderInterval {
     var interval: RepeatInterval
     
     var earliest: Date {
-        self.earliestTime.dateToday()
+        earliestTime.dateToday()
     }
     
     var latest: Date {
-        self.latestTime.dateToday()
+        latestTime.dateToday()
     }
     
     var repeatInterval: RepeatInterval {
-        self.interval
+        interval
+    }
+    
+    var isInfinite: Bool {
+        earliestTime == .earliestToday && latestTime == .earliestTomorrow
     }
 }
 
@@ -36,14 +41,18 @@ struct ReminderDateInterval: ReminderInterval {
     var latestDate: Date
     
     var earliest: Date {
-        self.earliestDate
+        earliestDate
     }
     
     var latest: Date {
-        self.latestDate
+        latestDate
     }
     
     var repeatInterval: RepeatInterval {
         .none
+    }
+    
+    var isInfinite: Bool {
+        false
     }
 }

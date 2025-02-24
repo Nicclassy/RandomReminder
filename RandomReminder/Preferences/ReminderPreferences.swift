@@ -17,7 +17,4 @@ final class ReminderPreferences: ObservableObject {
     
     @Published var showTimesOnlyPopover = false
     @Published var showFileImporter = false
-    
-    @Published var earliestDate = Date()
-    @Published var latestDate = Date().addMinutes(60)
 }

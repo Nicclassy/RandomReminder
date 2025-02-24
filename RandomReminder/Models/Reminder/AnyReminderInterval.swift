@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct AnyReminderInterval: Codable {
+final class AnyReminderInterval: Codable {
     let value: ReminderInterval
     
     init(_ value: ReminderInterval) {
         self.value = value
     }
     
-    init(from decoder: any Decoder) throws {
+    convenience init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         FancyLogger.info(container.allKeys)

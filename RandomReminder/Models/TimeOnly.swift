@@ -11,8 +11,10 @@ struct TimeOnly: Codable {
     var hour: Int
     var minute: Int
     
+    static let earliestToday = TimeOnly(hour: 1)
+    static let earliestTomorrow = TimeOnly(hour: 25)
+    
     init(hour: Int, minute: Int) {
-        // Not needed but might as well have these sanity checks
         assert(hour >= 0 && hour < 24)
         assert(minute >= 0 && minute < 60)
         self.hour = hour
@@ -27,15 +29,28 @@ struct TimeOnly: Codable {
         self.init(from: Date(timeIntervalSince1970: timeIntervalSince1970))
     }
     
+    private init(hour: Int) {
+        self.hour = hour
+        self.minute = 0
+    }
+    
     func onDate(date: Date) -> Date {
         let calendar = Calendar.current
-        var components = calendar.dateComponents([.day, .year], from: date)
-        components.hour = self.hour
-        components.minute = self.minute
+        let (additionalDays, hours) = hour.quotientAndRemainder(dividingBy: 24)
+        var components = calendar.dateComponents([.year, .month, .day], from: date)
+        components.day = components.day! + additionalDays
+        components.hour = hours
+        components.minute = minute
         return calendar.date(from: components)!
     }
     
     func dateToday() -> Date {
-        self.onDate(date: Date())
+        onDate(date: Date())
+    }
+}
+
+extension TimeOnly: Equatable, Hashable {
+    static func == (lhs: TimeOnly, rhs: TimeOnly) -> Bool {
+        lhs.hour == rhs.hour && lhs.minute == rhs.minute
     }
 }
