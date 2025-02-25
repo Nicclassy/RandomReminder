@@ -34,6 +34,14 @@ struct ReminderTimeInterval: ReminderInterval {
     var isInfinite: Bool {
         earliestTime == .earliestToday && latestTime == .earliestTomorrow
     }
+    
+    static var infinite: ReminderInterval {
+        ReminderTimeInterval(
+            earliestTime: .earliestToday,
+            latestTime: .earliestTomorrow,
+            interval: .day
+        )
+    }
 }
 
 struct ReminderDateInterval: ReminderInterval {

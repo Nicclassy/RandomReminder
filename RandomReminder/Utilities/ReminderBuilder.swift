@@ -21,11 +21,7 @@ final class ReminderBuilder: ObservableObject {
     
     func build(preferences reminderPreferences: ReminderPreferences) -> RandomReminder {
         let reminderInterval: ReminderInterval = if reminderPreferences.alwaysRunning {
-            ReminderTimeInterval(
-                earliestTime: .earliestToday,
-                latestTime: .earliestTomorrow,
-                interval: .day
-            )
+            ReminderTimeInterval.infinite
         } else if reminderPreferences.timesOnly {
             ReminderTimeInterval(
                 earliestTime: TimeOnly(from: earliestDate),
