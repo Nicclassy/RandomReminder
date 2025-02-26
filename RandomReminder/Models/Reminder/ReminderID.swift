@@ -8,13 +8,21 @@
 import Foundation
 
 struct ReminderID: Codable {
-    static let quickReminderId: ReminderID = 0
-    static let firstAvailableId: ReminderID = 1
-    
     let value: Int
     
     init(_ value: Int) {
         self.value = value
+    }
+}
+
+extension ReminderID {
+    static let quickReminderId: ReminderID = 0
+    static let firstAvailableId: ReminderID = 1
+    
+    func filename() -> String {
+        URL(string: String(describing: value))!
+            .appendingPathExtension(StoredReminders.fileExtension)
+            .path()
     }
 }
 
