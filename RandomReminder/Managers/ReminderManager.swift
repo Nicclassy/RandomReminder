@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 final class ReminderManager: ObservableObject {
-    static let shared = ReminderManager()
+    static let shared = ReminderManager(preview: true)
     
     @Published var reminders: [RandomReminder]
     
@@ -28,43 +28,63 @@ final class ReminderManager: ObservableObject {
         return Set(ids)
     }()
     
+    var audioFiles: [ReminderAudioFile] {
+        reminders.compactMap { $0.activationEvents.audio }
+    }
+    
     init(_ reminders: [RandomReminder]) {
         self.reminders = reminders
     }
     
-    convenience init() {
-        let reminders: [RandomReminder] = Self.reminderFileNames().compactMap { filename in
-            if let reminder: RandomReminder = ReminderSerializer.load(filename: filename) {
+    convenience init(preview: Bool = false) {
+        let reminders: [RandomReminder] = if preview {
+            Self.previewReminders()
+        } else {
+            Self.reminderFileNames().compactMap { filename in
+                guard let reminder: RandomReminder = ReminderSerializer.load(filename: filename) else { return nil }
+                guard reminder.id != .quickReminderId else { return nil }
                 return reminder
-            } else {
-                FancyLogger.warn("Reminder with filename \(filename) was not loaded")
-                return nil
             }
         }
         
         self.init(reminders)
     }
     
-    var quickReminder: RandomReminder? {
-        return reminders.first { $0.id == ReminderID.quickReminderId }
+    func upcomingReminders() -> [RandomReminder] {
+        reminders.lazy.filter { !$0.hasPast() }
     }
     
+    func pastReminders() -> [RandomReminder] {
+        reminders.lazy.filter { $0.hasPast() }
+    }
+
     func nextAvailableId() -> ReminderID {
-        (ReminderID.firstAvailableId...).first { !reminderIds.contains($0) }!
+        (.firstAvailableId...).first { !reminderIds.contains($0) }!
     }
     
     func addReminder(_ reminder: RandomReminder) {
-        self.reminders.append(reminder)
-        self.reminderIds.insert(reminder.id)
+        ReminderSerializer.save(reminder, filename: reminder.filename())
+        reminders.append(reminder)
+        reminderIds.insert(reminder.id)
     }
     
     func removeReminder(_ reminder: RandomReminder) {
-        let index = self.reminders.firstIndex(of: reminder)!
-        self.reminders.remove(at: index)
-        self.reminderIds.remove(reminder.id)
+        let index = reminders.firstIndex(of: reminder)!
+        reminders.remove(at: index)
+        reminderIds.remove(reminder.id)
     }
     
-    static func reminderFileNames() -> [String] {
+    static func previewReminders() -> [RandomReminder] {
+        [
+            RandomReminder(id: 1, title: "Defuse", text: "Why", interval: ReminderDateInterval(earliestDate: Date().addMinutes(1), latestDate: Date().addMinutes(2)), totalReminders: 2),
+            RandomReminder(id: 2, title: "Hello", text: "A reminder", interval: ReminderTimeInterval.infinite, totalReminders: 3),
+            RandomReminder(id: 3, title: "Do some things", text: "Things", interval: ReminderDateInterval(earliestDate: Date().addMinutes(120), latestDate: Date().addMinutes(120)), totalReminders: 2),
+            RandomReminder(id: 4, title: "Other", text: "Some things", interval: ReminderDateInterval(earliestDate: Date().subtractMinutes(1), latestDate: Date().addMinutes(20)), totalReminders: 5),
+            RandomReminder(id: 5, title: "I already happened", text: "Waaa", interval: ReminderDateInterval(earliestDate: Date().subtractMinutes(5), latestDate: Date().subtractMinutes(4)), totalReminders: 3)
+        ]
+    }
+    
+    private static func reminderFileNames() -> [String] {
         let filenames = try! FileManager.default.contentsOfDirectory(atPath: StoredReminders.url.path())
         return filenames.filter { StoredReminders.filenamePattern.contains(captureNamed: $0) }
     }
