@@ -12,6 +12,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     static private(set) var shared: AppDelegate!
     var statusBarController: StatusBarController!
     
+    private lazy var reminderCreationWindow = ReminderCreationWindow()
+    
     func applicationDidFinishLaunching(_ notification: Notification) {
         AppDelegate.shared = self
         statusBarController = .init()
@@ -19,5 +21,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     
     func toggleQuickReminder(isEnabled: Bool) {
         statusBarController.quickReminderItem.isHidden = !isEnabled
+    }
+    
+    func openReminderCreationWindow() {
+        NSApp.activate()
+        reminderCreationWindow.show()
     }
 }
