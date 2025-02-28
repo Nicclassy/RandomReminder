@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate {
     static private(set) var shared: AppDelegate!
     var statusBarController: StatusBarController!
     

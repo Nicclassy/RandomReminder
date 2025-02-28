@@ -10,9 +10,20 @@ import Foundation
 struct TimeInfoProvider {
     let reminder: RandomReminder
     
+    static let orderedCalendarComponents: [Calendar.Component] = [.day, .hour, .minute, .second]
     static let calendarComponents: Set<Calendar.Component> = [.day, .hour, .minute, .second]
     
-    func timeDifferenceInfo() -> String {
+    func preferencesInfo() -> String {
+        if reminder.hasPast() {
+            "\(timeDifferenceInfo()) ago"
+        } else if reminder.hasBegun() {
+            "\(reminder.counts.totalReminders - reminder.counts.timesReminded) reminders left"
+        } else {
+            "Starting in \(timeDifferenceInfo())"
+        }
+    }
+    
+    private func timeDifferenceInfo() -> String {
         func pluralisedName(for component: Calendar.Component, quantity: UInt) -> String {
             let name = String(describing: component)
             let suffix = quantity != 1 ? "s" : ""
@@ -24,7 +35,7 @@ struct TimeInfoProvider {
             return ">1 week"
         }
         
-        let infoParts: [String] = Self.calendarComponents.compactMap { calendarComponent in
+        let infoParts: [String] = Self.orderedCalendarComponents.compactMap { calendarComponent in
             guard let quantity = components.value(for: calendarComponent)?.magnitude, quantity > 0 else {
                 return nil
             }
@@ -33,15 +44,5 @@ struct TimeInfoProvider {
         }
         
         return infoParts.isEmpty ? "0 seconds" : infoParts.listing()
-    }
-    
-    func preferencesInfo() -> String {
-        if reminder.hasPast() {
-            "\(timeDifferenceInfo()) ago"
-        } else if reminder.hasBegun() {
-            "\(reminder.counts.totalReminders - reminder.counts.timesReminded) reminders left"
-        } else {
-            "Starting in \(timeDifferenceInfo())"
-        }
     }
 }

@@ -60,6 +60,7 @@ final class ReminderActivatorService {
         self.thread!.cancel()
         self.thread = nil
         self.reminder.reset()
+        self.reminder.state = .enabled
     }
     
     private func activateReminder() -> Bool {

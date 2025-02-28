@@ -10,7 +10,7 @@ import Foundation
 extension FileManager {
     func directoryExists(atPath: String) -> Bool {
         var isDirectory: ObjCBool = true
-        let exists = self.fileExists(atPath: atPath, isDirectory: &isDirectory)
+        let exists = fileExists(atPath: atPath, isDirectory: &isDirectory)
         return exists && isDirectory.boolValue
     }
 }

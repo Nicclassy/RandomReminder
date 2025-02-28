@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ReminderCreationView: View {
-    @EnvironmentObject var reminderManager: ReminderManager
+    @StateObject var reminderManager: ReminderManager = .shared
     @StateObject var reminder = ReminderBuilder()
     @StateObject var preferences = ReminderPreferences()
 
@@ -25,7 +25,6 @@ struct ReminderCreationView: View {
             ReminderSchedulePreferencesView(reminder: reminder, preferences: preferences)
             ReminderDayPreferencesView(reminder: reminder, preferences: preferences)
             ReminderAudioPreferencesView(reminder: reminder, preferences: preferences)
-                .environmentObject(reminderManager)
                 .padding(.bottom, 15)
             
             HStack {
@@ -47,5 +46,4 @@ struct ReminderCreationView: View {
 
 #Preview {
     ReminderCreationView()
-        .environmentObject(ReminderManager.shared)
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ReminderAudioPreferencesView: View {
-    @EnvironmentObject var reminderManager: ReminderManager
+    @StateObject var reminderManager: ReminderManager = .shared
     @ObservedObject var reminder: ReminderBuilder
     @ObservedObject var preferences: ReminderPreferences
     
@@ -54,5 +54,4 @@ struct ReminderAudioPreferencesView: View {
 
 #Preview {
     ReminderAudioPreferencesView(reminder: .init(), preferences: .init())
-        .environmentObject(ReminderManager.shared)
 }

@@ -19,7 +19,7 @@ final class PreferencesViewController {
                 AboutPreferencesViewController()
             ],
             style: .toolbarItems,
-            animated: false,
+            animated: true,
             hidesToolbarForSingleItem: false
         )
     }()

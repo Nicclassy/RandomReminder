@@ -9,7 +9,7 @@ import SwiftUI
 import LaunchAtLogin
 
 struct GeneralPreferencesView: View {
-    @EnvironmentObject var appPreferences: AppPreferences
+    @StateObject var appPreferences: AppPreferences = .shared
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -31,5 +31,4 @@ struct GeneralPreferencesView: View {
 
 #Preview {
     GeneralPreferencesView()
-        .environmentObject(AppPreferences.shared)
 }

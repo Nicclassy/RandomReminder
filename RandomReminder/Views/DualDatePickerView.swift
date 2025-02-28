@@ -9,10 +9,8 @@ import SwiftUI
 
 struct DualDatePicker {
     let displayedComponents: DatePickerComponents
-    
     @Binding var earliestDate: Date
     @Binding var latestDate: Date
-    @Binding var enabled: Bool
     
     private var earliestDateRange: ClosedRange<Date> {
         Date.distantPast...latestDate.subtractMinutes(1)
@@ -28,7 +26,6 @@ struct DualDatePicker {
             selection: $earliestDate,
             displayedComponents: displayedComponents
         )
-        .disabled(!enabled)
         .labelsHidden()
     }
     
@@ -39,7 +36,6 @@ struct DualDatePicker {
             in: latestDateRange,
             displayedComponents: displayedComponents
         )
-        .disabled(!enabled)
         .labelsHidden()
     }
 }
@@ -58,14 +54,13 @@ struct DualDatePickerView: View {
     init(
         earliestHeading: String, latestHeading: String, 
         displayedComponents: DatePickerComponents, 
-        earliestDate: Binding<Date>, latestDate: Binding<Date>,
-        enabled: Binding<Bool>
+        earliestDate: Binding<Date>, latestDate: Binding<Date>
     ) {
         self.init(
             earliestHeading: earliestHeading, latestHeading: latestHeading,
             picker: DualDatePicker(
                 displayedComponents: displayedComponents, 
-                earliestDate: earliestDate, latestDate: latestDate, enabled: enabled
+                earliestDate: earliestDate, latestDate: latestDate
             )
         )
     }

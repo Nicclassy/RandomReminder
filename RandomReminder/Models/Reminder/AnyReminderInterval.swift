@@ -17,7 +17,6 @@ final class AnyReminderInterval: Codable {
     convenience init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        FancyLogger.info(container.allKeys)
         if let timeInterval = try? container.decode(ReminderTimeInterval.self, forKey: .timeInterval) {
             self.init(timeInterval)
         } else if let dateInterval = try? container.decode(ReminderDateInterval.self, forKey: .dateInterval) {

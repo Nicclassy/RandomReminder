@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AboutPreferencesView: View {
-    @EnvironmentObject var appPreferences: AppPreferences
+    @StateObject var appPreferences: AppPreferences = .shared
     
     var body: some View {
         VStack {
