@@ -11,6 +11,7 @@ struct ReminderCreationView: View {
     @StateObject var reminderManager: ReminderManager = .shared
     @StateObject var reminder = ReminderBuilder()
     @StateObject var preferences = ReminderPreferences()
+    @State private var useAudioFile = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -24,19 +25,18 @@ struct ReminderCreationView: View {
             
             ReminderSchedulePreferencesView(reminder: reminder, preferences: preferences)
             ReminderDayPreferencesView(reminder: reminder, preferences: preferences)
-            ReminderAudioPreferencesView(reminder: reminder, preferences: preferences)
-                .padding(.bottom, 15)
+            ReminderAudioPreferencesView(reminder: reminder, preferences: preferences, useAudioFile: $useAudioFile)
             
             HStack {
-                Button(action: {}) {
-                    Text("Cancel")
-                        .frame(width: 60)
-                }
                 Button(action: {}) {
                     Text("Create")
                         .frame(width: 60)
                 }
                 .buttonStyle(.borderedProminent)
+                Button(action: {}) {
+                    Text("Cancel")
+                        .frame(width: 60)
+                }
             }
         }
         .frame(width: 500, height: 600)
