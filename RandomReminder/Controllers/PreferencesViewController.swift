@@ -35,7 +35,6 @@ final class PreferencesViewController {
                 )!
             ) {
                 GeneralPreferencesView()
-                    .environmentObject(AppPreferences.shared)
             }
         )
     }
@@ -51,7 +50,6 @@ final class PreferencesViewController {
                 )!
             ) {
                 SchedulePreferencesView()
-                    .environmentObject(AppPreferences.shared)
             }
         )
     }
@@ -67,7 +65,6 @@ final class PreferencesViewController {
                 )!
             ) {
                 RemindersPreferencesView()
-                    .environmentObject(AppPreferences.shared)
             }
         )
     }
@@ -83,7 +80,6 @@ final class PreferencesViewController {
                 )!
             ) {
                 AboutPreferencesView()
-                    .environmentObject(AppPreferences.shared)
             }
         )
     }

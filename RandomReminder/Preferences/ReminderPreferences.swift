@@ -12,9 +12,7 @@ final class ReminderPreferences: ObservableObject {
     @Published var repeatingEnabled = false
     @Published var timesOnly = false
     @Published var alwaysRunning = false
-    
     @Published var specificDays = false
-    
     @Published var showTimesOnlyPopover = false
     @Published var showFileImporter = false
 }

@@ -44,6 +44,8 @@ struct ColourString: CustomStringConvertible {
     static let white = ansi(97)
     static let reset = ansi(0)
     
+    static let blank = ColourString(code: String())
+    
     let code: String
     
     var description: String {

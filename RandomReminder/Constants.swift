@@ -16,14 +16,6 @@ func ??=<T>(lhs: inout T?, rhs: T) {
     lhs = lhs ?? rhs
 }
 
-// Negate bindings
-prefix func ! (value: Binding<Bool>) -> Binding<Bool> {
-    .init(
-        get: { !value.wrappedValue },
-        set: { value.wrappedValue = $0 }
-    )
-}
-
 enum StoredReminders {
     static let fileExtension = "json"
     static let folderName = "reminders"
@@ -44,4 +36,10 @@ enum ReminderConstants {
     static let reminderDayChunkSize = 4
     
     static let numberFormatter = NumberFormatter()
+}
+
+enum ViewConstants {
+    static let upcomingRemindersBeforeScroll: UInt = 3
+    static let pastRemindersBeforeScroll: UInt = 2
+    static let reminderRowHeight: CGFloat = 57.5
 }

@@ -13,8 +13,8 @@ struct QuickReminderView: View {
     @State private var latestDate: Date
     @ObservedObject private var quickReminderManager = QuickReminderManager()
     
-    @EnvironmentObject private var reminderManager: ReminderManager
-    @EnvironmentObject private var appPreferences: AppPreferences
+    @EnvironmentObject private var reminderManager: ReminderManager = .shared
+    @EnvironmentObject private var appPreferences: AppPreferences = .shared
     
     init(earliestDate: Date = Date(), latestDate: Date? = nil) {
         self.earliestDate = earliestDate
@@ -28,8 +28,7 @@ struct QuickReminderView: View {
                 latestHeading: L10n.TimePicker.LatestTime.heading,
                 displayedComponents: .hourAndMinute,
                 earliestDate: $earliestDate,
-                latestDate: $latestDate,
-                enabled: quickReminderManager.quickReminderEnabled
+                latestDate: $latestDate
             )
             HStack {
                 Spacer()
@@ -46,6 +45,4 @@ struct QuickReminderView: View {
 
 #Preview {
     QuickReminderView()
-        .environmentObject(AppPreferences.shared)
-        .environmentObject(ReminderManager.shared)
 }
