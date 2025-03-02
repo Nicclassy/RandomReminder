@@ -13,18 +13,31 @@ struct ReminderCreationView: View {
     @StateObject var preferences = ReminderPreferences()
     @State private var useAudioFile = false
 
+    var totalRemindersRange: ClosedRange<Int> {
+        ReminderConstants.minReminders...ReminderConstants.maxReminders
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("Create new reminder")
                 .font(.title2)
-            Text("Reminder title:")
-            TextField("Title", text: $reminder.title)
-            
-            Text("Reminder description:")
-            TextField("Description", text: $reminder.text)
+            Grid(alignment: .leading) {
+                GridRow {
+                    Text("Reminder title:")
+                    TextField("Title", text: $reminder.title)
+                }
+                GridRow {
+                    Text("Reminder description:")
+                    TextField("Description", text: $reminder.text)
+                }
+                HStack {
+                    Text("Number of reminders:")
+                    StepperTextField(value: $reminder.totalReminders, range: totalRemindersRange)
+                        .frame(width: 55)
+                }
+            }
             
             ReminderSchedulePreferencesView(reminder: reminder, preferences: preferences)
-            ReminderDayPreferencesView(reminder: reminder, preferences: preferences)
             ReminderAudioPreferencesView(reminder: reminder, preferences: preferences, useAudioFile: $useAudioFile)
             
             HStack {

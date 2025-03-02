@@ -11,10 +11,6 @@ struct ReminderSchedulePreferencesView: View {
     @ObservedObject var reminder: ReminderBuilder
     @ObservedObject var preferences: ReminderPreferences
     
-    var totalRemindersRange: ClosedRange<Int> {
-        ReminderConstants.minReminders...ReminderConstants.maxReminders
-    }
-    
     var earliestText: String {
         preferences.timesOnly ? "Earliest time:" : "Earliest date:"
     }
@@ -31,12 +27,20 @@ struct ReminderSchedulePreferencesView: View {
         Grid(alignment: .leading) {
             GridRow {
                 VStack(alignment: .leading) {
+                    ReminderDayPreferencesView(reminder: reminder, preferences: preferences)
                     HStack {
-                        Text("Number of reminders:")
-                        StepperTextField(value: $reminder.totalReminders, range: totalRemindersRange)
-                            .frame(width: 55)
+                        Toggle("Use times only", isOn: $preferences.timesOnly)
+                            .disabled(preferences.alwaysRunning)
+                        HelpLink {
+                            preferences.showTimesOnlyPopover.toggle()
+                        }
+                        .popover(isPresented: $preferences.showTimesOnlyPopover) {
+                            Text("The created reminder will occur daily between the specified times.")
+                                .padding()
+                        }
                     }
                 }
+                
                 VStack(alignment: .leading) {
                     HStack(spacing: 0) {
                         Toggle("Repeating every", isOn: $preferences.repeatingEnabled)
@@ -49,23 +53,12 @@ struct ReminderSchedulePreferencesView: View {
                             }
                         }
                         .disabled(!preferences.repeatingEnabled)
-                        .frame(width: 120)
-                    }
-                    HStack {
-                        Toggle("Use times only", isOn: $preferences.timesOnly)
-                            .disabled(preferences.alwaysRunning)
-                        HelpLink {
-                            preferences.showTimesOnlyPopover.toggle()
-                        }
-                        .popover(isPresented: $preferences.showTimesOnlyPopover) {
-                            Text("The created reminder will occur daily between the specified times.")
-                                .padding()
-                        }
+                        .frame(maxWidth: .infinity)
                     }
                     Toggle("Always running", isOn: $preferences.alwaysRunning)
                 }
             }
-            .padding(.bottom, 10)
+            .padding(.bottom, 20)
             
             GridRow {
                 Text(earliestText)
