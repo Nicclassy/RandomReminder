@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-final class ReminderCreationWindow: NSWindow {
+final class ReminderModificationWindow: NSWindow {
+    lazy var rootView = ReminderModificationView()
+    
     init() {
         super.init(
             contentRect: NSRect(x: 0, y: 0, width: 500, height: 430),
@@ -18,10 +20,11 @@ final class ReminderCreationWindow: NSWindow {
         
         title = "Create New Reminder"
         level = .floating
-        contentView = NSHostingView(rootView: ReminderCreationView())
+        contentView = NSHostingView(rootView: rootView)
     }
     
-    func show() {
+    func show(mode: ReminderModificationMode) {
+        rootView.mode = mode
         center()
         makeKeyAndOrderFront(nil)
     }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class RandomReminder: Codable, CustomStringConvertible {
+final class RandomReminder: Codable {
     var id: ReminderID
     var content: ReminderContent
     var reminderInterval: AnyReminderInterval
@@ -40,7 +40,7 @@ final class RandomReminder: Codable, CustomStringConvertible {
         text: String,
         interval: ReminderInterval,
         days: ReminderDayOptions? = nil,
-        totalReminders: Int,
+        totalOccurences: Int,
         activationEvents: ReminderActivationEvents? = nil
     ) {
         self.init(
@@ -48,14 +48,10 @@ final class RandomReminder: Codable, CustomStringConvertible {
             content: ReminderContent(title: title, text: text),
             reminderInterval: AnyReminderInterval(interval),
             days: days ?? [],
-            counts: ReminderCounts(totalReminders: totalReminders),
+            counts: ReminderCounts(totalOccurences: totalOccurences),
             state: .enabled,
             activationEvents: activationEvents ?? ReminderActivationEvents()
         )
-    }
-    
-    var description: String {
-        content.title
     }
     
     var interval: ReminderInterval {
@@ -77,21 +73,27 @@ final class RandomReminder: Codable, CustomStringConvertible {
     }
     
     func isFinalActivation() -> Bool {
-        counts.timesReminded == counts.totalReminders - 1
+        counts.occurences == counts.totalOccurences - 1
     }
     
     func activate() {
-        counts.timesReminded += 1
+        counts.occurences += 1
     }
     
     func reset() {
-        counts.timesReminded = 0
+        counts.occurences = 0
     }
 }
 
 extension RandomReminder {
     func filename() -> String {
         id.filename()
+    }
+}
+
+extension RandomReminder: CustomStringConvertible {
+    var description: String {
+        content.title
     }
 }
 

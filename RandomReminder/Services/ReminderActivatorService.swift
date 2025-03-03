@@ -22,7 +22,7 @@ final class ReminderActivatorService {
         self.reminder = reminder
         self.interval = interval
         self.onReminderActivation = onReminderActivation
-        self.probability = Float(reminder.counts.totalReminders) * interval.seconds() / reminder.durationInSeconds()
+        self.probability = Float(reminder.counts.totalOccurences) * interval.seconds() / reminder.durationInSeconds()
     }
     
     func start() {

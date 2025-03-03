@@ -1,5 +1,5 @@
 //
-//  ReminderCreationView.swift
+//  ReminderModificationView.swift
 //  RandomReminder
 //
 //  Created by Luca Napoli on 13/2/2025.
@@ -7,19 +7,21 @@
 
 import SwiftUI
 
-struct ReminderCreationView: View {
+enum ReminderModificationMode {
+    case create
+    case edit
+}
+
+struct ReminderModificationView: View {
     @StateObject var reminderManager: ReminderManager = .shared
     @StateObject var reminder = ReminderBuilder()
     @StateObject var preferences = ReminderPreferences()
-    @State private var useAudioFile = false
-
-    var totalRemindersRange: ClosedRange<Int> {
-        ReminderConstants.minReminders...ReminderConstants.maxReminders
-    }
+    
+    var mode: ReminderModificationMode = .create
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("Create new reminder")
+            Text(heading)
                 .font(.title2)
             Grid(alignment: .leading) {
                 GridRow {
@@ -31,18 +33,18 @@ struct ReminderCreationView: View {
                     TextField("Description", text: $reminder.text)
                 }
                 HStack {
-                    Text("Number of reminders:")
-                    StepperTextField(value: $reminder.totalReminders, range: totalRemindersRange)
+                    Text("Number of occurences:")
+                    StepperTextField(value: $reminder.totalOccurences, range: totalRemindersRange)
                         .frame(width: 55)
                 }
             }
             
             ReminderSchedulePreferencesView(reminder: reminder, preferences: preferences)
-            ReminderAudioPreferencesView(reminder: reminder, preferences: preferences, useAudioFile: $useAudioFile)
+            ReminderAudioPreferencesView(reminder: reminder, preferences: preferences, useAudioFile: $preferences.useAudioFile)
             
             HStack {
                 Button(action: {}) {
-                    Text("Create")
+                    Text(finishButtonText)
                         .frame(width: 60)
                 }
                 .buttonStyle(.borderedProminent)
@@ -55,8 +57,20 @@ struct ReminderCreationView: View {
         .frame(width: 500, height: 600)
         .padding()
     }
+    
+    private var heading: String {
+        mode == .create ? "Create new reminder" : "Edit reminder"
+    }
+    
+    private var finishButtonText: String {
+        mode == .create ? "Create" : "Save"
+    }
+
+    private var totalRemindersRange: ClosedRange<Int> {
+        ReminderConstants.minReminders...ReminderConstants.maxReminders
+    }
 }
 
 #Preview {
-    ReminderCreationView()
+    ReminderModificationView(mode: .edit)
 }

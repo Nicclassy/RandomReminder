@@ -17,7 +17,7 @@ struct TimeInfoProvider {
         if reminder.hasPast() {
             "\(timeDifferenceInfo()) ago"
         } else if reminder.hasBegun() {
-            "\(reminder.counts.totalReminders - reminder.counts.timesReminded) reminders left"
+            "\(reminder.counts.occurencesLeft) occurences left"
         } else {
             "Starting in \(timeDifferenceInfo())"
         }
