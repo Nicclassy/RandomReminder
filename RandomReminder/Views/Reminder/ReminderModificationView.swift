@@ -14,15 +14,13 @@ enum ReminderModificationMode {
 
 struct ReminderModificationView: View {
     @StateObject var reminderManager: ReminderManager = .shared
-    @StateObject var reminder = ReminderBuilder()
-    @StateObject var preferences = ReminderPreferences()
-    
-    var mode: ReminderModificationMode = .create
+    @StateObject var reminder: ReminderBuilder
+    @StateObject var preferences: ReminderPreferences
+    var mode: ReminderModificationMode
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(heading)
-                .font(.title2)
+            Text(heading).font(.title2)
             Grid(alignment: .leading) {
                 GridRow {
                     Text("Reminder title:")
@@ -32,8 +30,8 @@ struct ReminderModificationView: View {
                     Text("Reminder description:")
                     TextField("Description", text: $reminder.text)
                 }
-                HStack {
-                    Text("Number of occurences:")
+                GridRow {
+                    Text("Occurences:")
                     StepperTextField(value: $reminder.totalOccurences, range: totalRemindersRange)
                         .frame(width: 55)
                 }
@@ -72,5 +70,5 @@ struct ReminderModificationView: View {
 }
 
 #Preview {
-    ReminderModificationView(mode: .edit)
+    ReminderModificationView(reminder: .init(), preferences: .init(), mode: .create)
 }

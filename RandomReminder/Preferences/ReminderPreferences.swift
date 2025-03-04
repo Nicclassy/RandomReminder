@@ -15,4 +15,5 @@ final class ReminderPreferences: ObservableObject {
     @Published var specificDays = false
     @Published var showTimesOnlyPopover = false
     @Published var showFileImporter = false
+    @Published var useAudioFile = false
 }

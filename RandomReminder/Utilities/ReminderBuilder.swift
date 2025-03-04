@@ -8,28 +8,38 @@
 import Foundation
 
 final class ReminderBuilder: ObservableObject {
-    @Published var title: String = ""
-    @Published var text: String = ""
-    @Published var totalOccurences: Int = 1
-    @Published var earliestDate: Date = Date()
-    @Published var latestDate: Date = Date().addMinutes(60)
-    @Published var days: ReminderDayOptions = []
-    @Published var repeatInterval: RepeatInterval = .minute
-    @Published var activationEvents: ReminderActivationEvents = .init()
-    private var occurences: Int = 0
+    @Published var title: String
+    @Published var text: String
+    @Published var totalOccurences: Int
+    @Published var earliestDate: Date
+    @Published var latestDate: Date
+    @Published var days: ReminderDayOptions
+    @Published var repeatInterval: RepeatInterval
+    @Published var activationEvents: ReminderActivationEvents
+    private var occurences: Int
     
-    init() {}
+    init() {
+        title = String()
+        text = String()
+        totalOccurences = 1
+        earliestDate = Date()
+        latestDate = Date().addMinutes(60)
+        days = []
+        repeatInterval = .minute
+        activationEvents = ReminderActivationEvents()
+        occurences = 0
+    }
     
     init(from reminder: RandomReminder) {
-        self.title = reminder.content.title
-        self.text = reminder.content.text
-        self.occurences = reminder.counts.occurences
-        self.totalOccurences = reminder.counts.totalOccurences
-        self.earliestDate = reminder.interval.earliest
-        self.latestDate = reminder.interval.latest
-        self.days = reminder.days
-        self.repeatInterval = reminder.interval.repeatInterval
-        self.activationEvents = reminder.activationEvents
+        title = reminder.content.title
+        text = reminder.content.text
+        occurences = reminder.counts.occurences
+        totalOccurences = reminder.counts.totalOccurences
+        earliestDate = reminder.interval.earliest
+        latestDate = reminder.interval.latest
+        days = reminder.days
+        repeatInterval = reminder.interval.repeatInterval
+        activationEvents = reminder.activationEvents
     }
     
     func build(preferences reminderPreferences: ReminderPreferences) -> RandomReminder {
