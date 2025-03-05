@@ -1,11 +1,13 @@
 # RandomReminder
 
-A macOS menu bar app built with SwiftUI that randonly reminds you to do things. 
-It is a non-generic take on a reminders app that is spontaneous in naature and highly customisable.
+A macOS menu bar app built with SwiftUI that randomly reminds you to do things. 
+It is a non-generic take on a reminders app that is spontaneous in nature and highly customisable.
 
 ## Screenshots
-![Reminders](docs/reminders.png)
-![Create new reminder](docs/create_new_reminder.png)
+<p align="center">
+    <img src="docs/reminders.png" alt="Reminders" width="600">
+    <img src="docs/create_new_reminder.png" alt="Create new reminder" width="600">
+</p>
 
 ## Features in development
 - [x] A proper settings panel with icons
@@ -28,6 +30,11 @@ It is a non-generic take on a reminders app that is spontaneous in naature and h
 - [ ] English (American), English (Australian) and Italian localisations
 - [ ] App and menu bar icons
 - [ ] A interactive, high fidelity Figma prototype
+
+## Acknowledgements
+RandomReminder is possible thanks to OSS. SwiftUI tutorials and guides for macOS development are very limited compared to resources for iOS development, thus RandomReminder is only possible because of the people who willingly and voluntarily share open-source macOS software from which I can learn how to use SwiftUI. More proper acknowledgements will be added later.
+
+A very special thank you goes to a particular conversation I had with someone important which resulted in this app's conception.
 
 > [!WARNING]
 > RandomReminder is incomplete in its functionality and documentation and is still being developed. Features—especially UI designs—are subject to change.
