@@ -58,8 +58,8 @@ struct ReminderPreferencesRow: View {
                     }
             }
         }
-        .padding(.all, 8)
-        .padding(.horizontal, 2)
+        .padding(.all, 10)
+        .padding(.horizontal, 5)
     }
 }
 
@@ -67,10 +67,18 @@ struct ReminderPreferencesRows: View {
     @Binding private var editingReminders: Bool
     private let remindersProvider: () -> [RandomReminder]
     private let timer = Timer.publish(every: 1, on: .current, in: .common).autoconnect()
-    private let heading: String
     
-    init(heading: String, editingReminders: Binding<Bool>, remindersProvider: @autoclosure @escaping () -> [RandomReminder]) {
+    private let heading: String
+    private let rowsBeforeScroll: UInt
+    
+    init(
+        heading: String, 
+        rowsBeforeScoll: UInt,
+        editingReminders: Binding<Bool>,
+        remindersProvider: @autoclosure @escaping () -> [RandomReminder]
+    ) {
         self.heading = heading
+        self.rowsBeforeScroll = rowsBeforeScoll
         self.remindersProvider = remindersProvider
         self._editingReminders = editingReminders
     }
@@ -79,24 +87,53 @@ struct ReminderPreferencesRows: View {
         let reminders = remindersProvider()
         if !reminders.isEmpty {
             VStack(alignment: .leading) {
-                Text(heading)
-                    .font(.headline)
+                rowsHeading(remindersCount: reminders.count)
                     .padding(.bottom, 5)
-                VStack {
-                    Divider().opacity(0)
-                    ForEach(reminders.enumeratedArray(), id: \.1.id) { index, reminder in
-                        let dividerIsInvisible = index == reminders.endIndex - 1
-                        ReminderPreferencesRow(reminder: reminder, updateTimer: timer, editing: $editingReminders)
-                        Divider().opacity(dividerIsInvisible ? 0 : 1)
+                if reminders.count > rowsBeforeScroll {
+                    ScrollView {
+                        rows(reminders: reminders)
                     }
+                    .frame(height: frameHeight)
+                } else {
+                    rows(reminders: reminders)
+                        .frame(height: frameHeight)
                 }
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(.quaternary)
-                        .stroke(.quaternary, lineWidth: 1)
-                )
             }
         }
+    }
+    
+    private var frameHeight: CGFloat {
+        // TODO: spacer then "Reminders: x"
+        ViewConstants.reminderRowHeight * CGFloat(rowsBeforeScroll)
+    }
+    
+    @ViewBuilder
+    private func rowsHeading(remindersCount: Int) -> some View {
+        if AppPreferences.shared.showReminderCounts {
+            HStack {
+                Text(heading).font(.headline)
+                Spacer()
+                Text("Reminders: \(remindersCount)")
+            }
+        } else {
+            Text(heading).font(.headline)
+        }
+    }
+    
+    private func rows(reminders: [RandomReminder]) -> some View {
+        VStack {
+            Divider().opacity(0)
+            ForEach(reminders.enumeratedArray(), id: \.1.id) { index, reminder in
+                let dividerIsInvisible = index == reminders.endIndex - 1
+                ReminderPreferencesRow(reminder: reminder, updateTimer: timer, editing: $editingReminders)
+                Divider().opacity(dividerIsInvisible ? 0 : 1)
+            }
+        }
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(.quaternary)
+                .stroke(.quaternary, lineWidth: 1)
+        )
     }
 }
 
@@ -111,6 +148,7 @@ struct RemindersPreferencesView: View {
                 VStack(alignment: .leading) {
                     ReminderPreferencesRows(
                         heading: "Upcoming reminders",
+                        rowsBeforeScoll: ViewConstants.upcomingRemindersBeforeScroll,
                         editingReminders: $editingReminders,
                         remindersProvider: reminderManager.upcomingReminders()
                     )
@@ -118,11 +156,13 @@ struct RemindersPreferencesView: View {
                     
                     ReminderPreferencesRows(
                         heading: "Past Reminders",
+                        rowsBeforeScoll: ViewConstants.pastRemindersBeforeScroll,
                         editingReminders: $editingReminders,
                         remindersProvider: reminderManager.pastReminders()
                     )
+                    .padding(.bottom, 10)
                 }
-                .padding(.bottom, 15)
+                .padding(.bottom, 5)
                 
                 HStack {
                     if editingReminders {
@@ -130,19 +170,26 @@ struct RemindersPreferencesView: View {
                             .buttonStyle(.automatic)
                             .disabled(true)
                     } else {
-                        Button("Create New Reminder") {}
-                            .buttonStyle(.borderedProminent)
+                        Button("Create New Reminder") {
+                            ReminderWindowController.shared.openCreateWindow()
+                        }
+                        .buttonStyle(.borderedProminent)
                     }
                     Spacer()
                     if editingReminders {
-                        // TODO: Size buttons the same
-                        Button("Stop Editing") {
+                        Button(action: {
                             editingReminders.toggle()
+                        }) {
+                            Text("Finish Editing")
+                                .frame(width: 100)
                         }
                         .buttonStyle(.borderedProminent)
                     } else {
-                        Button("Edit Reminders") {
+                        Button(action: {
                             editingReminders.toggle()
+                        }) {
+                            Text("Edit Reminders")
+                                .frame(width: 100)
                         }
                     }
                 }
