@@ -13,14 +13,12 @@ enum ReminderModificationMode {
 }
 
 struct ReminderModificationView: View {
-    @StateObject var reminderManager: ReminderManager = .shared
     @StateObject var reminder: ReminderBuilder
     @StateObject var preferences: ReminderPreferences
-    var mode: ReminderModificationMode
+    let mode: ReminderModificationMode
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(heading).font(.title2)
             Grid(alignment: .leading) {
                 GridRow {
                     Text("Reminder title:")
@@ -31,14 +29,18 @@ struct ReminderModificationView: View {
                     TextField("Description", text: $reminder.text)
                 }
                 GridRow {
-                    Text("Occurences:")
+                    Text("Total Occurences:")
                     StepperTextField(value: $reminder.totalOccurences, range: totalRemindersRange)
                         .frame(width: 55)
                 }
             }
             
             ReminderSchedulePreferencesView(reminder: reminder, preferences: preferences)
-            ReminderAudioPreferencesView(reminder: reminder, preferences: preferences, useAudioFile: $preferences.useAudioFile)
+            ReminderAudioPreferencesView(
+                reminder: reminder,
+                preferences: preferences,
+                useAudioFile: $preferences.useAudioFile
+            )
             
             HStack {
                 Button(action: {}) {
@@ -46,13 +48,30 @@ struct ReminderModificationView: View {
                         .frame(width: 60)
                 }
                 .buttonStyle(.borderedProminent)
-                Button(action: {}) {
+                Button(action: {
+                    preferences.showCancelPopover.toggle()
+                }) {
                     Text("Cancel")
                         .frame(width: 60)
                 }
+                .alert(
+                    "Are you sure you want to discard this reminder?",
+                    isPresented: $preferences.showCancelPopover
+                ) {
+                    Button("Cancel", role: .cancel) {}
+                    Button("Delete", role: .destructive) {
+                        if mode == .create {
+                            ReminderWindowController.shared.closeCreationWindow()
+                        } else {
+                            ReminderWindowController.shared.closeEditWindow()
+                        }
+                    }
+                } message: {
+                    Text("All entered information will be lost.")
+                }
             }
         }
-        .frame(width: 500, height: 600)
+        .frame(width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight)
         .padding()
     }
     

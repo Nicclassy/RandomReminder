@@ -13,7 +13,10 @@ final class ReminderPreferences: ObservableObject {
     @Published var timesOnly = false
     @Published var alwaysRunning = false
     @Published var specificDays = false
-    @Published var showTimesOnlyPopover = false
-    @Published var showFileImporter = false
     @Published var useAudioFile = false
+    
+    @Published var showSpecificDaysPopover = false
+    @Published var showTimesOnlyPopover = false
+    @Published var showCancelPopover = false
+    @Published var showFileImporter = false
 }
