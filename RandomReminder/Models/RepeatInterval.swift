@@ -8,7 +8,7 @@
 import Foundation
 
 enum RepeatInterval: Codable, Equatable, Hashable, CaseIterable {
-    case none
+    case never
     case minute
     case hour
     case day

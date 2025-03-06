@@ -62,7 +62,7 @@ struct ReminderDateInterval: ReminderInterval {
     }
     
     var repeatInterval: RepeatInterval {
-        .none
+        .never
     }
     
     var isInfinite: Bool {

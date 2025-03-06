@@ -47,7 +47,7 @@ struct ReminderSchedulePreferencesView: View {
                             .disabled(preferences.alwaysRunning)
                         Picker("", selection: $reminder.repeatInterval) {
                             ForEach(RepeatInterval.allCases, id: \.self) { value in
-                                if value != .none {
+                                if value != .never {
                                     Text(String(describing: value)).tag(value)
                                 }
                             }
@@ -65,6 +65,7 @@ struct ReminderSchedulePreferencesView: View {
                 Text(latestText)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            
             GridRow {
                 let picker = DualDatePicker(
                     displayedComponents: datePickerComponents,

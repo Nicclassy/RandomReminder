@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SchedulePreferencesView: View {
-    @EnvironmentObject var appPreferences: AppPreferences
+    @StateObject var appPreferences: AppPreferences = .shared
     
     var defaultEarliestDate: Binding<Date> {
         Binding(
@@ -44,5 +44,4 @@ struct SchedulePreferencesView: View {
 
 #Preview {
     SchedulePreferencesView()
-        .environmentObject(AppPreferences.shared)
 }

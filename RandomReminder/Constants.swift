@@ -33,7 +33,7 @@ enum ReminderConstants {
     static let minReminders = 1
     static let maxReminders = 999
     
-    static let reminderDayChunkSize = 4
+    static let reminderDayChunkSize = 3
     
     static let numberFormatter = NumberFormatter()
 }
@@ -42,4 +42,7 @@ enum ViewConstants {
     static let upcomingRemindersBeforeScroll: UInt = 3
     static let pastRemindersBeforeScroll: UInt = 2
     static let reminderRowHeight: CGFloat = 57.5
+    
+    static let reminderWindowWidth: CGFloat = 500
+    static let reminderWindowHeight: CGFloat = 350
 }

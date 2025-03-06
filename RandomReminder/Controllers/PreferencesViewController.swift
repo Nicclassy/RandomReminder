@@ -5,7 +5,6 @@
 //  Created by Luca Napoli on 30/12/2024.
 //
 
-import Foundation
 import SwiftUI
 import Settings
 
@@ -85,7 +84,7 @@ final class PreferencesViewController {
     }
     
     func show() {
-        self.windowController.show()
-        self.windowController.window?.center()
+        windowController.show()
+        windowController.window?.center()
     }
 }

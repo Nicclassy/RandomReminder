@@ -10,8 +10,8 @@ import Foundation
 struct TimeInfoProvider {
     let reminder: RandomReminder
     
-    static let orderedCalendarComponents: [Calendar.Component] = [.day, .hour, .minute, .second]
-    static let calendarComponents: Set<Calendar.Component> = [.day, .hour, .minute, .second]
+    private static let orderedCalendarComponents: [Calendar.Component] = [.day, .hour, .minute, .second]
+    private static let calendarComponents: Set<Calendar.Component> = [.day, .hour, .minute, .second]
     
     func preferencesInfo() -> String {
         if reminder.hasPast() {

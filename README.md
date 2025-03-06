@@ -5,8 +5,8 @@ It is a non-generic take on a reminders app that is spontaneous in nature and hi
 
 ## Screenshots
 <p align="center">
-    <img src="docs/reminders.png" alt="Reminders" width="600">
-    <img src="docs/create_new_reminder.png" alt="Create new reminder" width="600">
+    <img src="docs/reminders.png" alt="Reminders" width="500">
+    <img src="docs/create_new_reminder.png" alt="Create new reminder" width="500">
 </p>
 
 ## Features in development

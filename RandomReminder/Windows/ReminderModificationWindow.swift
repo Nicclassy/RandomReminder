@@ -10,7 +10,10 @@ import SwiftUI
 final class ReminderModificationWindow: NSWindow {
     init(reminder: RandomReminder? = nil, title: String, mode: ReminderModificationMode) {
         super.init(
-            contentRect: NSRect(x: 0, y: 0, width: 500, height: 430),
+            contentRect: NSRect(
+                x: 0, y: 0,
+                width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight
+            ),
             styleMask: [.closable, .titled, .resizable],
             backing: .buffered,
             defer: false
