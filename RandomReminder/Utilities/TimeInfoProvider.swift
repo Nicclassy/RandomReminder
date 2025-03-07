@@ -14,9 +14,9 @@ struct TimeInfoProvider {
     private static let calendarComponents: Set<Calendar.Component> = [.day, .hour, .minute, .second]
     
     func preferencesInfo() -> String {
-        if reminder.hasPast() {
+        if reminder.hasPast {
             "\(timeDifferenceInfo()) ago"
-        } else if reminder.hasBegun() {
+        } else if reminder.hasBegun {
             "\(reminder.counts.occurencesLeft) occurences left"
         } else {
             "Starting in \(timeDifferenceInfo())"

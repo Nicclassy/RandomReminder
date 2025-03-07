@@ -18,12 +18,6 @@ struct ReminderID: Codable {
 extension ReminderID {
     static let quickReminderId: ReminderID = 0
     static let firstAvailableId: ReminderID = 1
-    
-    func filename() -> String {
-        URL(string: String(describing: value))!
-            .appendingPathExtension(StoredReminders.fileExtension)
-            .path()
-    }
 }
 
 extension ReminderID: ExpressibleByIntegerLiteral {
@@ -40,7 +34,7 @@ extension ReminderID: Equatable, Hashable {
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(self.value)
+        hasher.combine(value)
     }
 }
 
@@ -52,10 +46,10 @@ extension ReminderID: Comparable {
 
 extension ReminderID: Strideable {
     func distance(to other: ReminderID) -> Int {
-        other.value - self.value
+        other.value - value
     }
    
    func advanced(by n: Int) -> ReminderID {
-       ReminderID(self.value + n)
+       ReminderID(value + n)
    }
 }

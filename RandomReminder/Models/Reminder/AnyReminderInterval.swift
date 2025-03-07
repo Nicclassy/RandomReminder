@@ -29,9 +29,9 @@ final class AnyReminderInterval: Codable {
     func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         
-        if let timeInterval = self.value as? ReminderTimeInterval {
+        if let timeInterval = value as? ReminderTimeInterval {
             try container.encode(timeInterval, forKey: .timeInterval)
-        } else if let dateInterval = self.value as? ReminderDateInterval {
+        } else if let dateInterval = value as? ReminderDateInterval {
             try container.encode(dateInterval, forKey: .dateInterval)
         } else {
             throw AnyReminderIntervalError.unknownType

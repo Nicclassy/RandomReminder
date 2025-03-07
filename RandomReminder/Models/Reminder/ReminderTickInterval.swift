@@ -13,12 +13,12 @@ enum ReminderTickInterval {
     case seconds(Int)
     case milliseconds(Int)
     
-    func seconds() -> Float {
+    func seconds() -> TimeInterval {
         return switch self {
-        case .hours(let hours): Float(hours) * 3600
-        case .minutes(let minutes): Float(minutes) * 60
-        case .seconds(let seconds): Float(seconds)
-        case .milliseconds(let milliseconds): Float(milliseconds) / 1000
+        case .hours(let hours): TimeInterval(hours) * 3600
+        case .minutes(let minutes): TimeInterval(minutes) * 60
+        case .seconds(let seconds): TimeInterval(seconds)
+        case .milliseconds(let milliseconds): TimeInterval(milliseconds) / 1000
         }
     }
 }

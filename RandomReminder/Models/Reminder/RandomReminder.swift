@@ -8,13 +8,13 @@
 import Foundation
 
 final class RandomReminder: Codable {
-    var id: ReminderID
-    var content: ReminderContent
-    var reminderInterval: AnyReminderInterval
-    var days: ReminderDayOptions
+    let id: ReminderID
+    let content: ReminderContent
+    let reminderInterval: AnyReminderInterval
+    let days: ReminderDayOptions
+    let activationEvents: ReminderActivationEvents
     var counts: ReminderCounts
     var state: ReminderState
-    var activationEvents: ReminderActivationEvents
     
     init(
         id: ReminderID,
@@ -60,20 +60,16 @@ final class RandomReminder: Codable {
         reminderInterval.value
     }
     
-    func durationInSeconds() -> Float {
-        Float(interval.earliest.distance(to: interval.latest))
-    }
-    
-    func hasBegun() -> Bool {
+    var hasBegun: Bool {
         Date() >= interval.earliest
     }
     
-    func hasPast() -> Bool {
+    var hasPast: Bool {
         interval.isPast
     }
     
-    func isFinalActivation() -> Bool {
-        counts.occurences == counts.totalOccurences - 1
+    func durationInSeconds() -> Float {
+        Float(interval.earliest.distance(to: interval.latest))
     }
     
     func activate() {
@@ -82,12 +78,24 @@ final class RandomReminder: Codable {
     
     func reset() {
         counts.occurences = 0
+        state = .enabled
     }
 }
 
 extension RandomReminder {
+    func compare(with other: RandomReminder) -> Bool {
+        if hasPast != other.hasPast { hasPast }
+        else if hasBegun != other.hasBegun { hasBegun }
+        else if hasBegun && other.hasBegun { counts.occurences < other.counts.occurences }
+        else if !hasBegun && !other.hasBegun { interval.earliest < other.interval.earliest }
+        else if hasPast && other.hasPast { interval.latest < other.interval.latest }
+        else { content.title < other.content.title }
+    }
+    
     func filename() -> String {
-        id.filename()
+        URL(string: String(describing: id))!
+            .appendingPathExtension(StoredReminders.fileExtension)
+            .path()
     }
 }
 

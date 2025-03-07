@@ -9,7 +9,7 @@ import Foundation
 
 struct ReminderCounts: Codable {
     var occurences: Int
-    var totalOccurences: Int
+    let totalOccurences: Int
     
     init(occurences: Int, totalOccurences: Int) {
         self.occurences = occurences
@@ -21,6 +21,10 @@ struct ReminderCounts: Codable {
     }
     
     var occurencesLeft: Int {
-        self.totalOccurences - self.occurences
+        totalOccurences - occurences
+    }
+    
+    var occurenceIsFinal: Bool {
+        occurences == totalOccurences - 1
     }
 }
