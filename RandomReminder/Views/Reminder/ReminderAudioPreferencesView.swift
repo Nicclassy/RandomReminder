@@ -10,7 +10,7 @@ import SwiftUI
 struct ReminderAudioPreferencesView: View {
     @StateObject var reminderManager: ReminderManager = .shared
     
-    @ObservedObject var reminder: ReminderBuilder
+    @ObservedObject var reminder: MutableReminder
     @ObservedObject var preferences: ReminderPreferences
     @Binding var useAudioFile: Bool
     

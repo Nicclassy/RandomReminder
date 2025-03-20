@@ -13,8 +13,8 @@ struct QuickReminderView: View {
     @State private var latestDate: Date
     @ObservedObject private var quickReminderManager = QuickReminderManager()
     
-    @EnvironmentObject private var reminderManager: ReminderManager = .shared
-    @EnvironmentObject private var appPreferences: AppPreferences = .shared
+    @StateObject private var reminderManager: ReminderManager = .shared
+    @StateObject private var appPreferences: AppPreferences = .shared
     
     init(earliestDate: Date = Date(), latestDate: Date? = nil) {
         self.earliestDate = earliestDate
@@ -30,15 +30,18 @@ struct QuickReminderView: View {
                 earliestDate: $earliestDate,
                 latestDate: $latestDate
             )
+            .border(.blue)
             HStack {
                 Spacer()
                 Button(quickReminderManager.quickReminderStarted ? "Stop" : "Start") {
                     quickReminderManager.toggleStarted()
                 }
+                .border(.red)
                 .padding()
             }
         }
         .frame(width: 200, height: 150)
+        .border(.purple)
         .padding()
     }
 }

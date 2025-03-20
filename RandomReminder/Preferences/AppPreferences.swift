@@ -14,6 +14,7 @@ final class AppPreferences: ObservableObject {
     private init() {}
     
     @AppStorage("launchAtLogin") var launchAtLogin = false
+    @AppStorage("showReminderCounts") var showReminderCounts = true
     @AppStorage("quickReminderEnabled") var quickReminderEnabled = true
     @AppStorage("quickReminderStarted") var quickReminderStarted = false
     @AppStorage("defaultEarliestTime") var defaultEarliestTime: TimeInterval = 0

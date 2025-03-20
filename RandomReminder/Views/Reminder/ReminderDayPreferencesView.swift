@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ReminderDayPreferencesView: View {
-    @ObservedObject var reminder: ReminderBuilder
+    @ObservedObject var reminder: MutableReminder
     @ObservedObject var preferences: ReminderPreferences
     
     var body: some View {

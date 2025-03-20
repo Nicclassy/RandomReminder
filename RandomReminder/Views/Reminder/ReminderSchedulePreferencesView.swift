@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ReminderSchedulePreferencesView: View {
-    @ObservedObject var reminder: ReminderBuilder
+    @ObservedObject var reminder: MutableReminder
     @ObservedObject var preferences: ReminderPreferences
     
     var earliestText: String {

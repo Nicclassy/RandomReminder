@@ -9,7 +9,7 @@ import SwiftUI
 import Settings
 import Combine
 
-struct ReminderPreferencesRow: View {
+private struct ReminderPreferencesRow: View {
     typealias PublishedTimer = Publishers.Autoconnect<Timer.TimerPublisher>
     
     @State private var reminder: RandomReminder
@@ -39,13 +39,13 @@ struct ReminderPreferencesRow: View {
                     "Are you sure you want to delete the reminder '\(reminder.content.title)'?",
                     isPresented: $showDeleteAlert
                 ) {
+                    Button("Cancel", role: .cancel) {}
                     Button("Delete", role: .destructive) {
                         withAnimation {
                             ReminderManager.shared.removeReminder(reminder)
                         }
                         FancyLogger.info("Deleted reminder '\(reminder.content.title)'")
                     }
-                    Button("Cancel", role: .cancel) {}
                 } message: {
                     Text("Deleted reminders cannot be recovered.")
                 }
@@ -63,7 +63,7 @@ struct ReminderPreferencesRow: View {
     }
 }
 
-struct ReminderPreferencesRows: View {
+private struct ReminderPreferencesRows: View {
     @Binding private var editingReminders: Bool
     private let remindersProvider: () -> [RandomReminder]
     private let timer = Timer.publish(every: 1, on: .current, in: .common).autoconnect()
@@ -103,7 +103,6 @@ struct ReminderPreferencesRows: View {
     }
     
     private var frameHeight: CGFloat {
-        // TODO: spacer then "Reminders: x"
         ViewConstants.reminderRowHeight * CGFloat(rowsBeforeScroll)
     }
     

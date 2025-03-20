@@ -14,14 +14,14 @@ final class ReminderModificationWindow: NSWindow {
                 x: 0, y: 0,
                 width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight
             ),
-            styleMask: [.closable, .titled, .resizable],
+            styleMask: [.closable, .titled],
             backing: .buffered,
             defer: false
         )
         self.title = title
         
         let rootView = ReminderModificationView(
-            reminder: reminder == nil ? ReminderBuilder() : ReminderBuilder(from: reminder!),
+            reminder: reminder == nil ? MutableReminder() : MutableReminder(from: reminder!),
             preferences: ReminderPreferences(),
             mode: mode
         )

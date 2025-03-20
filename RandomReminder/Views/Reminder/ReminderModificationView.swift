@@ -13,7 +13,7 @@ enum ReminderModificationMode {
 }
 
 struct ReminderModificationView: View {
-    @StateObject var reminder: ReminderBuilder
+    @StateObject var reminder: MutableReminder
     @StateObject var preferences: ReminderPreferences
     let mode: ReminderModificationMode
     
