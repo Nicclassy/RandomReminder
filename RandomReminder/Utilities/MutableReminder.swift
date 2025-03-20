@@ -1,5 +1,5 @@
 //
-//  ReminderBuilder.swift
+//  MutableReminder.swift
 //  RandomReminder
 //
 //  Created by Luca Napoli on 19/1/2025.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class ReminderBuilder: ObservableObject {
+final class MutableReminder: ObservableObject {
     @Published var title: String
     @Published var text: String
     @Published var totalOccurences: Int
