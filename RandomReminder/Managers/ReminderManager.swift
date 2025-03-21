@@ -12,6 +12,7 @@ final class ReminderManager: ObservableObject {
     static let shared = ReminderManager(preview: true)
     
     @Published var reminders: [RandomReminder]
+    private var persistentChanges: Bool = false
     
     lazy var reminderIds: Set<ReminderID> = {
         let ids: [ReminderID] = Self.reminderFileNames().compactMap { filename in
@@ -28,9 +29,11 @@ final class ReminderManager: ObservableObject {
         return Set(ids)
     }()
     
-    lazy var activeReminders: [ActiveReminderService] = {
+    lazy var backgroundReminders: [ReminderBackgroundService] = {
        return []
     }()
+    
+    var activeReminders: [ActiveReminderService] = []
     
     var audioFiles: [ReminderAudioFile] {
         reminders.compactMap { $0.activationEvents.audio }
@@ -69,18 +72,36 @@ final class ReminderManager: ObservableObject {
     func addReminder(_ reminder: RandomReminder) {
         reminders.append(reminder)
         reminderIds.insert(reminder.id)
-        ReminderSerializer.save(reminder, filename: reminder.filename())
+        if persistentChanges {
+            ReminderSerializer.save(reminder, filename: reminder.filename())
+        }
     }
     
     func removeReminder(_ reminder: RandomReminder) {
         let index = reminders.firstIndex(of: reminder)!
         reminders.remove(at: index)
         reminderIds.remove(reminder.id)
-        stopReminderIfActive(reminder)
-        deleteReminder(reminder)
+        stopReminder(reminder)
+        if persistentChanges {
+            deleteReminder(reminder)
+        }
     }
     
-    func startReminder(_ reminder: RandomReminder) {}
+    func activateReminder(_ reminder: RandomReminder) {
+        let activeReminder = ActiveReminderService(reminder: reminder)
+        activeReminders.append(activeReminder)
+        NotificationManager.shared.addReminderNotification(for: activeReminder)
+    }
+    
+    func deactivateReminder(_ reminder: RandomReminder) {
+        guard let index = activeReminders.firstIndex(where: { $0.reminder.id == reminder.id }) else {
+            FancyLogger.warn("Reminder is not in the active reminders list when it should be")
+            return
+        }
+        
+        activeReminders.remove(at: index)
+        FancyLogger.info("Deactivated reminder \(reminder)")
+    }
     
     static func previewReminders() -> [RandomReminder] {
         [
@@ -93,9 +114,9 @@ final class ReminderManager: ObservableObject {
         ]
     }
     
-    private func stopReminderIfActive(_ reminder: RandomReminder) {
-        if let activeReminder = activeReminders.first(where: { $0.reminder.id == reminder.id }) {
-            activeReminder.stop()
+    private func stopReminder(_ reminder: RandomReminder) {
+        if let backgroundService = backgroundReminders.first(where: { $0.reminder.id == reminder.id }) {
+            backgroundService.stop()
         }
     }
     
