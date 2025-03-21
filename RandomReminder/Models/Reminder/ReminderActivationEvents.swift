@@ -7,15 +7,22 @@
 
 import Foundation
 
-// ReminderActivationEvent proxy
+// ReminderActivationEvent facade
 final class ReminderActivationEvents: Codable {
     var audio: ReminderAudioFile?
-    var notification: ReminderNotification?
-    var alert: ReminderAlert?
+}
+
+struct ReminderAudioFile: Codable {
+    let name: String
+    let url: URL
+}
+
+extension ReminderAudioFile: Equatable, Hashable {
+    static func == (lhs: ReminderAudioFile, rhs: ReminderAudioFile) -> Bool {
+        lhs.url == rhs.url
+    }
     
-    func show(reminder: RandomReminder) {
-        audio?.show(for: reminder)
-        notification?.show(for: reminder)
-        alert?.show(for: reminder)
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(url)
     }
 }
