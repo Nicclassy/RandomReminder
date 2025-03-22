@@ -10,19 +10,19 @@ import AVFoundation
 
 final class ActiveReminderService {
     let reminder: RandomReminder
-    let audioPlayer: AVAudioPlayer? = nil
+    var audioPlayer: AVAudioPlayer!
     
     init(reminder: RandomReminder) {
         self.reminder = reminder
     }
     
     func onNotificationAppear() {
-        print("Notification for reminder '\(reminder.content.title)' appeared")
+        FancyLogger.info("Notification for reminder '\(reminder.content.title)' appeared")
         playReminderAudio()
     }
     
     func onNotificationDisappear() {
-        print("Reminder '\(reminder.content.title)' disappeared")
+        FancyLogger.info("Reminder '\(reminder.content.title)' disappeared")
         if let audioPlayer = self.audioPlayer {
             audioPlayer.stop()
         }
@@ -39,6 +39,7 @@ final class ActiveReminderService {
             return
         }
         
+        self.audioPlayer = audioPlayer
         if AppPreferences.shared.randomiseAudioPlaybackStart {
             audioPlayer.currentTime = .random(in: 0..<audioPlayer.duration)
         }

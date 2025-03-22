@@ -29,7 +29,7 @@ struct GeneralPreferencesView: View {
                     PreferenceCaption(L10n.Preferences.General.QuickReminderEnabled.caption)
                 }
                 .onChange(of: appPreferences.quickReminderEnabled) { _, isEnabled in
-                    AppDelegate.shared.toggleQuickReminder(isEnabled: isEnabled)
+                    AppDelegate.shared.setQuickReminderEnabled(enabled: isEnabled)
                 }
             }
             
@@ -40,6 +40,13 @@ struct GeneralPreferencesView: View {
                 }
                 .onChange(of: appPreferences.showReminderCounts) { _, showReminderCount in
                     appPreferences.showReminderCounts = showReminderCount
+                }
+            }
+            
+            Section {
+                Toggle(isOn: appPreferences.$randomiseAudioPlaybackStart) {
+                    Text("Randomise audio playback start")
+                    PreferenceCaption("Start reminder audio playback from a random point in reminders' files")
                 }
             }
         }

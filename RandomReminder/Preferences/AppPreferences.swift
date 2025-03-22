@@ -17,6 +17,7 @@ final class AppPreferences: ObservableObject {
     @AppStorage("showReminderCounts") var showReminderCounts = true
     @AppStorage("quickReminderEnabled") var quickReminderEnabled = true
     @AppStorage("quickReminderStarted") var quickReminderStarted = false
+    @AppStorage("randomiseAudioPlaybackStart") var randomiseAudioPlaybackStart = true
     @AppStorage("defaultEarliestTime") var defaultEarliestTime: TimeInterval = 0
     @AppStorage("defaultLatestTime") var defaultLatestTime: TimeInterval = 0
 }

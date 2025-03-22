@@ -33,6 +33,10 @@ extension ReminderID: Equatable, Hashable {
         lhs.value == rhs.value
     }
     
+    static func == (lhs: ReminderID, rhs: Int) -> Bool {
+        lhs.value == rhs
+    }
+    
     func hash(into hasher: inout Hasher) {
         hasher.combine(value)
     }

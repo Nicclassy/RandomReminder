@@ -10,6 +10,10 @@ import Foundation
 // ReminderActivationEvent facade
 final class ReminderActivationEvents: Codable {
     var audio: ReminderAudioFile?
+    
+    init(audio: ReminderAudioFile? = nil) {
+        self.audio = audio
+    }
 }
 
 struct ReminderAudioFile: Codable {
