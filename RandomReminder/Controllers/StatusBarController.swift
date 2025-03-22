@@ -67,7 +67,7 @@ final class StatusBarController {
     }
     
     @objc private func openPreferences() {
-        self.preferencesViewController.show()
+        preferencesViewController.show()
     }
     
     @objc private func quit() {

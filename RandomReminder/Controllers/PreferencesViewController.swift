@@ -13,7 +13,7 @@ final class PreferencesViewController {
         SettingsWindowController(
             panes: [
                 GeneralPreferencesViewController(),
-                SchedulePreferencesViewController(),
+                SchedulingPreferencesViewController(),
                 RemindersPreferencesViewController(),
                 AboutPreferencesViewController()
             ],
@@ -38,17 +38,17 @@ final class PreferencesViewController {
         )
     }
     
-    let SchedulePreferencesViewController: () -> SettingsPane = {
+    let SchedulingPreferencesViewController: () -> SettingsPane = {
         Settings.PaneHostingController(
             pane: Settings.Pane(
-                identifier: .schedule,
-                title: "Schedule",
+                identifier: .scheduling,
+                title: "Scheduling",
                 toolbarIcon: NSImage(
                     systemSymbolName: "timer",
-                    accessibilityDescription: "Schedule Preferences"
+                    accessibilityDescription: "Scheduling Preferences"
                 )!
             ) {
-                SchedulePreferencesView()
+                SchedulingPreferencesView()
             }
         )
     }

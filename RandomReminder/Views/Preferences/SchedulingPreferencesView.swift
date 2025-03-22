@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SchedulePreferencesView: View {
+struct SchedulingPreferencesView: View {
     @StateObject var appPreferences: AppPreferences = .shared
     
     var defaultEarliestDate: Binding<Date> {
@@ -43,5 +43,5 @@ struct SchedulePreferencesView: View {
 }
 
 #Preview {
-    SchedulePreferencesView()
+    SchedulingPreferencesView()
 }
