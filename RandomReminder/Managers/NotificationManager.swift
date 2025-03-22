@@ -26,8 +26,9 @@ final class NotificationManager {
         content.userInfo = [Self.reminderIdKey: reminder.id.value]
         
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-        notificationCentre.add(request)
         queue.async { [self] in
+            notificationCentre.add(request)
+            FancyLogger.info("Processing for \(service.reminder)")
             processNotification(for: service)
         }
     }
@@ -63,12 +64,15 @@ final class NotificationManager {
         // a notification has disappeared
         // (there are may ways in which a notification can disappear,
         // but UNNotificationDelegate only informs the program
-        // if the user clicks on the notification),
+        // if the user clicks on the notification, not if they swipe it/click X),
         // so this solution will suffice for now.
         let reminder = reminderService.reminder
         let group = DispatchGroup()
         
-        // Hasn't appeared yet. Wait to confirm it appears
+        // Hasn't appeared yet. Wait to confirm it appears.
+        // This may not seem necessary, but there is sometimes a delay
+        // between when the notification request is added
+        // and when it actually appears.
         group.enter()
         DispatchQueue.global(qos: .background).async { [self] in
             while !notificationIsPresent(for: reminder) {
