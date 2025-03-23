@@ -13,11 +13,17 @@ final class ReminderManager: ObservableObject {
     
     @Published var reminders: [RandomReminder]
     private var persistentChanges: Bool = false
+    private var reminderStartTimer: Timer!
+    private var tickInterval: ReminderTickInterval = .seconds(1)
+    
+    var activeReminders: [ActiveReminderService] = []
+    var startedReminders: [ReminderActivatorService] = []
+    var remindersQueue = OperationQueue()
     
     lazy var reminderIds: Set<ReminderID> = {
         let ids: [ReminderID] = Self.reminderFileNames().compactMap { filename in
             guard let match = try? StoredReminders.filenamePattern.firstMatch(in: filename),
-                let filenameId = Int(filename[match.range])
+                  let filenameId = Int(filename[match.range])
             else {
                 FancyLogger.warn("Filename \(filename) is being skipped because it contains no valid regex matches")
                 return nil
@@ -28,12 +34,6 @@ final class ReminderManager: ObservableObject {
         
         return Set(ids)
     }()
-    
-    lazy var backgroundReminders: [ReminderBackgroundService] = {
-       return []
-    }()
-    
-    var activeReminders: [ActiveReminderService] = []
     
     var audioFiles: [ReminderAudioFile] {
         reminders.compactMap { $0.activationEvents.audio }
@@ -78,7 +78,10 @@ final class ReminderManager: ObservableObject {
     }
     
     func removeReminder(_ reminder: RandomReminder) {
-        let index = reminders.firstIndex(of: reminder)!
+        guard let index = reminders.firstIndex(of: reminder) else {
+            fatalError("Could not find '\(reminder)' when it was expected to be present")
+        }
+        
         reminders.remove(at: index)
         reminderIds.remove(reminder.id)
         stopReminder(reminder)
@@ -95,7 +98,7 @@ final class ReminderManager: ObservableObject {
     
     func deactivateReminder(_ reminder: RandomReminder) {
         guard let index = activeReminders.firstIndex(where: { $0.reminder.id == reminder.id }) else {
-            FancyLogger.warn("Reminder is not in the active reminders list when it should be")
+            FancyLogger.warn("Reminder '\(reminder)' is not in the active reminders list when it should be")
             return
         }
         
@@ -114,10 +117,45 @@ final class ReminderManager: ObservableObject {
         ]
     }
     
-    private func stopReminder(_ reminder: RandomReminder) {
-        if let backgroundService = backgroundReminders.first(where: { $0.reminder.id == reminder.id }) {
-            backgroundService.stop()
+    private func setupTimer() {
+        reminderStartTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
+            let date = Date()
+            reminders.forEach { reminder in
+                if date > reminder.interval.earliest {
+                    reminder.state = .started
+                    startReminder(reminder)
+                } else if date > reminder.interval.latest {
+                    reminder.state = .finished
+                }
+            }
         }
+    }
+    
+    private func startReminder(_ reminder: RandomReminder) {
+        let reminderActivator = ReminderActivatorService(reminder: reminder, every: tickInterval) { [self] in
+            activateReminder(reminder)
+        }
+        
+        startedReminders.append(reminderActivator)
+        remindersQueue.addOperation { [self] in
+            while reminderActivator.running {
+                Thread.sleep(forTimeInterval: tickInterval.seconds())
+                reminderActivator.activate()
+            }
+            
+            FancyLogger.info("Finished reminder '\(reminder)', resetting")
+            reminder.reset()
+        }
+    }
+    
+    private func stopReminder(_ reminder: RandomReminder) {
+        guard let index = startedReminders.firstIndex(where: { $0.reminder === reminder }) else {
+            FancyLogger.warn("Reminder '\(reminder)' was not found when it should be present")
+            return
+        }
+        
+        let activatorService = startedReminders.remove(at: index)
+        activatorService.running = false
     }
     
     private func deleteReminder(_ reminder: RandomReminder) {
@@ -130,7 +168,10 @@ final class ReminderManager: ObservableObject {
     }
     
     private static func reminderFileNames() -> [String] {
-        let filenames = try! FileManager.default.contentsOfDirectory(atPath: StoredReminders.url.path())
+        guard let filenames = try? FileManager.default.contentsOfDirectory(atPath: StoredReminders.url.path()) else {
+            fatalError("Could not get reminders' filenames")
+        }
+        
         return filenames.filter { StoredReminders.filenamePattern.contains(captureNamed: $0) }
     }
 }
