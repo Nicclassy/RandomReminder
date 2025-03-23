@@ -61,11 +61,11 @@ final class RandomReminder: Codable {
     }
     
     var hasBegun: Bool {
-        Date() >= interval.earliest
+        state == .started
     }
     
     var hasPast: Bool {
-        interval.isPast
+        state == .finished
     }
     
     func durationInSeconds() -> Float {
@@ -77,8 +77,7 @@ final class RandomReminder: Codable {
     }
     
     func reset() {
-        counts.occurences = 0
-        state = .enabled
+        counts.reset()
     }
 }
 
