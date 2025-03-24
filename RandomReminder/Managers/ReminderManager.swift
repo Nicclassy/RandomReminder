@@ -57,6 +57,9 @@ final class ReminderManager: ObservableObject {
         self.init(reminders)
     }
     
+    func setup() {
+        setReminderStates()
+    }
     
     func upcomingReminders() -> [RandomReminder] {
         reminders.lazy.filter { !$0.hasPast }.sorted { $0.compare(with: $1) }
@@ -150,6 +153,22 @@ final class ReminderManager: ObservableObject {
             try FileManager.default.removeItem(at: url)
         } catch let error {
             FancyLogger.error("Error removing file:", error)
+        }
+    }
+    
+    private func setReminderStates() {
+        // Perform this processing prior to the timer so that we don't
+        // start reminders that past before the app launched
+        let date = Date()
+        reminders.forEach { [self] reminder in
+            if reminder.hasEnded(after: date) {
+                reminder.state = .finished
+                reminder.reset()
+            } else if reminder.hasStarted(after: date) {
+                reminder.state = .started
+                startReminder(reminder)
+                assert(reminder.counts.occurences == 0, "Reminder should not have occurrences")
+            }
         }
     }
     
