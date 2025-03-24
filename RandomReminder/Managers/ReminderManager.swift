@@ -13,6 +13,7 @@ final class ReminderManager: ObservableObject {
     
     @Published var reminders: [RandomReminder]
     private var persistentChanges: Bool = false
+    private var timerThread: Thread!
     private var tickInterval: ReminderTickInterval = .seconds(1)
     
     private var activeReminders: [ActiveReminderService] = []
@@ -58,8 +59,29 @@ final class ReminderManager: ObservableObject {
     }
     
     func setup() {
+        // All credits go to
+        // https://hackernoon.com/how-to-use-runloop-in-ios-applications
+        // for correct timer implementation
         setReminderStates()
+        timerThread = Thread {
+            let timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
+                let date = Date()
+                reminders.forEach { reminder in
+                    if reminder.hasEnded(after: date) {
+                        reminder.state = .finished
+                        stopReminder(reminder)
+                    } else if reminder.hasStarted(after: date) {
+                        reminder.state = .started
+                        startReminder(reminder)
+                    }
+                }
+            }
+            RunLoop.current.add(timer, forMode: .default)
+            RunLoop.current.run()
+        }
+        timerThread.start()
     }
+    
     
     func upcomingReminders() -> [RandomReminder] {
         reminders.lazy.filter { !$0.hasPast }.sorted { $0.compare(with: $1) }

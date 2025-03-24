@@ -46,3 +46,7 @@ enum ViewConstants {
     static let reminderWindowWidth: CGFloat = 500
     static let reminderWindowHeight: CGFloat = 350
 }
+
+enum Constants {
+    static let bundleID = "io.nicclassy.RandomReminder"
+}

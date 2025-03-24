@@ -15,9 +15,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         AppDelegate.shared = self
         statusBarController = .init()
+        ReminderManager.shared.setup()
     }
     
-    func toggleQuickReminder(isEnabled: Bool) {
-        statusBarController.quickReminderItem.isHidden = !isEnabled
+    func setQuickReminderEnabled(enabled: Bool) {
+        statusBarController.quickReminderItem.isHidden = !enabled
     }
 }
