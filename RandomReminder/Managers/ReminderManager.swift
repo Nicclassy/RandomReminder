@@ -13,12 +13,11 @@ final class ReminderManager: ObservableObject {
     
     @Published var reminders: [RandomReminder]
     private var persistentChanges: Bool = false
-    private var reminderStartTimer: Timer!
     private var tickInterval: ReminderTickInterval = .seconds(1)
     
-    var activeReminders: [ActiveReminderService] = []
-    var startedReminders: [ReminderActivatorService] = []
-    var remindersQueue = OperationQueue()
+    private var activeReminders: [ActiveReminderService] = []
+    private var startedReminders: [ReminderActivatorService] = []
+    private var remindersQueue = OperationQueue()
     
     lazy var reminderIds: Set<ReminderID> = {
         let ids: [ReminderID] = Self.reminderFileNames().compactMap { filename in
@@ -54,8 +53,10 @@ final class ReminderManager: ObservableObject {
             }
         }
         
+        
         self.init(reminders)
     }
+    
     
     func upcomingReminders() -> [RandomReminder] {
         reminders.lazy.filter { !$0.hasPast }.sorted { $0.compare(with: $1) }
@@ -91,13 +92,14 @@ final class ReminderManager: ObservableObject {
     }
     
     func activateReminder(_ reminder: RandomReminder) {
+        reminder.activate()
         let activeReminder = ActiveReminderService(reminder: reminder)
         activeReminders.append(activeReminder)
         NotificationManager.shared.addReminderNotification(for: activeReminder)
     }
     
     func deactivateReminder(_ reminder: RandomReminder) {
-        guard let index = activeReminders.firstIndex(where: { $0.reminder.id == reminder.id }) else {
+        guard let index = activeReminders.firstIndex(where: { $0.reminder === reminder }) else {
             FancyLogger.warn("Reminder '\(reminder)' is not in the active reminders list when it should be")
             return
         }
@@ -108,32 +110,17 @@ final class ReminderManager: ObservableObject {
     
     static func previewReminders() -> [RandomReminder] {
         [
-            RandomReminder(id: 1, title: "Take a 5 minute break", text: "Why", interval: ReminderDateInterval(earliestDate: Date().addMinutes(1), latestDate: Date().addMinutes(2)), totalOccurences: 2),
-            RandomReminder(id: 2, title: "Random acts of kindness", text: "A reminder", interval: ReminderTimeInterval.infinite, totalOccurences: 3),
-            RandomReminder(id: 3, title: "Make progress on RandomReminder", text: "Things", interval: ReminderDateInterval(earliestDate: Date().addMinutes(120), latestDate: Date().addMinutes(120)), totalOccurences: 2),
-            RandomReminder(id: 4, title: "Posture check", text: "Some things", interval: ReminderDateInterval(earliestDate: Date().subtractMinutes(1), latestDate: Date().addMinutes(20)), totalOccurences: 5),
-            RandomReminder(id: 5, title: "Do some programming", text: "Waaa", interval: ReminderDateInterval(earliestDate: Date().subtractMinutes(5), latestDate: Date().subtractMinutes(4)), totalOccurences: 3),
-            RandomReminder(id: 6, title: "Check on wellbeing", text: "Boring", interval: ReminderDateInterval(earliestDate: Date().subtractMinutes(20), latestDate: Date().subtractMinutes(19)), totalOccurences: 14)
+            RandomReminder(id: 1, title: "Take a 5 minute break", text: "Why", interval: ReminderDateInterval(earliestDate: Date(), latestDate: Date().addMinutes(1)), totalOccurences: 2)
         ]
-    }
-    
-    private func setupTimer() {
-        reminderStartTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
-            let date = Date()
-            reminders.forEach { reminder in
-                if date > reminder.interval.earliest {
-                    reminder.state = .started
-                    startReminder(reminder)
-                } else if date > reminder.interval.latest {
-                    reminder.state = .finished
-                }
-            }
-        }
     }
     
     private func startReminder(_ reminder: RandomReminder) {
         let reminderActivator = ReminderActivatorService(reminder: reminder, every: tickInterval) { [self] in
             activateReminder(reminder)
+            if reminder.counts.occurenceIsFinal {
+                reminder.state = .finished
+                stopReminder(reminder)
+            }
         }
         
         startedReminders.append(reminderActivator)
@@ -154,8 +141,7 @@ final class ReminderManager: ObservableObject {
             return
         }
         
-        let activatorService = startedReminders.remove(at: index)
-        activatorService.running = false
+        startedReminders.remove(at: index)
     }
     
     private func deleteReminder(_ reminder: RandomReminder) {
