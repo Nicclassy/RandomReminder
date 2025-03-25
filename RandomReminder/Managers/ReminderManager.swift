@@ -84,7 +84,7 @@ final class ReminderManager: ObservableObject {
     
     
     func upcomingReminders() -> [RandomReminder] {
-        reminders.lazy.filter { !$0.hasPast }.sorted { $0.compare(with: $1) }
+        reminders.lazy.filter { !$0.hasBegun }.sorted { $0.compare(with: $1) }
     }
     
     func pastReminders() -> [RandomReminder] {

@@ -26,7 +26,7 @@ final class ReminderActivatorService {
     
     func activate() {
         let activateReminder = activateReminder()
-        if reminder.state == .finished {
+        if reminder.state != .started {
             FancyLogger.info("Reminder '\(reminder)' did not finish")
             onReminderActivation()
             running = false

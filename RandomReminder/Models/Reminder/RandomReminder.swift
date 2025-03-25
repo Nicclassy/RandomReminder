@@ -49,7 +49,7 @@ final class RandomReminder: Codable {
             reminderInterval: AnyReminderInterval(interval),
             days: days ?? [],
             counts: ReminderCounts(totalOccurences: totalOccurences),
-            state: .enabled,
+            state: .upcoming,
             activationEvents: activationEvents ?? ReminderActivationEvents()
         )
     }
@@ -66,6 +66,14 @@ final class RandomReminder: Codable {
     
     var hasPast: Bool {
         state == .finished
+    }
+    
+    func hasEnded(after date: Date) -> Bool {
+        date > interval.latest
+    }
+    
+    func hasStarted(after date: Date) -> Bool {
+        date > interval.earliest
     }
     
     func durationInSeconds() -> Float {

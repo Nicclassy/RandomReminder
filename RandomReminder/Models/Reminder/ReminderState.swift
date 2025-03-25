@@ -10,5 +10,5 @@ import Foundation
 enum ReminderState: Codable {
     case started
     case finished
-    case enabled
+    case upcoming
 }
