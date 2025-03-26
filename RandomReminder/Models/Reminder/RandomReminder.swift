@@ -16,6 +16,20 @@ final class RandomReminder: Codable {
     var counts: ReminderCounts
     var state: ReminderState
     
+    var interval: ReminderInterval {
+        // AnyReminderInterval is only for serialisation/deserialisation
+        // so instead get the type-erased protocol value for operations
+        reminderInterval.value
+    }
+    
+    var hasBegun: Bool {
+        state == .started
+    }
+    
+    var hasPast: Bool {
+        state == .finished
+    }
+    
     init(
         id: ReminderID,
         content: ReminderContent,
@@ -54,20 +68,6 @@ final class RandomReminder: Codable {
         )
     }
     
-    var interval: ReminderInterval {
-        // AnyReminderInterval is only for serialisation/deserialisation
-        // so instead get the type-erased protocol value for operations
-        reminderInterval.value
-    }
-    
-    var hasBegun: Bool {
-        state == .started
-    }
-    
-    var hasPast: Bool {
-        state == .finished
-    }
-    
     func hasEnded(after date: Date) -> Bool {
         date > interval.latest
     }
@@ -79,24 +79,23 @@ final class RandomReminder: Codable {
     func durationInSeconds() -> Float {
         Float(interval.earliest.distance(to: interval.latest))
     }
-    
-    func activate() {
-        counts.occurences += 1
-    }
-    
-    func reset() {
-        counts.reset()
-    }
 }
 
 extension RandomReminder {
     func compare(with other: RandomReminder) -> Bool {
-        if hasPast != other.hasPast { hasPast }
-        else if hasBegun != other.hasBegun { hasBegun }
-        else if hasBegun && other.hasBegun { counts.occurences < other.counts.occurences }
-        else if !hasBegun && !other.hasBegun { interval.earliest < other.interval.earliest }
-        else if hasPast && other.hasPast { interval.latest < other.interval.latest }
-        else { content.title < other.content.title }
+        if hasPast != other.hasPast {
+            hasPast
+        } else if hasBegun != other.hasBegun {
+            hasBegun
+        } else if hasBegun && other.hasBegun {
+            counts.occurences < other.counts.occurences
+        } else if !hasBegun && !other.hasBegun {
+            interval.earliest < other.interval.earliest
+        } else if hasPast && other.hasPast {
+            interval.latest < other.interval.latest
+        } else {
+            content.title < other.content.title
+        }
     }
     
     func filename() -> String {

@@ -27,12 +27,12 @@ func ansi(_ ansi: Int) -> ColourString {
     ColourString(code: String(format: "\u{001B}[%dm", ansi))
 }
 
-fileprivate func termEnvValueExists() -> Bool {
+private func termEnvValueExists() -> Bool {
     ProcessInfo.processInfo.environment["TERM"] != nil
 }
 
 struct ColourString: CustomStringConvertible {
-    static let colourStrings: Bool = true
+    static let colourStrings: Bool = false
     
     static let red = ansi(31)
     static let blue = ansi(34)
@@ -44,7 +44,7 @@ struct ColourString: CustomStringConvertible {
     static let white = ansi(97)
     static let reset = ansi(0)
     
-    static let blank = ColourString(code: String())
+    static let blank = Self(code: String())
     
     let code: String
     

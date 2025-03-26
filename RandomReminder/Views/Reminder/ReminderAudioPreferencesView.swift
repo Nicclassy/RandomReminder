@@ -35,7 +35,11 @@ struct ReminderAudioPreferencesView: View {
                 
                 Button("Choose an audio file") {
                     preferences.showFileImporter = true
-                }.fileImporter(isPresented: $preferences.showFileImporter, allowedContentTypes: [.audio], allowsMultipleSelection: false) { result in
+                }.fileImporter(
+                    isPresented: $preferences.showFileImporter,
+                    allowedContentTypes: [.audio],
+                    allowsMultipleSelection: false
+                ) { result in
                     if case .failure(let failure) = result {
                         FancyLogger.error(failure)
                     } else if case .success(let success) = result {

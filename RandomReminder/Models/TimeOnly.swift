@@ -8,11 +8,11 @@
 import Foundation
 
 struct TimeOnly: Codable {
+    static let earliestToday = Self(hour: 1)
+    static let earliestTomorrow = Self(hour: 25)
+    
     var hour: Int
     var minute: Int
-    
-    static let earliestToday = TimeOnly(hour: 1)
-    static let earliestTomorrow = TimeOnly(hour: 25)
     
     init(hour: Int, minute: Int) {
         assert(hour >= 0 && hour < 24)

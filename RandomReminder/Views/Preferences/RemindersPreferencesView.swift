@@ -19,13 +19,6 @@ private struct ReminderPreferencesRow: View {
     @Binding private var editing: Bool
     private var timer: PublishedTimer
     
-    init(reminder: RandomReminder, updateTimer timer: PublishedTimer, editing: Binding<Bool>) {
-        self.reminder = reminder
-        self.reminderInfo = TimeInfoProvider(reminder: reminder).preferencesInfo()
-        self.timer = timer
-        self._editing = editing
-    }
-    
     var body: some View {
         HStack {
             Text(reminder.content.title)
@@ -61,6 +54,13 @@ private struct ReminderPreferencesRow: View {
         .padding(.all, 10)
         .padding(.horizontal, 5)
     }
+    
+    init(reminder: RandomReminder, updateTimer timer: PublishedTimer, editing: Binding<Bool>) {
+        self.reminder = reminder
+        self.reminderInfo = TimeInfoProvider(reminder: reminder).preferencesInfo()
+        self.timer = timer
+        self._editing = editing
+    }
 }
 
 private struct ReminderPreferencesRows: View {
@@ -70,18 +70,6 @@ private struct ReminderPreferencesRows: View {
     
     private let heading: String
     private let rowsBeforeScroll: UInt
-    
-    init(
-        heading: String, 
-        rowsBeforeScoll: UInt,
-        editingReminders: Binding<Bool>,
-        remindersProvider: @autoclosure @escaping () -> [RandomReminder]
-    ) {
-        self.heading = heading
-        self.rowsBeforeScroll = rowsBeforeScoll
-        self.remindersProvider = remindersProvider
-        self._editingReminders = editingReminders
-    }
     
     var body: some View {
         let reminders = remindersProvider()
@@ -104,6 +92,18 @@ private struct ReminderPreferencesRows: View {
     
     private var frameHeight: CGFloat {
         ViewConstants.reminderRowHeight * CGFloat(rowsBeforeScroll)
+    }
+    
+    init(
+        heading: String, 
+        rowsBeforeScoll: UInt,
+        editingReminders: Binding<Bool>,
+        remindersProvider: @autoclosure @escaping () -> [RandomReminder]
+    ) {
+        self.heading = heading
+        self.rowsBeforeScroll = rowsBeforeScoll
+        self.remindersProvider = remindersProvider
+        self._editingReminders = editingReminders
     }
     
     @ViewBuilder
@@ -178,18 +178,18 @@ struct RemindersPreferencesView: View {
                     if editingReminders {
                         Button(action: {
                             editingReminders.toggle()
-                        }) {
+                        }, label: {
                             Text("Finish Editing")
                                 .frame(width: 100)
-                        }
+                        })
                         .buttonStyle(.borderedProminent)
                     } else {
                         Button(action: {
                             editingReminders.toggle()
-                        }) {
+                        }, label: {
                             Text("Edit Reminders")
                                 .frame(width: 100)
-                        }
+                        })
                     }
                 }
             }

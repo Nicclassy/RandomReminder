@@ -71,6 +71,7 @@ opt_in_rules:
   - vertical_whitespace_opening_braces
   - yoda_condition
 disabled_rules:
+  - blanket_disable_command
   - trailing_whitespace
   - direct_return
   - discouraged_optional_collection
@@ -96,6 +97,7 @@ strict: false
 lenient: false
 
 attributes:
+  attributes_with_arguments_always_on_line_above: false
   always_on_line_above:
     - "@ViewBuilder"
 enum_case_associated_values_count:

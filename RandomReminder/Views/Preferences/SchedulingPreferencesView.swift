@@ -12,14 +12,26 @@ struct SchedulingPreferencesView: View {
     
     var defaultEarliestDate: Binding<Date> {
         Binding(
-            get: { Date(timeIntervalSince1970: intervalOrDefault(interval: appPreferences.defaultEarliestTime, default: Date.startOfDay())) },
+            get: {
+                let timeInterval = intervalOrDefault(
+                    interval: appPreferences.defaultEarliestTime,
+                    default: Date.startOfDay()
+                )
+                return Date(timeIntervalSince1970: timeInterval)
+            },
             set: { appPreferences.defaultEarliestTime = $0.timeIntervalSince1970 }
         )
     }
         
     var defaultLatestDate: Binding<Date> {
         Binding(
-            get: { Date(timeIntervalSince1970: intervalOrDefault(interval: appPreferences.defaultLatestTime, default: Date.endOfDay())) },
+            get: {
+                let timeInterval = intervalOrDefault(
+                    interval: appPreferences.defaultLatestTime,
+                    default: Date.endOfDay()
+                )
+                return Date(timeIntervalSince1970: timeInterval)
+            },
             set: { appPreferences.defaultLatestTime = $0.timeIntervalSince1970 }
         )
     }

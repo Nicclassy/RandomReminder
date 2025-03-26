@@ -7,15 +7,15 @@
 
 import Foundation
 
-protocol ReminderInterval: Codable {
-    var earliest: Date { get }
-    var latest: Date { get }
-    var repeatInterval: RepeatInterval { get }
-    var isInfinite: Bool { get }
-    var isPast: Bool { get }
-}
-
 struct ReminderTimeInterval: ReminderInterval {
+    static var infinite: ReminderInterval {
+        Self(
+            earliestTime: .earliestToday,
+            latestTime: .earliestTomorrow,
+            interval: .day
+        )
+    }
+    
     var earliestTime: TimeOnly
     var latestTime: TimeOnly
     var interval: RepeatInterval
@@ -38,14 +38,6 @@ struct ReminderTimeInterval: ReminderInterval {
     
     var isPast: Bool {
         false
-    }
-    
-    static var infinite: ReminderInterval {
-        ReminderTimeInterval(
-            earliestTime: .earliestToday,
-            latestTime: .earliestTomorrow,
-            interval: .day
-        )
     }
 }
 
@@ -72,4 +64,12 @@ struct ReminderDateInterval: ReminderInterval {
     var isPast: Bool {
         Date() > latestDate
     }
+}
+
+protocol ReminderInterval: Codable {
+    var earliest: Date { get }
+    var latest: Date { get }
+    var repeatInterval: RepeatInterval { get }
+    var isInfinite: Bool { get }
+    var isPast: Bool { get }
 }

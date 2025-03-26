@@ -383,6 +383,7 @@
 			buildConfigurationList = 8163F5F42D1241D50052A016 /* Build configuration list for PBXNativeTarget "RandomReminder" */;
 			buildPhases = (
 				8163F5CB2D1241D40052A016 /* Sources */,
+				81F921D12D92BF700064ED2E /* SwiftLint */,
 				8163F5CC2D1241D40052A016 /* Frameworks */,
 				8163F5CD2D1241D40052A016 /* Resources */,
 				813F31022D2A830000EF6DD1 /* SwiftGen */,
@@ -390,6 +391,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				81F921D02D92BF530064ED2E /* PBXTargetDependency */,
 			);
 			name = RandomReminder;
 			packageProductDependencies = (
@@ -430,6 +432,7 @@
 				8163F6082D139AD60052A016 /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */,
 				81B5261B2D213B23008D36F0 /* XCRemoteSwiftPackageReference "Settings" */,
 				813F31212D3BB34B00EF6DD1 /* XCRemoteSwiftPackageReference "swift-collections" */,
+				81F921CE2D92BF310064ED2E /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 			);
 			productRefGroup = 8163F5D02D1241D40052A016 /* Products */;
 			projectDirPath = "";
@@ -476,6 +479,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if which swiftgen > /dev/null; then\n  swiftgen\nfi\n";
+		};
+		81F921D12D92BF700064ED2E /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]\nthen\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif command -v swiftlint >/dev/null 2>&1\nthen\n    swiftlint\nelse\n    echo \"warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions.\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -542,6 +564,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		81F921D02D92BF530064ED2E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 81F921CF2D92BF530064ED2E /* SwiftLintBuildToolPlugin */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		813F30F42D27D7DA00EF6DD1 /* Localizable.strings */ = {
@@ -783,6 +812,14 @@
 				minimumVersion = 3.1.1;
 			};
 		};
+		81F921CE2D92BF310064ED2E /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.58.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -800,6 +837,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 81B5261B2D213B23008D36F0 /* XCRemoteSwiftPackageReference "Settings" */;
 			productName = Settings;
+		};
+		81F921CF2D92BF530064ED2E /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 81F921CE2D92BF310064ED2E /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

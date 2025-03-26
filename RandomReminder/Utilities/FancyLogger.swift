@@ -25,17 +25,56 @@ let errorColours = FancyLogger.Colours(
     string: hex("A53860")
 )
 
+private final class FancyLoggerHelper {
+    static func printer(_ args: [Any], colours: FancyLogger.Colours, file: String, function: String, line: UInt) {
+        guard loggingEnabled else { return }
+        let stackTraceInfo = formatStackTrackInfo(
+            file: file,
+            function: function,
+            line: line,
+            colours: colours
+        )
+        let formattedArgs = formatArgs(args: args, colours: colours)
+        print("\(stackTraceInfo) \(formattedArgs)")
+    }
+
+    private static func formatStackTrackInfo(
+        file: String,
+        function: String,
+        line: UInt,
+        colours: FancyLogger.Colours
+    ) -> String {
+        let fileFormatted = pad(formatFile(file), toLength: FancyLogger.fileNameLength)
+        let functionFormatted = pad(formatFunction(function), toLength: FancyLogger.functionNameLength)
+        let lineFormatted = pad(formatLine(line), toLength: FancyLogger.lineNumberLength)
+        return "\(colours.separator(FancyLogger.startSeparator)) \(colours.function(functionFormatted))"
+            + "\(colours.separator(FancyLogger.separator)) \(colours.file(fileFormatted))"
+            + "\(colours.separator(FancyLogger.separator)) \(colours.line(lineFormatted))"
+            + "\(colours.separator(FancyLogger.endSeparator))\(colours.separator(FancyLogger.argsSeparator))"
+    }
+    
+    private static func formatArgs(args: Any..., colours: FancyLogger.Colours) -> String {
+        colours.string(args.map { String(describing: $0) }.joined(separator: FancyLogger.printArgsSeparator))
+    }
+    
+    private static func formatFile(_ file: String) -> String {
+        String(describing: file.split(separator: "/").last!.split(separator: ".").first!)
+    }
+    
+    private static func formatFunction(_ function: String) -> String {
+        String(describing: function.split(separator: "(").first!)
+    }
+    
+    private static func formatLine(_ line: UInt) -> String {
+        String(describing: line)
+    }
+    
+    private static func pad(_ value: String, toLength: Int) -> String {
+        value.padding(toLength: toLength, withPad: " ", startingAt: 0)
+    }
+}
+
 final class FancyLogger {
-    static let fileNameLength: Int = 28
-    static let functionNameLength: Int = 25
-    static let lineNumberLength: Int = 4
-    
-    static let separator: String = "|"
-    static let startSeparator: String = "["
-    static let endSeparator: String = "]"
-    static let argsSeparator: String = ":"
-    static let printArgsSeparator: String = " "
-    
     final class Colours {
         let file: ColourString
         let function: ColourString
@@ -58,6 +97,16 @@ final class FancyLogger {
         }
     }
     
+    static let fileNameLength: Int = 28
+    static let functionNameLength: Int = 25
+    static let lineNumberLength: Int = 4
+    
+    static let separator: String = "|"
+    static let startSeparator: String = "["
+    static let endSeparator: String = "]"
+    static let argsSeparator: String = ":"
+    static let printArgsSeparator: String = " "
+    
     @available(*, unavailable)
     private init() {}
     
@@ -71,54 +120,5 @@ final class FancyLogger {
 
     static func error(_ args: Any..., file: String = #file, function: String = #function, line: UInt = #line) {
         FancyLoggerHelper.printer(args, colours: errorColours, file: file, function: function, line: line)
-    }
-}
-
-fileprivate final class FancyLoggerHelper {
-    static func printer(_ args: [Any], colours: FancyLogger.Colours, file: String, function: String, line: UInt) {
-        guard loggingEnabled else { return }
-        let stackTraceInfo = formatStackTrackInfo(
-            file: file,
-            function: function,
-            line: line,
-            colours: colours
-        )
-        let formattedArgs = formatArgs(args: args, colours: colours)
-        print("\(stackTraceInfo) \(formattedArgs)")
-    }
-
-    private static func formatStackTrackInfo(file: String, function: String, line: UInt, colours: FancyLogger.Colours) -> String {
-        let fileFormatted = pad(formatFile(file), toLength: FancyLogger.fileNameLength)
-        let functionFormatted = pad(formatFunction(function), toLength: FancyLogger.functionNameLength)
-        let lineFormatted = pad(formatLine(line), toLength: FancyLogger.lineNumberLength)
-        return "\(colours.separator(FancyLogger.startSeparator)) \(colours.function(functionFormatted))"
-            + "\(colours.separator(FancyLogger.separator)) \(colours.file(fileFormatted))"
-            + "\(colours.separator(FancyLogger.separator)) \(colours.line(lineFormatted))"
-            + "\(colours.separator(FancyLogger.endSeparator))\(colours.separator(FancyLogger.argsSeparator))"
-    }
-    
-    private static func formatArgs(args: Any..., colours: FancyLogger.Colours) -> String {
-        colours.string(args.map { String(describing: $0) }.joined(separator: FancyLogger.printArgsSeparator))
-    }
-    
-    private static func formatFile(_ file: String) -> String {
-        String(describing: file
-            .split(separator: "/")
-            .last!
-            .split(separator: ".")
-            .first!
-        )
-    }
-    
-    private static func formatFunction(_ function: String) -> String {
-        String(describing: function.split(separator: "(").first!)
-    }
-    
-    private static func formatLine(_ line: UInt) -> String {
-        String(describing: line)
-    }
-    
-    private static func pad(_ value: String, toLength: Int) -> String {
-        value.padding(toLength: toLength, withPad: " ", startingAt: 0)
     }
 }

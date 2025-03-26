@@ -11,8 +11,10 @@ final class ReminderModificationWindow: NSWindow {
     init(reminder: RandomReminder? = nil, title: String, mode: ReminderModificationMode) {
         super.init(
             contentRect: NSRect(
-                x: 0, y: 0,
-                width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight
+                x: 0,
+                y: 0,
+                width: ViewConstants.reminderWindowWidth,
+                height: ViewConstants.reminderWindowHeight
             ),
             styleMask: [.closable, .titled],
             backing: .buffered,

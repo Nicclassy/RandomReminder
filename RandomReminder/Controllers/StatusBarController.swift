@@ -62,15 +62,18 @@ final class StatusBarController {
         return menu
     }
     
-    @objc private func onStatusBarClick() {
+    @objc
+    private func onStatusBarClick() {
         FancyLogger.info("Status bar item clicked")
     }
     
-    @objc private func openPreferences() {
+    @objc
+    private func openPreferences() {
         preferencesViewController.show()
     }
     
-    @objc private func quit() {
+    @objc
+    private func quit() {
         NSApp.terminate(self)
     }
 }

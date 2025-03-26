@@ -43,17 +43,17 @@ struct ReminderModificationView: View {
             )
             
             HStack {
-                Button(action: {}) {
+                Button(action: {}, label: {
                     Text(finishButtonText)
                         .frame(width: 60)
-                }
+                })
                 .buttonStyle(.borderedProminent)
                 Button(action: {
                     preferences.showCancelPopover.toggle()
-                }) {
+                }, label: {
                     Text("Cancel")
                         .frame(width: 60)
-                }
+                })
                 .alert(
                     "Are you sure you want to discard this reminder?",
                     isPresented: $preferences.showCancelPopover

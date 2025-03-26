@@ -20,16 +20,6 @@ extension Date {
         self == .distantPast || self == .distantFuture
     }
     
-    func addMinutes(_ minutes: Int) -> Self {
-        // This method and the method below are saturating operations.
-        // This operation is saturating because of the distant date check
-        self.isDistant ? self : Calendar.current.date(byAdding: .minute, value: minutes, to: self)!
-    }
-    
-    func subtractMinutes(_ minutes: Int) -> Self {
-        self.isDistant ? self : Calendar.current.date(byAdding: .minute, value: -minutes, to: self)!
-    }
-    
     static func startOfDay(date: Date = Date()) -> Self {
         Calendar.current.startOfDay(for: date)
     }
@@ -39,6 +29,16 @@ extension Date {
         // While it is possible to do [start, end) (e.g. start is 12am and end is 12am),
         // this is a more confusing alternative
         Calendar.current.date(byAdding: .day, value: 1, to: startOfDay().subtractMinutes(1))!
+    }
+    
+    func addMinutes(_ minutes: Int) -> Self {
+        // This method and the method below are saturating operations.
+        // This operation is saturating because of the distant date check
+        isDistant ? self : Calendar.current.date(byAdding: .minute, value: minutes, to: self)!
+    }
+    
+    func subtractMinutes(_ minutes: Int) -> Self {
+        isDistant ? self : Calendar.current.date(byAdding: .minute, value: -minutes, to: self)!
     }
     
     func sameTimeToday() -> Self? {

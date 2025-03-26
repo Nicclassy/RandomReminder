@@ -8,6 +8,16 @@
 import Foundation
 
 final class AnyReminderInterval: Codable {
+    enum CodingKeys: String, CodingKey {
+        case timeInterval
+        case dateInterval
+    }
+    
+    enum AnyReminderIntervalError: Swift.Error {
+        case missingValue
+        case unknownType
+    }
+    
     let value: ReminderInterval
     
     init(_ value: ReminderInterval) {
@@ -36,15 +46,5 @@ final class AnyReminderInterval: Codable {
         } else {
             throw AnyReminderIntervalError.unknownType
         }
-    }
-    
-    enum CodingKeys: String, CodingKey {
-        case timeInterval
-        case dateInterval
-    }
-    
-    enum AnyReminderIntervalError: Swift.Error {
-        case missingValue
-        case unknownType
     }
 }

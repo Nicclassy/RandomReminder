@@ -11,8 +11,6 @@ import SwiftUI
 final class AppPreferences: ObservableObject {
     static let shared = AppPreferences()
     
-    private init() {}
-    
     @AppStorage("launchAtLogin") var launchAtLogin = false
     @AppStorage("showReminderCounts") var showReminderCounts = true
     @AppStorage("quickReminderEnabled") var quickReminderEnabled = true
@@ -20,4 +18,6 @@ final class AppPreferences: ObservableObject {
     @AppStorage("randomiseAudioPlaybackStart") var randomiseAudioPlaybackStart = true
     @AppStorage("defaultEarliestTime") var defaultEarliestTime: TimeInterval = 0
     @AppStorage("defaultLatestTime") var defaultLatestTime: TimeInterval = 0
+    
+    private init() {}
 }

@@ -8,6 +8,7 @@
 import SwiftUI
 import Settings
 
+// swiftlint:disable identifier_name
 final class PreferencesViewController {
     private lazy var windowController: SettingsWindowController = {
         SettingsWindowController(
@@ -88,3 +89,4 @@ final class PreferencesViewController {
         windowController.window?.center()
     }
 }
+// swiftlint:enable identifier_name

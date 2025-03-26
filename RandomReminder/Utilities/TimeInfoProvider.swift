@@ -8,10 +8,10 @@
 import Foundation
 
 struct TimeInfoProvider {
-    let reminder: RandomReminder
-    
     private static let orderedCalendarComponents: [Calendar.Component] = [.day, .hour, .minute, .second]
     private static let calendarComponents: Set<Calendar.Component> = [.day, .hour, .minute, .second]
+    
+    let reminder: RandomReminder
     
     func preferencesInfo() -> String {
         if reminder.hasPast {
@@ -30,7 +30,11 @@ struct TimeInfoProvider {
             return "\(quantity) \(name)\(suffix)"
         }
         
-        let components = Calendar.current.dateComponents(Self.calendarComponents, from: Date(), to: reminder.interval.earliest)
+        let components = Calendar.current.dateComponents(
+            Self.calendarComponents,
+            from: Date(),
+            to: reminder.interval.earliest
+        )
         if let days = components.day, days >= 7 {
             return ">1 week"
         }

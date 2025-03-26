@@ -9,11 +9,11 @@ import Foundation
 import SwiftUI
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    static private(set) var shared: AppDelegate!
+    private(set) static var shared: AppDelegate!
     private(set) var statusBarController: StatusBarController!
     
     func applicationDidFinishLaunching(_ notification: Notification) {
-        AppDelegate.shared = self
+        Self.shared = self
         statusBarController = .init()
         ReminderManager.shared.setup()
     }

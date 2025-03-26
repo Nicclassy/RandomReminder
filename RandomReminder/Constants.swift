@@ -12,7 +12,8 @@ import SwiftUI
 // An implementation of C#'s null-coalescing assignment operator
 infix operator ??=: AssignmentPrecedence
 
-func ??=<T>(lhs: inout T?, rhs: T) {
+// swiftlint:disable:next static_operator
+func ??= <T>(lhs: inout T?, rhs: T) {
     lhs = lhs ?? rhs
 }
 

@@ -14,8 +14,8 @@ struct ReminderDayPreferencesView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Toggle("Remind only on specific days", isOn: $preferences.specificDays)
-                .onChange(of: preferences.specificDays) {
-                    preferences.showSpecificDaysPopover = $1
+                .onChange(of: preferences.specificDays) { _, showSpecificDaysPopover in
+                    preferences.showSpecificDaysPopover = showSpecificDaysPopover
                 }
                 .popover(isPresented: $preferences.showSpecificDaysPopover) {
                     VStack(alignment: .leading) {
@@ -49,17 +49,17 @@ struct ReminderDayPreferencesView: View {
                         HStack {
                             Button(action: {
                                 preferences.showSpecificDaysPopover = false
-                            }) {
+                            }, label: {
                                 Text("Done")
                                     .frame(width: 50)
-                            }
+                            })
                             .buttonStyle(.borderedProminent)
                             Button(action: {
                                 reminder.days = []
-                            }) {
+                            }, label: {
                                 Text("Reset")
                                     .frame(width: 50)
-                            }
+                            })
                         }
                     }
                     .padding()

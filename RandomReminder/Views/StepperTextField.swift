@@ -15,14 +15,18 @@ struct StepperTextField: View {
     var body: some View {
         HStack(spacing: spacing) {
             TextField("", value: $value, formatter: ReminderConstants.numberFormatter)
-                .onChange(of: value) {
-                    value = constrainValue($1, orElse: $0)
+                .onChange(of: value) { oldValue, newValue in
+                    value = constrainValue(newValue, orElse: oldValue)
                 }
-            Stepper("", onIncrement: {
-                value = constrainValue(value + 1, orElse: value)
-            }, onDecrement: {
-                value = constrainValue(value - 1, orElse: value)
-            })
+            Stepper(
+                "",
+                onIncrement: {
+                    value = constrainValue(value + 1, orElse: value)
+                },
+                onDecrement: {
+                    value = constrainValue(value - 1, orElse: value)
+                }
+            )
         }
     }
     
@@ -32,7 +36,7 @@ struct StepperTextField: View {
 }
 
 struct StepperTextField_Previews: PreviewProvider {
-    @State static private var value = 1
+    @State private static var value = 1
     
     static var previews: some View {
         StepperTextField(value: $value)

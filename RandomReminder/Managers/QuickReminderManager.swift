@@ -9,35 +9,28 @@ import Foundation
 import SwiftUI
 
 final class QuickReminderManager: ObservableObject {
-    @Published var quickReminder: RandomReminder
-    
-    init(_ quickReminder: RandomReminder) {
-        self.quickReminder = quickReminder
-    }
-    
-    convenience init() {
-        self.init(ReminderManager.shared.quickReminder ?? Self.defaultQuickReminder)
-    }
-    
     static var defaultQuickReminder: RandomReminder {
         let earliestTime = TimeOnly(timeIntervalSince1970: AppPreferences.shared.defaultEarliestTime)
         let latestTime = TimeOnly(timeIntervalSince1970: AppPreferences.shared.defaultLatestTime)
-        let timeInterval = ReminderTimeInterval(earliestTime: earliestTime, latestTime: latestTime, interval: .days(1))
+        let timeInterval = ReminderTimeInterval(earliestTime: earliestTime, latestTime: latestTime, interval: .day)
         return RandomReminder(
             id: ReminderID.quickReminderId,
-            title: "Quick Reminder", text: "",
+            title: "Quick Reminder",
+            text: "",
             interval: timeInterval,
-            totalReminders: 0
+            totalOccurences: 0
         )
     }
+    
+    @Published var quickReminder: RandomReminder
     
     var quickReminderEnabled: Binding<Bool> {
         Binding(
             get: { [unowned self] in
-                quickReminder.state == .enabled
+                quickReminder.state == .upcoming
             },
             set: { [unowned self] enabled in
-                quickReminder.state = enabled ? .started : .enabled
+                quickReminder.state = enabled ? .started : .upcoming
             }
         )
     }
@@ -46,11 +39,15 @@ final class QuickReminderManager: ObservableObject {
         quickReminder.state == .started
     }
     
+    init(_ quickReminder: RandomReminder? = nil) {
+        self.quickReminder = quickReminder ?? Self.defaultQuickReminder
+    }
+
     func save() {
         ReminderSerializer.save(quickReminder, filename: quickReminder.filename())
     }
     
     func toggleStarted() {
-        quickReminder.state = quickReminder.state == .started ? .enabled : .started
+        quickReminder.state = quickReminder.state == .started ? .upcoming : .started
     }
 }
