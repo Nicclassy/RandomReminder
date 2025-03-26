@@ -11,8 +11,10 @@ import SwiftUI
 final class ReminderManager: ObservableObject {
     static let shared = ReminderManager(preview: true)
     
+    private var persistentChanges = false
+    private var remind = false
+    
     @Published var reminders: [RandomReminder]
-    private var persistentChanges: Bool = false
     private var timerThread: Thread!
     private var tickInterval: ReminderTickInterval = .seconds(1)
     
@@ -54,24 +56,37 @@ final class ReminderManager: ObservableObject {
             }
         }
         
-        
         self.init(reminders)
+    }
+    
+    static func previewReminders() -> [RandomReminder] {
+        [
+            RandomReminder(id: 1, title: "Take a 5 minute break", text: "Why", interval: ReminderDateInterval(earliestDate: Date(), latestDate: Date().addMinutes(1)), totalOccurences: 2) // swiftlint:disable:this line_length
+        ]
+    }
+    
+    private static func reminderFileNames() -> [String] {
+        guard let filenames = try? FileManager.default.contentsOfDirectory(atPath: StoredReminders.url.path()) else {
+            fatalError("Could not get reminders' filenames")
+        }
+        
+        return filenames.filter { StoredReminders.filenamePattern.contains(captureNamed: $0) }
     }
     
     func setup() {
         // All credits go to
         // https://hackernoon.com/how-to-use-runloop-in-ios-applications
         // for correct timer implementation
+        guard remind else { return }
+        
         setReminderStates()
         timerThread = Thread {
             let timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
                 let date = Date()
                 reminders.forEach { reminder in
                     if reminder.hasEnded(after: date) {
-                        reminder.state = .finished
                         stopReminder(reminder)
                     } else if reminder.hasStarted(after: date) {
-                        reminder.state = .started
                         startReminder(reminder)
                     }
                 }
@@ -81,7 +96,6 @@ final class ReminderManager: ObservableObject {
         }
         timerThread.start()
     }
-    
     
     func upcomingReminders() -> [RandomReminder] {
         reminders.lazy.filter { !$0.hasBegun }.sorted { $0.compare(with: $1) }
@@ -117,7 +131,6 @@ final class ReminderManager: ObservableObject {
     }
     
     func activateReminder(_ reminder: RandomReminder) {
-        reminder.activate()
         let activeReminder = ActiveReminderService(reminder: reminder)
         activeReminders.append(activeReminder)
         NotificationManager.shared.addReminderNotification(for: activeReminder)
@@ -133,30 +146,23 @@ final class ReminderManager: ObservableObject {
         FancyLogger.info("Deactivated reminder \(reminder)")
     }
     
-    static func previewReminders() -> [RandomReminder] {
-        [
-            RandomReminder(id: 1, title: "Take a 5 minute break", text: "Why", interval: ReminderDateInterval(earliestDate: Date(), latestDate: Date().addMinutes(1)), totalOccurences: 2)
-        ]
-    }
-    
     private func startReminder(_ reminder: RandomReminder) {
         let reminderActivator = ReminderActivatorService(reminder: reminder, every: tickInterval) { [self] in
             activateReminder(reminder)
             if reminder.counts.occurenceIsFinal {
-                reminder.state = .finished
                 stopReminder(reminder)
             }
         }
         
         startedReminders.append(reminderActivator)
         remindersQueue.addOperation { [self] in
+            let sleepInterval = tickInterval.seconds()
             while reminderActivator.running {
-                Thread.sleep(forTimeInterval: tickInterval.seconds())
+                Thread.sleep(forTimeInterval: sleepInterval)
                 reminderActivator.activate()
             }
             
-            FancyLogger.info("Finished reminder '\(reminder)', resetting")
-            reminder.reset()
+            FancyLogger.info("Finished reminder '\(reminder)'")
         }
     }
     
@@ -167,6 +173,7 @@ final class ReminderManager: ObservableObject {
         }
         
         startedReminders.remove(at: index)
+        deactivateReminder(reminder)
     }
     
     private func deleteReminder(_ reminder: RandomReminder) {
@@ -185,20 +192,10 @@ final class ReminderManager: ObservableObject {
         reminders.forEach { [self] reminder in
             if reminder.hasEnded(after: date) {
                 reminder.state = .finished
-                reminder.reset()
             } else if reminder.hasStarted(after: date) {
-                reminder.state = .started
                 startReminder(reminder)
                 assert(reminder.counts.occurences == 0, "Reminder should not have occurrences")
             }
         }
-    }
-    
-    private static func reminderFileNames() -> [String] {
-        guard let filenames = try? FileManager.default.contentsOfDirectory(atPath: StoredReminders.url.path()) else {
-            fatalError("Could not get reminders' filenames")
-        }
-        
-        return filenames.filter { StoredReminders.filenamePattern.contains(captureNamed: $0) }
     }
 }
