@@ -16,7 +16,7 @@ struct ReminderCounts: Codable {
     }
     
     var occurenceIsFinal: Bool {
-        occurences == totalOccurences
+        occurences == totalOccurences - 1
     }
     
     init(occurences: Int, totalOccurences: Int) {
