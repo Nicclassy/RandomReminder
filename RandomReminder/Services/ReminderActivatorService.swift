@@ -14,7 +14,7 @@ private struct MutableReminderOperations {
     
     init(for reminder: RandomReminder) {
         self.reminder = reminder
-        queue = DispatchQueue(label: Constants.bundleID + ".reminder\(reminder.id)Operations", attributes: .concurrent)
+        queue = DispatchQueue(label: Constants.bundleID + ".reminder\(reminder.id.value).operations", attributes: .concurrent)
     }
     
     func setReminderState(to state: ReminderState) {
@@ -47,9 +47,9 @@ final class ReminderActivatorService {
     
     init(reminder: RandomReminder, every interval: ReminderTickInterval, onReminderActivation: @escaping () -> Void) {
         self.reminder = reminder
-        self.operations = MutableReminderOperations(for: reminder)
         self.onReminderActivation = onReminderActivation
         
+        operations = MutableReminderOperations(for: reminder)
         activationProbability = (
             Float(reminder.counts.totalOccurences) * Float(interval.seconds()) / reminder.durationInSeconds()
         )
@@ -67,16 +67,17 @@ final class ReminderActivatorService {
         running = false
     }
     
-    func activate() {
+    func tick() {
         let reminderWillActivate = reminderWillActivate()
         if reminderWillActivate && reminder.counts.occurenceIsFinal {
-            FancyLogger.info("Activated final reminder for '\(reminder)'")
             operations.activateReminder()
             onReminderActivation()
+            FancyLogger.info("Activated final reminder for '\(reminder)' (\(reminder.counts.occurences)/\(reminder.counts.totalOccurences))")
             stop()
         } else if reminderWillActivate {
-            FancyLogger.info("Activated '\(reminder)'!")
+            operations.activateReminder()
             onReminderActivation()
+            FancyLogger.info("Activated '\(reminder)' (\(reminder.counts.occurences)/\(reminder.counts.totalOccurences))!")
         } else {
             FancyLogger.info("Did not activate '\(reminder)'")
         }

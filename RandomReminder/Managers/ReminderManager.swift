@@ -146,7 +146,7 @@ final class ReminderManager: ObservableObject {
         FancyLogger.info("Deactivated reminder \(reminder)")
     }
     
-    private func startReminder(_ reminder: RandomReminder) {
+    func startReminder(_ reminder: RandomReminder) {
         let reminderActivator = ReminderActivatorService(reminder: reminder, every: tickInterval) { [self] in
             activateReminder(reminder)
             if reminder.counts.occurenceIsFinal {
@@ -156,17 +156,18 @@ final class ReminderManager: ObservableObject {
         
         startedReminders.append(reminderActivator)
         remindersQueue.addOperation { [self] in
+            reminderActivator.start()
             let sleepInterval = tickInterval.seconds()
             while reminderActivator.running {
                 Thread.sleep(forTimeInterval: sleepInterval)
-                reminderActivator.activate()
+                reminderActivator.tick()
             }
             
             FancyLogger.info("Finished reminder '\(reminder)'")
         }
     }
     
-    private func stopReminder(_ reminder: RandomReminder) {
+    func stopReminder(_ reminder: RandomReminder) {
         guard let index = startedReminders.firstIndex(where: { $0.reminder === reminder }) else {
             FancyLogger.warn("Reminder '\(reminder)' was not found when it should be present")
             return
@@ -194,7 +195,7 @@ final class ReminderManager: ObservableObject {
                 reminder.state = .finished
             } else if reminder.hasStarted(after: date) {
                 startReminder(reminder)
-                assert(reminder.counts.occurences == 0, "Reminder should not have occurrences")
+                assert(reminder.counts.occurences == 0, "Reminder \(reminder) should not have occurrences")
             }
         }
     }
