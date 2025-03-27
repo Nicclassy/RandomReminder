@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ReminderDayPreferencesView: View {
+struct ReminderDayOptionsView: View {
     @ObservedObject var reminder: MutableReminder
     @ObservedObject var preferences: ReminderPreferences
     
@@ -70,5 +70,5 @@ struct ReminderDayPreferencesView: View {
 }
 
 #Preview {
-    ReminderDayPreferencesView(reminder: .init(), preferences: .init())
+    ReminderDayOptionsView(reminder: .init(), preferences: .init())
 }

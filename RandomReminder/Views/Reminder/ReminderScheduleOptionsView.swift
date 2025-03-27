@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ReminderSchedulePreferencesView: View {
+struct ReminderScheduleOptionsView: View {
     @ObservedObject var reminder: MutableReminder
     @ObservedObject var preferences: ReminderPreferences
     
@@ -27,7 +27,7 @@ struct ReminderSchedulePreferencesView: View {
         Grid(alignment: .leading) {
             GridRow {
                 VStack(alignment: .leading) {
-                    ReminderDayPreferencesView(reminder: reminder, preferences: preferences)
+                    ReminderDayOptionsView(reminder: reminder, preferences: preferences)
                     HStack {
                         Toggle("Use times only", isOn: $preferences.timesOnly)
                             .disabled(preferences.alwaysRunning)
@@ -84,5 +84,5 @@ struct ReminderSchedulePreferencesView: View {
 }
 
 #Preview {
-    ReminderSchedulePreferencesView(reminder: .init(), preferences: .init())
+    ReminderScheduleOptionsView(reminder: .init(), preferences: .init())
 }

@@ -1,5 +1,5 @@
 //
-//  ReminderAudioPreferencesView.swift
+//  ReminderAudioOptionsView.swift
 //  RandomReminder
 //
 //  Created by Luca Napoli on 22/2/2025.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ReminderAudioPreferencesView: View {
+struct ReminderAudioOptionsView: View {
     @StateObject var reminderManager: ReminderManager = .shared
     
     @ObservedObject var reminder: MutableReminder
@@ -65,5 +65,5 @@ struct ReminderAudioPreferencesView: View {
 }
 
 #Preview {
-    ReminderAudioPreferencesView(reminder: .init(), preferences: .init(), useAudioFile: .constant(true))
+    ReminderAudioOptionsView(reminder: .init(), preferences: .init(), useAudioFile: .constant(true))
 }

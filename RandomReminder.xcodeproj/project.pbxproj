@@ -21,10 +21,10 @@
 		8118A1332D6A6E7F00A9FF08 /* PreferenceCaption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A12C2D6A6E7F00A9FF08 /* PreferenceCaption.swift */; };
 		8118A1342D6A6E7F00A9FF08 /* RemindersPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A12D2D6A6E7F00A9FF08 /* RemindersPreferencesView.swift */; };
 		8118A1352D6A6E7F00A9FF08 /* SchedulingPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A12E2D6A6E7F00A9FF08 /* SchedulingPreferencesView.swift */; };
-		8118A1392D6A712F00A9FF08 /* ReminderSchedulePreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A1382D6A712F00A9FF08 /* ReminderSchedulePreferencesView.swift */; };
+		8118A1392D6A712F00A9FF08 /* ReminderScheduleOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A1382D6A712F00A9FF08 /* ReminderScheduleOptionsView.swift */; };
 		8118A13B2D6A72AC00A9FF08 /* ReminderPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A13A2D6A72AC00A9FF08 /* ReminderPreferences.swift */; };
-		8118A13D2D6A786900A9FF08 /* ReminderDayPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A13C2D6A786900A9FF08 /* ReminderDayPreferencesView.swift */; };
-		8118A13F2D6A790E00A9FF08 /* ReminderAudioPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A13E2D6A790E00A9FF08 /* ReminderAudioPreferencesView.swift */; };
+		8118A13D2D6A786900A9FF08 /* ReminderDayOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A13C2D6A786900A9FF08 /* ReminderDayOptionsView.swift */; };
+		8118A13F2D6A790E00A9FF08 /* ReminderAudioOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A13E2D6A790E00A9FF08 /* ReminderAudioOptionsView.swift */; };
 		8118A1412D6CE2C500A9FF08 /* Sequence+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A1402D6CE2C500A9FF08 /* Sequence+Extensions.swift */; };
 		8118A1432D6CE66200A9FF08 /* OptionSet+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A1422D6CE66200A9FF08 /* OptionSet+Extensions.swift */; };
 		8118A1452D6DD51A00A9FF08 /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A1442D6DD51A00A9FF08 /* Collection+Extensions.swift */; };
@@ -69,6 +69,7 @@
 		81B5261A2D213905008D36F0 /* Settings+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B526192D213905008D36F0 /* Settings+Extensions.swift */; };
 		81B5261D2D213B23008D36F0 /* Settings in Frameworks */ = {isa = PBXBuildFile; productRef = 81B5261C2D213B23008D36F0 /* Settings */; };
 		81BA15F02D76F0FC004202EC /* ReminderModificationWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81BA15EF2D76F0FC004202EC /* ReminderModificationWindow.swift */; };
+		81BB7B182D954399004C69D6 /* SchedulingPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81BB7B172D954399004C69D6 /* SchedulingPreferences.swift */; };
 		81C043622D8AEEC60074E60B /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81C043612D8AEEC60074E60B /* NotificationManager.swift */; };
 		81C373182D8F288900A98A59 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 81C373172D8F288900A98A59 /* .swiftlint.yml */; };
 /* End PBXBuildFile section */
@@ -88,10 +89,10 @@
 		8118A12C2D6A6E7F00A9FF08 /* PreferenceCaption.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferenceCaption.swift; sourceTree = "<group>"; };
 		8118A12D2D6A6E7F00A9FF08 /* RemindersPreferencesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemindersPreferencesView.swift; sourceTree = "<group>"; };
 		8118A12E2D6A6E7F00A9FF08 /* SchedulingPreferencesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchedulingPreferencesView.swift; sourceTree = "<group>"; };
-		8118A1382D6A712F00A9FF08 /* ReminderSchedulePreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderSchedulePreferencesView.swift; sourceTree = "<group>"; };
+		8118A1382D6A712F00A9FF08 /* ReminderScheduleOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderScheduleOptionsView.swift; sourceTree = "<group>"; };
 		8118A13A2D6A72AC00A9FF08 /* ReminderPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPreferences.swift; sourceTree = "<group>"; };
-		8118A13C2D6A786900A9FF08 /* ReminderDayPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderDayPreferencesView.swift; sourceTree = "<group>"; };
-		8118A13E2D6A790E00A9FF08 /* ReminderAudioPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderAudioPreferencesView.swift; sourceTree = "<group>"; };
+		8118A13C2D6A786900A9FF08 /* ReminderDayOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderDayOptionsView.swift; sourceTree = "<group>"; };
+		8118A13E2D6A790E00A9FF08 /* ReminderAudioOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderAudioOptionsView.swift; sourceTree = "<group>"; };
 		8118A1402D6CE2C500A9FF08 /* Sequence+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sequence+Extensions.swift"; sourceTree = "<group>"; };
 		8118A1422D6CE66200A9FF08 /* OptionSet+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OptionSet+Extensions.swift"; sourceTree = "<group>"; };
 		8118A1442D6DD51A00A9FF08 /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
@@ -135,6 +136,7 @@
 		81B526142D20A522008D36F0 /* FancyLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FancyLogger.swift; sourceTree = "<group>"; };
 		81B526192D213905008D36F0 /* Settings+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Settings+Extensions.swift"; sourceTree = "<group>"; };
 		81BA15EF2D76F0FC004202EC /* ReminderModificationWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderModificationWindow.swift; sourceTree = "<group>"; };
+		81BB7B172D954399004C69D6 /* SchedulingPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulingPreferences.swift; sourceTree = "<group>"; };
 		81C043612D8AEEC60074E60B /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		81C373172D8F288900A98A59 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -158,6 +160,7 @@
 			children = (
 				8118A12A2D6A6E7F00A9FF08 /* AppPreferences.swift */,
 				8118A13A2D6A72AC00A9FF08 /* ReminderPreferences.swift */,
+				81BB7B172D954399004C69D6 /* SchedulingPreferences.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -165,11 +168,11 @@
 		8118A12F2D6A6E7F00A9FF08 /* Preferences */ = {
 			isa = PBXGroup;
 			children = (
-				8118A1292D6A6E7F00A9FF08 /* AboutPreferencesView.swift */,
 				8118A12B2D6A6E7F00A9FF08 /* GeneralPreferencesView.swift */,
+				8118A12E2D6A6E7F00A9FF08 /* SchedulingPreferencesView.swift */,
 				8118A12C2D6A6E7F00A9FF08 /* PreferenceCaption.swift */,
 				8118A12D2D6A6E7F00A9FF08 /* RemindersPreferencesView.swift */,
-				8118A12E2D6A6E7F00A9FF08 /* SchedulingPreferencesView.swift */,
+				8118A1292D6A6E7F00A9FF08 /* AboutPreferencesView.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -178,9 +181,9 @@
 			isa = PBXGroup;
 			children = (
 				8118A10E2D5E90FD00A9FF08 /* ReminderModificationView.swift */,
-				8118A13E2D6A790E00A9FF08 /* ReminderAudioPreferencesView.swift */,
-				8118A1382D6A712F00A9FF08 /* ReminderSchedulePreferencesView.swift */,
-				8118A13C2D6A786900A9FF08 /* ReminderDayPreferencesView.swift */,
+				8118A13E2D6A790E00A9FF08 /* ReminderAudioOptionsView.swift */,
+				8118A1382D6A712F00A9FF08 /* ReminderScheduleOptionsView.swift */,
+				8118A13C2D6A786900A9FF08 /* ReminderDayOptionsView.swift */,
 			);
 			path = Reminder;
 			sourceTree = "<group>";
@@ -516,7 +519,7 @@
 				813F31172D328C4400EF6DD1 /* JSONEncoder+Extensions.swift in Sources */,
 				813F310F2D2EA0E800EF6DD1 /* AnyReminderInterval.swift in Sources */,
 				8163F6132D13A90E0052A016 /* StatusBarController.swift in Sources */,
-				8118A13F2D6A790E00A9FF08 /* ReminderAudioPreferencesView.swift in Sources */,
+				8118A13F2D6A790E00A9FF08 /* ReminderAudioOptionsView.swift in Sources */,
 				8118A13B2D6A72AC00A9FF08 /* ReminderPreferences.swift in Sources */,
 				8118A1352D6A6E7F00A9FF08 /* SchedulingPreferencesView.swift in Sources */,
 				8118A1312D6A6E7F00A9FF08 /* AppPreferences.swift in Sources */,
@@ -541,11 +544,12 @@
 				81B526062D1A4EF7008D36F0 /* DualDatePickerView.swift in Sources */,
 				8118A1452D6DD51A00A9FF08 /* Collection+Extensions.swift in Sources */,
 				8118A1412D6CE2C500A9FF08 /* Sequence+Extensions.swift in Sources */,
+				81BB7B182D954399004C69D6 /* SchedulingPreferences.swift in Sources */,
 				8118A1132D5FB2FE00A9FF08 /* ContentView.swift in Sources */,
 				813F31052D2B320700EF6DD1 /* ReminderManager.swift in Sources */,
 				81C043622D8AEEC60074E60B /* NotificationManager.swift in Sources */,
 				8118A1332D6A6E7F00A9FF08 /* PreferenceCaption.swift in Sources */,
-				8118A13D2D6A786900A9FF08 /* ReminderDayPreferencesView.swift in Sources */,
+				8118A13D2D6A786900A9FF08 /* ReminderDayOptionsView.swift in Sources */,
 				8118A1342D6A6E7F00A9FF08 /* RemindersPreferencesView.swift in Sources */,
 				8118A10F2D5E90FD00A9FF08 /* ReminderModificationView.swift in Sources */,
 				813F310D2D2E9E0600EF6DD1 /* ReminderState.swift in Sources */,
@@ -555,7 +559,7 @@
 				81B525FC2D19277B008D36F0 /* ReminderActivatorService.swift in Sources */,
 				81B525FE2D1928BB008D36F0 /* TimeOnly.swift in Sources */,
 				813F31092D2E91E000EF6DD1 /* ReminderInterval.swift in Sources */,
-				8118A1392D6A712F00A9FF08 /* ReminderSchedulePreferencesView.swift in Sources */,
+				8118A1392D6A712F00A9FF08 /* ReminderScheduleOptionsView.swift in Sources */,
 				8118A1492D6F857C00A9FF08 /* TimeInfoProvider.swift in Sources */,
 				813F31292D3D1D7800EF6DD1 /* MutableReminder.swift in Sources */,
 				8118A1242D66734E00A9FF08 /* Array+Extensions.swift in Sources */,
