@@ -46,19 +46,19 @@ struct DualDatePickerView: View {
     let picker: DualDatePicker
     
     var body: some View {
-        VStack {
-            Grid(alignment: .leading) {
-                GridRow {
-                    Text(earliestHeading)
-                    picker.earliestDatePicker
-                }
-                GridRow {
-                    Text(latestHeading)
-                    picker.latestDatePicker
-                }
+        VStack(alignment: .leading) {
+            HStack {
+                Text(earliestHeading)
+                Spacer()
+                picker.earliestDatePicker
+            }
+            
+            HStack {
+                Text(latestHeading)
+                Spacer()
+                picker.latestDatePicker
             }
         }
-        .frame(width: 250, height: 100)
     }
     
     init(earliestHeading: String, latestHeading: String, picker: DualDatePicker) {
@@ -81,5 +81,24 @@ struct DualDatePickerView: View {
                 latestDate: latestDate
             )
         )
+    }
+}
+
+struct DualDatePicker_Previews: PreviewProvider {
+    @State private static var earliestDate = Date()
+    @State private static var latestDate = Date().addMinutes(1)
+    
+    static var previews: some View {
+        VStack {
+            DualDatePickerView(
+                earliestHeading: "Earliest date:",
+                latestHeading: "Latest date:",
+                displayedComponents: .hourAndMinute,
+                earliestDate: $earliestDate,
+                latestDate: $latestDate
+            )
+        }
+        .padding()
+        .frame(width: 250, height: 300)
     }
 }
