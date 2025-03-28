@@ -10,7 +10,7 @@ import SwiftUI
 struct StepperTextField: View {
     @Binding var value: Int
     var range: ClosedRange<Int> = Int.min...Int.max
-    var spacing: CGFloat = 0
+    var spacing: CGFloat = -5
     
     var body: some View {
         HStack(spacing: spacing) {
