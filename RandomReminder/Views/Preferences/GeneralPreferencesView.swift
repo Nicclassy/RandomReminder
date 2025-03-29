@@ -36,7 +36,7 @@ struct GeneralPreferencesView: View {
             Section {
                 Toggle(isOn: appPreferences.$quickReminderEnabled) {
                     Text("Show reminder counts")
-                    PreferenceCaption("Show the number of reminders in each category in the category's heading")
+                    PreferenceCaption("Show the number of reminders in each category in the category's heading.")
                 }
                 .onChange(of: appPreferences.showReminderCounts) { _, showReminderCount in
                     appPreferences.showReminderCounts = showReminderCount
@@ -46,7 +46,7 @@ struct GeneralPreferencesView: View {
             Section {
                 Toggle(isOn: appPreferences.$randomiseAudioPlaybackStart) {
                     Text("Randomise audio playback start")
-                    PreferenceCaption("Start reminder audio playback from a random point in reminders' files")
+                    PreferenceCaption("Start reminder audio playback from a random point in reminders' files.")
                 }
             }
         }

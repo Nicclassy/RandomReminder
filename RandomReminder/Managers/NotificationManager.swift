@@ -37,21 +37,21 @@ final class NotificationManager {
         var isActive = false
         let semaphore = DispatchSemaphore(value: 0)
         notificationCentre.getDeliveredNotifications { notifications in
+            defer { semaphore.signal() }
+            guard !notifications.isEmpty else { return }
+            
             for notification in notifications {
                 let notificationUserInfo = notification.request.content.userInfo
                 guard let notificationReminderId = notificationUserInfo[Self.reminderIdKey] as? Int else {
-                    FancyLogger.error("Notification does not contain the required userInfo key")
+                    FancyLogger.warn("Notification does not contain the required userInfo key")
                     continue
                 }
                 
                 if reminder.id == notificationReminderId {
                     isActive = true
-                    semaphore.signal()
                     return
                 }
             }
-            
-            semaphore.signal()
         }
         
         semaphore.wait()
@@ -96,5 +96,10 @@ final class NotificationManager {
         
         // Notification has disappeared
         reminderService.onNotificationDisappear()
+        
+        let notificationDelay = TimeInterval(SchedulingPreferences.shared.notificationDelayTime)
+        if notificationDelay > 0 {
+            Thread.sleep(forTimeInterval: notificationDelay)
+        }
     }
 }
