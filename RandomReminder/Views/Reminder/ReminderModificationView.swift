@@ -13,8 +13,10 @@ enum ReminderModificationMode {
 }
 
 struct ReminderModificationView: View {
+    @Environment(\.dismissWindow) var dismissWindow
     @StateObject var reminder: MutableReminder
     @StateObject var preferences: ReminderPreferences
+    @State private var closeView = false
     let mode: ReminderModificationMode
     
     var body: some View {
@@ -35,8 +37,8 @@ struct ReminderModificationView: View {
                 }
             }
             
-            ReminderSchedulePreferencesView(reminder: reminder, preferences: preferences)
-            ReminderAudioPreferencesView(
+            ReminderScheduleOptionsView(reminder: reminder, preferences: preferences)
+            ReminderAudioOptionsView(
                 reminder: reminder,
                 preferences: preferences,
                 useAudioFile: $preferences.useAudioFile
@@ -56,18 +58,22 @@ struct ReminderModificationView: View {
                 })
                 .alert(
                     "Are you sure you want to discard this reminder?",
-                    isPresented: $preferences.showCancelPopover
-                ) {
-                    Button("Cancel", role: .cancel) {}
-                    Button("Delete", role: .destructive) {
-                        if mode == .create {
-                            ReminderWindowController.shared.closeCreationWindow()
-                        } else {
-                            ReminderWindowController.shared.closeEditWindow()
+                    isPresented: $preferences.showCancelPopover,
+                    actions: {
+                        Button("Cancel", role: .cancel) {}
+                        Button("Delete", role: .destructive) {
+                            closeView = true
                         }
+                    },
+                    message: {
+                        Text("All entered information will be lost.")
                     }
-                } message: {
-                    Text("All entered information will be lost.")
+                )
+                .onChange(of: closeView) {
+                    if closeView {
+                        NSApp.keyWindow?.close()
+                        closeView = false
+                    }
                 }
             }
         }

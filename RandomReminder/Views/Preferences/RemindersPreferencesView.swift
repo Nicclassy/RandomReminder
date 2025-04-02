@@ -141,6 +141,8 @@ struct RemindersPreferencesView: View {
     @StateObject var reminderManager: ReminderManager = .shared
     @State private var editingReminders = false
     
+    @Environment(\.openWindow) var openWindow
+    
     var body: some View {
         Settings.Container(contentWidth: 500) {
             Settings.Section(title: "") {
@@ -170,7 +172,7 @@ struct RemindersPreferencesView: View {
                             .disabled(true)
                     } else {
                         Button("Create New Reminder") {
-                            ReminderWindowController.shared.openCreateWindow()
+                            openWindow(id: WindowIds.createReminder)
                         }
                         .buttonStyle(.borderedProminent)
                     }
