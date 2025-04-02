@@ -15,5 +15,11 @@ struct RandomReminderApp: App {
         Settings {
             EmptyView()
         }
+        .defaultLaunchBehavior(.suppressed)
+        
+        Window("Create New Reminder", id: WindowIds.createReminder) {
+            ReminderModificationView(reminder: .init(), preferences: .init(), mode: .create)
+        }
+        .windowResizability(.contentSize)
     }
 }

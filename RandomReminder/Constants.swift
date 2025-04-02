@@ -48,6 +48,11 @@ enum ViewConstants {
     static let reminderWindowHeight: CGFloat = 350
 }
 
+enum WindowIds {
+    static let createReminder = "create-reminder"
+    static let editReminder = "edit-reminder"
+}
+
 enum Constants {
     static let bundleID = "io.nicclassy.RandomReminder"
 }
