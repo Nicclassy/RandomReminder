@@ -45,7 +45,18 @@ struct ReminderModificationView: View {
             )
             
             HStack {
-                Button(action: {}, label: {
+                Button(action: {
+                    let newReminder = reminder.build(preferences: preferences)
+                    if mode == .edit {
+                        guard let previousReminder = ReminderModificationController.shared.reminder else {
+                            fatalError("A reminder should be stored here")
+                        }
+                        
+                        ReminderManager.shared.removeReminder(previousReminder)
+                    }
+                    
+                    ReminderManager.shared.addReminder(newReminder)
+                }, label: {
                     Text(finishButtonText)
                         .frame(width: 60)
                 })
@@ -77,12 +88,18 @@ struct ReminderModificationView: View {
                 }
             }
         }
+        .onAppear {
+            guard mode == .edit else { return }
+            guard let reminderToEdit = ReminderModificationController.shared.reminder else {
+                fatalError("Reminder must be set")
+            }
+            reminder.copyFrom(reminder: reminderToEdit)
+        }
+        .onDisappear {
+            reminder.reset()
+        }
         .frame(width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight)
         .padding()
-    }
-    
-    private var heading: String {
-        mode == .create ? "Create new reminder" : "Edit reminder"
     }
     
     private var finishButtonText: String {

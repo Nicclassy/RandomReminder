@@ -16,8 +16,9 @@ struct ReminderID: Codable {
 }
 
 extension ReminderID {
-    static let quickReminderId: ReminderID = 0
-    static let firstAvailableId: ReminderID = 1
+    static let unassigned: ReminderID = -1
+    static let quickReminder: ReminderID = 0
+    static let first: ReminderID = 1
 }
 
 extension ReminderID: ExpressibleByIntegerLiteral {

@@ -51,7 +51,7 @@ final class ReminderManager: ObservableObject {
         } else {
             Self.reminderFileNames().compactMap { filename in
                 guard let reminder: RandomReminder = ReminderSerializer.load(filename: filename) else { return nil }
-                guard reminder.id != .quickReminderId else { return nil }
+                guard reminder.id != .quickReminder else { return nil }
                 return reminder
             }
         }
@@ -106,7 +106,7 @@ final class ReminderManager: ObservableObject {
     }
 
     func nextAvailableId() -> ReminderID {
-        (.firstAvailableId...).first { !reminderIds.contains($0) }!
+        (.first...).first { !reminderIds.contains($0) }!
     }
     
     func addReminder(_ reminder: RandomReminder) {
@@ -119,7 +119,7 @@ final class ReminderManager: ObservableObject {
     
     func removeReminder(_ reminder: RandomReminder) {
         guard let index = reminders.firstIndex(of: reminder) else {
-            fatalError("Could not find '\(reminder)' when it was expected to be present")
+            fatalError("Could not find reminder '\(reminder)' when it was expected to be present")
         }
         
         reminders.remove(at: index)

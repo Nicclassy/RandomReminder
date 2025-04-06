@@ -8,6 +8,20 @@
 import Foundation
 
 final class MutableReminder: ObservableObject {
+    static let `default` = MutableReminder(
+        id: .unassigned,
+        title: String(),
+        text: String(),
+        totalOccurences: 1,
+        earliestDate: Date(),
+        latestDate: Date().addMinutes(60),
+        days: [],
+        repeatInterval: .minute,
+        activationEvents: ReminderActivationEvents(),
+        occurences: 0
+    )
+    
+    var id: ReminderID
     @Published var title: String
     @Published var text: String
     @Published var totalOccurences: Int
@@ -16,21 +30,68 @@ final class MutableReminder: ObservableObject {
     @Published var days: ReminderDayOptions
     @Published var repeatInterval: RepeatInterval
     @Published var activationEvents: ReminderActivationEvents
-    private var occurences: Int
+    var occurences: Int
     
-    init() {
-        title = String()
-        text = String()
-        totalOccurences = 1
-        earliestDate = Date()
-        latestDate = Date().addMinutes(60)
-        days = []
-        repeatInterval = .minute
-        activationEvents = ReminderActivationEvents()
-        occurences = 0
+    init(
+        id: ReminderID,
+        title: String,
+        text: String,
+        totalOccurences: Int,
+        earliestDate: Date,
+        latestDate: Date,
+        days: ReminderDayOptions,
+        repeatInterval: RepeatInterval,
+        activationEvents: ReminderActivationEvents,
+        occurences: Int
+    ) {
+        self.id = id
+        self.title = title
+        self.text = text
+        self.totalOccurences = totalOccurences
+        self.earliestDate = earliestDate
+        self.latestDate = latestDate
+        self.days = days
+        self.repeatInterval = repeatInterval
+        self.activationEvents = activationEvents
+        self.occurences = occurences
     }
     
-    init(from reminder: RandomReminder) {
+    init(reminder: MutableReminder) {
+        id = reminder.id
+        title = reminder.title
+        text = reminder.text
+        totalOccurences = reminder.totalOccurences
+        earliestDate = reminder.earliestDate
+        latestDate = reminder.latestDate
+        days = reminder.days
+        repeatInterval = reminder.repeatInterval
+        activationEvents = reminder.activationEvents
+        occurences = reminder.occurences
+    }
+    
+    convenience init() {
+        self.init(reminder: .default)
+    }
+    
+    func reset() {
+        copyFrom(reminder: .default)
+    }
+    
+    func copyFrom(reminder: MutableReminder) {
+        id = reminder.id
+        title = reminder.title
+        text = reminder.text
+        totalOccurences = reminder.totalOccurences
+        earliestDate = reminder.earliestDate
+        latestDate = reminder.latestDate
+        days = reminder.days
+        repeatInterval = reminder.repeatInterval
+        activationEvents = reminder.activationEvents
+        occurences = reminder.occurences
+    }
+    
+    func copyFrom(reminder: RandomReminder) {
+        id = reminder.id
         title = reminder.content.title
         text = reminder.content.text
         occurences = reminder.counts.occurences
