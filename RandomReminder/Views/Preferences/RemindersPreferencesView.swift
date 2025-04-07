@@ -81,17 +81,13 @@ private struct ReminderPreferencesRows: View {
                     ScrollView {
                         rows(reminders: reminders)
                     }
-                    .frame(height: frameHeight)
+                    .frame(height: frameHeight(for: reminders.count))
                 } else {
                     rows(reminders: reminders)
-                        .frame(height: frameHeight)
+                        .frame(height: frameHeight(for: reminders.count))
                 }
             }
         }
-    }
-    
-    private var frameHeight: CGFloat {
-        ViewConstants.reminderRowHeight * CGFloat(rowsBeforeScroll)
     }
     
     init(
@@ -117,6 +113,12 @@ private struct ReminderPreferencesRows: View {
         } else {
             Text(heading).font(.headline)
         }
+    }
+    
+    private func frameHeight(for numberOfRows: Int) -> CGFloat {
+        ViewConstants.reminderRowHeight * CGFloat(
+            min(UInt(numberOfRows), rowsBeforeScroll)
+        )
     }
     
     private func rows(reminders: [RandomReminder]) -> some View {

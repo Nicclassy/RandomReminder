@@ -61,7 +61,8 @@ final class ReminderManager: ObservableObject {
     
     static func previewReminders() -> [RandomReminder] {
         [
-            RandomReminder(id: 1, title: "Take a 5 minute break", text: "Why", interval: ReminderDateInterval(earliestDate: Date(), latestDate: Date().addMinutes(1)), totalOccurences: 2) // swiftlint:disable:this line_length
+            RandomReminder(id: 1, title: "Take a 5 minute break", text: "Why", interval: ReminderDateInterval(earliestDate: Date().addingTimeInterval(3), latestDate: Date().addMinutes(1)), totalOccurences: 2), // swiftlint:disable:this line_length
+            RandomReminder(id: 2, title: "But why", text: "Yes", interval: ReminderDateInterval(earliestDate: Date().subtractMinutes(3), latestDate: Date().subtractMinutes(2)), totalOccurences: 2) // swiftlint:disable:this line_length
         ]
     }
     
@@ -77,9 +78,9 @@ final class ReminderManager: ObservableObject {
         // All credits go to
         // https://hackernoon.com/how-to-use-runloop-in-ios-applications
         // for correct timer implementation
+        setReminderStates()
         guard remind else { return }
         
-        setReminderStates()
         timerThread = Thread {
             let timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
                 let date = Date()
@@ -98,7 +99,7 @@ final class ReminderManager: ObservableObject {
     }
     
     func upcomingReminders() -> [RandomReminder] {
-        reminders.lazy.filter { !$0.hasBegun }.sorted { $0.compare(with: $1) }
+        reminders.lazy.filter { !$0.hasPast }.sorted { $0.compare(with: $1) }
     }
     
     func pastReminders() -> [RandomReminder] {
@@ -143,7 +144,7 @@ final class ReminderManager: ObservableObject {
         }
         
         activeReminders.remove(at: index)
-        FancyLogger.info("Deactivated reminder \(reminder)")
+        FancyLogger.info("Deactivated reminder '\(reminder)'")
     }
     
     func startReminder(_ reminder: RandomReminder) {
@@ -194,8 +195,9 @@ final class ReminderManager: ObservableObject {
             if reminder.hasEnded(after: date) {
                 reminder.state = .finished
             } else if reminder.hasStarted(after: date) {
+                guard remind else { return }
+                assert(reminder.counts.occurences == 0, "Reminder '\(reminder)' should not have occurrences")
                 startReminder(reminder)
-                assert(reminder.counts.occurences == 0, "Reminder \(reminder) should not have occurrences")
             }
         }
     }
