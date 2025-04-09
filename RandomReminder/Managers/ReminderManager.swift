@@ -8,37 +8,32 @@
 import Foundation
 import SwiftUI
 
-final class ReminderManager: ObservableObject {
+final class ReminderManager {
     static let shared = ReminderManager(preview: true)
     
     private var persistentChanges = false
     private var remind = false
     
-    @Published var reminders: [RandomReminder]
+    private var reminders: [RandomReminder]
     private var timerThread: Thread!
     private var tickInterval: ReminderTickInterval = .seconds(1)
     
-    private var activeReminders: [ActiveReminderService] = []
-    private var startedReminders: [ReminderActivatorService] = []
-    private var remindersQueue = OperationQueue()
+    private var startedRemindersQueue = OperationQueue()
+    private var queue = DispatchQueue(label: Constants.bundleID + ".ReminderManager.queue", qos: .userInitiated)
     
-    lazy var reminderIds: Set<ReminderID> = {
-        let ids: [ReminderID] = Self.reminderFileNames().compactMap { filename in
-            guard let match = try? StoredReminders.filenamePattern.firstMatch(in: filename),
-                  let filenameId = Int(filename[match.range])
-            else {
-                FancyLogger.warn("Filename \(filename) is being skipped because it contains no valid regex matches")
-                return nil
-            }
-            
-            return ReminderID(filenameId)
+    @Locked private var activeReminders: [ActiveReminderService] = []
+    @Locked private var startedReminders: [ReminderActivatorService] = []
+    
+    var reminderIds: Set<ReminderID> {
+        queue.sync {
+            Set(reminders.map { $0.id })
         }
-        
-        return Set(ids)
-    }()
+    }
     
     var audioFiles: [ReminderAudioFile] {
-        reminders.compactMap { $0.activationEvents.audio }
+        queue.sync {
+            reminders.compactMap { $0.activationEvents.audio }
+        }
     }
     
     init(_ reminders: [RandomReminder]) {
@@ -61,7 +56,7 @@ final class ReminderManager: ObservableObject {
     
     static func previewReminders() -> [RandomReminder] {
         [
-            RandomReminder(id: 1, title: "Take a 5 minute break", text: "Why", interval: ReminderDateInterval(earliestDate: Date().addingTimeInterval(3), latestDate: Date().addMinutes(1)), totalOccurences: 2), // swiftlint:disable:this line_length
+            RandomReminder(id: 1, title: "Take a 5 minute break", text: "Why", interval: ReminderDateInterval(earliestDate: Date().addingTimeInterval(-3), latestDate: Date().addingTimeInterval(10)), totalOccurences: 2), // swiftlint:disable:this line_length
             RandomReminder(id: 2, title: "But why", text: "Yes", interval: ReminderDateInterval(earliestDate: Date().subtractMinutes(3), latestDate: Date().subtractMinutes(2)), totalOccurences: 2) // swiftlint:disable:this line_length
         ]
     }
@@ -84,7 +79,7 @@ final class ReminderManager: ObservableObject {
         timerThread = Thread {
             let timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
                 let date = Date()
-                reminders.forEach { reminder in
+                queue.sync { reminders }.forEach { reminder in
                     if reminder.hasEnded(after: date) {
                         stopReminder(reminder)
                     } else if reminder.hasStarted(after: date) {
@@ -99,11 +94,15 @@ final class ReminderManager: ObservableObject {
     }
     
     func upcomingReminders() -> [RandomReminder] {
-        reminders.lazy.filter { !$0.hasPast }.sorted { $0.compare(with: $1) }
+        queue.sync {
+            reminders.lazy.filter { !$0.hasPast }.sorted { $0.compare(with: $1) }
+        }
     }
     
     func pastReminders() -> [RandomReminder] {
-        reminders.lazy.filter { $0.hasPast }.sorted { $0.compare(with: $1) }
+        queue.sync {
+            reminders.lazy.filter { $0.hasPast }.sorted { $0.compare(with: $1) }
+        }
     }
 
     func nextAvailableId() -> ReminderID {
@@ -111,8 +110,9 @@ final class ReminderManager: ObservableObject {
     }
     
     func addReminder(_ reminder: RandomReminder) {
-        reminders.append(reminder)
-        reminderIds.insert(reminder.id)
+        queue.sync {
+            reminders.append(reminder)
+        }
         if persistentChanges {
             ReminderSerializer.save(reminder, filename: reminder.filename())
         }
@@ -123,8 +123,9 @@ final class ReminderManager: ObservableObject {
             fatalError("Could not find reminder '\(reminder)' when it was expected to be present")
         }
         
-        reminders.remove(at: index)
-        reminderIds.remove(reminder.id)
+        queue.sync {
+            _ = reminders.remove(at: index)
+        }
         stopReminder(reminder)
         if persistentChanges {
             deleteReminder(reminder)
@@ -156,7 +157,7 @@ final class ReminderManager: ObservableObject {
         }
         
         startedReminders.append(reminderActivator)
-        remindersQueue.addOperation { [self] in
+        startedRemindersQueue.addOperation { [self] in
             reminderActivator.start()
             let sleepInterval = tickInterval.seconds()
             while reminderActivator.running {
@@ -190,14 +191,16 @@ final class ReminderManager: ObservableObject {
     private func setReminderStates() {
         // Perform this processing prior to the timer so that we don't
         // start reminders that past before the app launched
-        let date = Date()
-        reminders.forEach { [self] reminder in
-            if reminder.hasEnded(after: date) {
-                reminder.state = .finished
-            } else if reminder.hasStarted(after: date) {
-                guard remind else { return }
-                assert(reminder.counts.occurences == 0, "Reminder '\(reminder)' should not have occurrences")
-                startReminder(reminder)
+        queue.sync {
+            let date = Date()
+            reminders.forEach { [self] reminder in
+                if reminder.hasEnded(after: date) {
+                    reminder.state = .finished
+                } else if reminder.hasStarted(after: date) {
+                    guard remind else { return }
+                    assert(reminder.counts.occurences == 0, "Reminder '\(reminder)' should not have occurrences")
+                    startReminder(reminder)
+                }
             }
         }
     }
