@@ -59,6 +59,11 @@ final class NotificationManager {
     }
     
     private func processNotification(for reminderService: ActiveReminderService) {
+        // An important point before this lengthy explanation.
+        // Swift really should have a way to do something when a notification appears/
+        // when it disappears. But it does not!
+        // So here we are!
+        
         // This is a bit of an inelegant solution but it works.
         // UNNotificationDelegate does not notify the user when
         // a notification has disappeared
@@ -82,8 +87,9 @@ final class NotificationManager {
         }
         group.wait()
         
-        // Has appeared. Wait until it disappears
+        // Has appeared
         reminderService.onNotificationAppear()
+        // Now, wait until it disappears
         
         group.enter()
         DispatchQueue.global(qos: .background).async { [self] in

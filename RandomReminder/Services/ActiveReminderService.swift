@@ -23,7 +23,7 @@ final class ActiveReminderService {
     
     func onNotificationDisappear() {
         FancyLogger.info("Reminder '\(reminder.content.title)' disappeared")
-        if let audioPlayer = self.audioPlayer {
+        if let audioPlayer {
             audioPlayer.stop()
         }
     }

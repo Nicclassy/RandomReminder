@@ -21,5 +21,10 @@ struct RandomReminderApp: App {
             ReminderModificationView(reminder: .init(), preferences: .init(), mode: .create)
         }
         .windowResizability(.contentSize)
+        
+        Window("Edit Reminder", id: WindowIds.editReminder) {
+            ReminderModificationView(reminder: .init(), preferences: .init(), mode: .edit)
+        }
+        .windowResizability(.contentSize)
     }
 }

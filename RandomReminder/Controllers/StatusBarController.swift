@@ -32,7 +32,7 @@ final class StatusBarController {
         let menu = NSMenu()
         menu.autoenablesItems = false
         
-        let quickReminderView = QuickReminderView().environmentObject(AppPreferences.shared)
+        let quickReminderView = QuickReminderView()
         let controller = NSHostingController(rootView: quickReminderView)
         controller.view.frame.size = CGSize(width: 200, height: 100)
         

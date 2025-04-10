@@ -139,9 +139,9 @@ private struct ReminderPreferencesRows: View {
 }
 
 struct RemindersPreferencesView: View {
-    @StateObject var appPreferences: AppPreferences = .shared
-    @StateObject var reminderManager: ReminderManager = .shared
     @State private var editingReminders = false
+    @StateObject var appPreferences: AppPreferences = .shared
+    var reminderManager: ReminderManager = .shared
     
     @Environment(\.openWindow) var openWindow
     
