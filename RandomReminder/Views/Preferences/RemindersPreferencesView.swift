@@ -34,10 +34,13 @@ private struct ReminderPreferencesRow: View {
                 ) {
                     Button("Cancel", role: .cancel) {}
                     Button("Delete", role: .destructive) {
+                        ReminderManager.shared.removeReminder(reminder)
                         withAnimation {
-                            ReminderManager.shared.removeReminder(reminder)
+                            ReminderModificationController.shared.refreshReminders = true
                         }
+                        
                         FancyLogger.info("Deleted reminder '\(reminder.content.title)'")
+                        ReminderModificationController.shared.refreshReminders = false
                     }
                 } message: {
                     Text("Deleted reminders cannot be recovered.")
@@ -144,8 +147,9 @@ private struct ReminderPreferencesRows: View {
 struct RemindersPreferencesView: View {
     @State private var editingReminders = false
     @State private var refresh = false
-    @StateObject var appPreferences: AppPreferences = .shared
-    @ObservedObject var reminderManager: ReminderManager = .shared
+    @ObservedObject var appPreferences: AppPreferences = .shared
+    @ObservedObject var reminderModificationController: ReminderModificationController = .shared
+    var reminderManager: ReminderManager = .shared
     
     @Environment(\.openWindow) var openWindow
     
@@ -202,16 +206,6 @@ struct RemindersPreferencesView: View {
                 }
             }
         }
-    }
-    
-    func assignToController() -> Self {
-        ReminderModificationController.shared.remindersPreferencesView = self
-        return self
-    }
-    
-    func refreshDisplayedReminders() {
-        FancyLogger.info("Refreshing displayed reminders")
-        refresh = true
     }
 }
 

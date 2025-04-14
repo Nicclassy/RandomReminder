@@ -55,7 +55,14 @@ struct ReminderModificationView: View {
                         ReminderManager.shared.removeReminder(previousReminder)
                     }
                     
-                    ReminderManager.shared.addReminder(newReminder)
+                    withAnimation {
+                        ReminderManager.shared.addReminder(newReminder)
+                        ReminderModificationController.shared.refreshReminders = true
+                    }
+                    
+                    FancyLogger.info("Created new reminder/edited reminder \(String(reflecting: reminder))")
+                    dismissWindow(id: mode == .create ? WindowIds.createReminder : WindowIds.editReminder)
+                    ReminderModificationController.shared.refreshReminders = false
                 }, label: {
                     Text(finishButtonText)
                         .frame(width: 60)
@@ -81,6 +88,9 @@ struct ReminderModificationView: View {
                     }
                 )
                 .onChange(of: closeView) {
+                    // For some reason, dismissing the window after the alert has closed
+                    // or in this closure does not work.
+                    // Therefore, it is necessary to close the window itself instead
                     if closeView {
                         NSApp.keyWindow?.close()
                         closeView = false

@@ -7,13 +7,10 @@
 
 import Foundation
 
-final class ReminderModificationController {
+final class ReminderModificationController: ObservableObject {
     static let shared = ReminderModificationController()
     
+    @Published var refreshReminders = false
     weak var reminder: RandomReminder?
     var remindersPreferencesView: RemindersPreferencesView!
-    
-    func refreshDisplayedReminders() {
-        remindersPreferencesView.refreshDisplayedReminders()
-    }
 }
