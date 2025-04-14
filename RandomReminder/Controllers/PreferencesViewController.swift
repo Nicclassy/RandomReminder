@@ -24,7 +24,7 @@ final class PreferencesViewController {
         )
     }()
     
-    let GeneralPreferencesViewController: () -> SettingsPane = {
+    private let GeneralPreferencesViewController: () -> SettingsPane = {
         Settings.PaneHostingController(
             pane: Settings.Pane(
                 identifier: .general,
@@ -39,7 +39,7 @@ final class PreferencesViewController {
         )
     }
     
-    let SchedulingPreferencesViewController: () -> SettingsPane = {
+    private let SchedulingPreferencesViewController: () -> SettingsPane = {
         Settings.PaneHostingController(
             pane: Settings.Pane(
                 identifier: .scheduling,
@@ -54,7 +54,7 @@ final class PreferencesViewController {
         )
     }
     
-    let RemindersPreferencesViewController: () -> SettingsPane = {
+    private let RemindersPreferencesViewController: () -> SettingsPane = {
         Settings.PaneHostingController(
             pane: Settings.Pane(
                 identifier: .reminders,
@@ -65,11 +65,12 @@ final class PreferencesViewController {
                 )!
             ) {
                 RemindersPreferencesView()
+                    .assignToController()
             }
         )
     }
     
-    let AboutPreferencesViewController: () -> SettingsPane = {
+    private let AboutPreferencesViewController: () -> SettingsPane = {
         Settings.PaneHostingController(
             pane: Settings.Pane(
                 identifier: .about,

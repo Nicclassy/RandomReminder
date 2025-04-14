@@ -72,19 +72,22 @@ private struct ReminderPreferencesRows: View {
     private let rowsBeforeScroll: UInt
     
     var body: some View {
-        let reminders = remindersProvider()
-        if !reminders.isEmpty {
-            VStack(alignment: .leading) {
-                rowsHeading(remindersCount: reminders.count)
-                    .padding(.bottom, 5)
-                if reminders.count > rowsBeforeScroll {
-                    ScrollView {
-                        rows(reminders: reminders)
-                    }
-                    .frame(height: frameHeight(for: reminders.count))
-                } else {
-                    rows(reminders: reminders)
+        Group {
+            let reminders = remindersProvider()
+            let () = FancyLogger.info("Reminders:", reminders)
+            if !reminders.isEmpty {
+                VStack(alignment: .leading) {
+                    rowsHeading(remindersCount: reminders.count)
+                        .padding(.bottom, 5)
+                    if reminders.count > rowsBeforeScroll {
+                        ScrollView {
+                            rows(reminders: reminders)
+                        }
                         .frame(height: frameHeight(for: reminders.count))
+                    } else {
+                        rows(reminders: reminders)
+                            .frame(height: frameHeight(for: reminders.count))
+                    }
                 }
             }
         }
@@ -140,8 +143,9 @@ private struct ReminderPreferencesRows: View {
 
 struct RemindersPreferencesView: View {
     @State private var editingReminders = false
+    @State private var refresh = false
     @StateObject var appPreferences: AppPreferences = .shared
-    var reminderManager: ReminderManager = .shared
+    @ObservedObject var reminderManager: ReminderManager = .shared
     
     @Environment(\.openWindow) var openWindow
     
@@ -198,6 +202,16 @@ struct RemindersPreferencesView: View {
                 }
             }
         }
+    }
+    
+    func assignToController() -> Self {
+        ReminderModificationController.shared.remindersPreferencesView = self
+        return self
+    }
+    
+    func refreshDisplayedReminders() {
+        FancyLogger.info("Refreshing displayed reminders")
+        refresh = true
     }
 }
 

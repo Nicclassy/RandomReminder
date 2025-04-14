@@ -11,4 +11,9 @@ final class ReminderModificationController {
     static let shared = ReminderModificationController()
     
     weak var reminder: RandomReminder?
+    var remindersPreferencesView: RemindersPreferencesView!
+    
+    func refreshDisplayedReminders() {
+        remindersPreferencesView.refreshDisplayedReminders()
+    }
 }
