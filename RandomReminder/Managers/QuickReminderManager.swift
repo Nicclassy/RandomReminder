@@ -10,11 +10,11 @@ import SwiftUI
 
 final class QuickReminderManager: ObservableObject {
     static var defaultQuickReminder: RandomReminder {
-        let earliestTime = TimeOnly(timeIntervalSince1970: AppPreferences.shared.defaultEarliestTime)
-        let latestTime = TimeOnly(timeIntervalSince1970: AppPreferences.shared.defaultLatestTime)
+        let earliestTime = TimeOnly(timeIntervalSince1970: SchedulingPreferences.shared.defaultEarliestTime)
+        let latestTime = TimeOnly(timeIntervalSince1970: SchedulingPreferences.shared.defaultLatestTime)
         let timeInterval = ReminderTimeInterval(earliestTime: earliestTime, latestTime: latestTime, interval: .day)
         return RandomReminder(
-            id: ReminderID.quickReminderId,
+            id: ReminderID.quickReminder,
             title: "Quick Reminder",
             text: "",
             interval: timeInterval,

@@ -65,7 +65,6 @@ final class PreferencesViewController {
                 )!
             ) {
                 RemindersPreferencesView()
-                    .assignToController()
             }
         )
     }

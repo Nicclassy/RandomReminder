@@ -17,6 +17,8 @@ private struct ReminderPreferencesRow: View {
     @State private var showDeleteAlert = false
     
     @Binding private var editing: Bool
+    private var parentNumberOfRows: Int
+    private var parentRowsBeforeScroll: UInt
     private var timer: PublishedTimer
     
     var body: some View {
@@ -34,9 +36,13 @@ private struct ReminderPreferencesRow: View {
                 ) {
                     Button("Cancel", role: .cancel) {}
                     Button("Delete", role: .destructive) {
-                        ReminderManager.shared.removeReminder(reminder)
-                        withAnimation {
-                            ReminderModificationController.shared.refreshReminders = true
+                        ReminderModificationController.shared.refreshReminders = true
+                        if parentNumberOfRows > Int(parentRowsBeforeScroll) {
+                            withAnimation(.default) {
+                                ReminderManager.shared.removeReminder(reminder)
+                            }
+                        } else {
+                            ReminderManager.shared.removeReminder(reminder)
                         }
                         
                         FancyLogger.info("Deleted reminder '\(reminder.content.title)'")
@@ -58,10 +64,17 @@ private struct ReminderPreferencesRow: View {
         .padding(.horizontal, 5)
     }
     
-    init(reminder: RandomReminder, updateTimer timer: PublishedTimer, editing: Binding<Bool>) {
+    init(
+        reminder: RandomReminder,
+        updateTimer timer: PublishedTimer,
+        parentNumberOfRows: Int,
+        parentRowsBeforeScroll: UInt, editing: Binding<Bool>
+    ) {
         self.reminder = reminder
         self.reminderInfo = TimeInfoProvider(reminder: reminder).preferencesInfo()
         self.timer = timer
+        self.parentNumberOfRows = parentNumberOfRows
+        self.parentRowsBeforeScroll = parentRowsBeforeScroll
         self._editing = editing
     }
 }
@@ -132,7 +145,13 @@ private struct ReminderPreferencesRows: View {
             Divider().opacity(0)
             ForEach(reminders.enumeratedArray(), id: \.1.id) { index, reminder in
                 let dividerIsInvisible = index == reminders.endIndex - 1
-                ReminderPreferencesRow(reminder: reminder, updateTimer: timer, editing: $editingReminders)
+                ReminderPreferencesRow(
+                    reminder: reminder,
+                    updateTimer: timer,
+                    parentNumberOfRows: reminders.count,
+                    parentRowsBeforeScroll: rowsBeforeScroll,
+                    editing: $editingReminders
+                )
                 Divider().opacity(dividerIsInvisible ? 0 : 1)
             }
         }

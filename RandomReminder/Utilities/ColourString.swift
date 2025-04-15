@@ -16,15 +16,15 @@ func hex(_ hex: String) -> ColourString {
 }
 
 func rgb(_ r: Int, _ g: Int, _ b: Int) -> ColourString {
-    ColourString(code: String(format: "\u{001B}[38;2;%d;%d;%dm", r, g, b))
+    ColourString(code: String(format: "\033[38;2;%d;%d;%dm", r, g, b))
 }
 
 func xterm256(_ id: Int) -> ColourString {
-    ColourString(code: String(format: "\u{001B}[38;5;%dm", id))
+    ColourString(code: String(format: "\033[38;5;%dm", id))
 }
 
 func ansi(_ ansi: Int) -> ColourString {
-    ColourString(code: String(format: "\u{001B}[%dm", ansi))
+    ColourString(code: String(format: "\033[%dm", ansi))
 }
 
 private func termEnvValueExists() -> Bool {
@@ -49,7 +49,7 @@ struct ColourString: CustomStringConvertible {
     let code: String
     
     var description: String {
-        self.code
+        code
     }
     
     func callAsFunction(_ string: any CustomStringConvertible) -> String {

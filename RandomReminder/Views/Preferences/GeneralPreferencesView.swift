@@ -9,7 +9,7 @@ import SwiftUI
 import LaunchAtLogin
 
 struct GeneralPreferencesView: View {
-    @StateObject var appPreferences: AppPreferences = .shared
+    @ObservedObject var appPreferences: AppPreferences = .shared
     
     var body: some View {
         Form {

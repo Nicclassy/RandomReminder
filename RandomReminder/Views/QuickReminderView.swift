@@ -11,10 +11,10 @@ import SwiftUI
 struct QuickReminderView: View {
     @State private var earliestDate: Date
     @State private var latestDate: Date
-    @ObservedObject private var quickReminderManager = QuickReminderManager()
+    @StateObject private var quickReminderManager = QuickReminderManager()
     
-    @StateObject private var reminderManager: ReminderManager = .shared
-    @StateObject private var appPreferences: AppPreferences = .shared
+    @ObservedObject private var appPreferences: AppPreferences = .shared
+    private var reminderManager: ReminderManager = .shared
     
     var body: some View {
         VStack(spacing: -25) {

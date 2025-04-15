@@ -12,5 +12,4 @@ final class ReminderModificationController: ObservableObject {
     
     @Published var refreshReminders = false
     weak var reminder: RandomReminder?
-    var remindersPreferencesView: RemindersPreferencesView!
 }
