@@ -1,0 +1,121 @@
+--exclude Generated
+
+--lineaftermarks true
+--typeblanklines remove
+--allman false
+--condassignment always
+--elseposition same-line
+--guardelse auto
+--emptybraces no-space
+--enumnamespaces always
+--extensionacl on-declarations
+--generictypes
+--asynccapturing
+--patternlet hoist
+--throwcapturing
+--indent 4
+--smarttabs enabled
+--indentcase false
+--xcodeindentation enabled
+--indentstrings false
+--linebreaks lf
+--someany true
+--nilinit remove
+--self init-only
+--propertytypes infer-locals-only
+--closurevoid remove
+--semicolons never
+--importgrouping alpha
+--operatorfunc spaced
+--ranges no-space
+--typedelimiter space-after
+--voidtype void
+--maxwidth 120
+--wrapternary default
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+--wrapenumcases always
+--yodaswap always
+
+--enable \
+  anyObjectProtocol, \
+  applicationMain, \
+  assertionFailures, \ 
+  blankLinesAtEndOfScope, \
+  blankLinesBetweenChainedFunctions, \
+  blankLinesBetweenScopes, \
+  consecutiveBlankLines, \
+  consecutiveSpaces, \
+  consistentSwitchCaseSpacing, \
+  docComments, \
+  docCommentsBeforeModifiers, \
+  duplicateImports, \
+  elseOnSameLine, \
+  genericExtensions, \
+  headerFileName, \
+  hoistAwait, \
+  hoistPatternLet, \
+  hoistTry, \
+  leadingDelimiters, \
+  linebreakAtEndOfFile, \
+  modifierOrder, \
+  opaqueGenericParameters, \
+  redundantBackticks, \
+  redundantBreak, \
+  redundantClosure, \
+  redundantExtensionACL, \
+  redundantFileprivate, \
+  redundantGet, \
+  redundantInit, \
+  redundantInternal, \
+  redundantLet, \
+  redundantLetError, \
+  redundantNilInit, \
+  redundantObjc, \
+  redundantOptionalBinding, \
+  redundantParens, \
+  redundantPattern, \
+  redundantProperty, \
+  redundantRawValues, \
+  redundantReturn, \
+  redundantSelf, \
+  redundantStaticSelf, \
+  redundantTypedThrows, \
+  redundantVoidReturnType, \
+  sortSwitchCases, \
+  sortTypealiases, \
+  spaceAroundBraces, \
+  spaceAroundBrackets, \
+  spaceAroundComments, \
+  spaceAroundGenerics, \
+  spaceAroundOperators, \
+  spaceAroundParens, \
+  spaceInsideBraces, \
+  spaceInsideBrackets, \
+  spaceInsideComments, \
+  spaceInsideGenerics, \
+  spaceInsideParens, \
+  strongifiedSelf, \
+  todos, \
+  trailingClosures, \
+  trailingSpace, \
+  typeSugar, \
+  unusedArguments, \
+  unusedPrivateDeclarations, \
+  wrap, \
+  wrapEnumCases
+
+--disable \
+  acronyms, \
+  andOperator, \
+  blankLineAfterSwitchCase, \
+  isEmpty, \
+  preferForLoop, \
+  trailingCommas, \
+  preferKeyPath, \
+  wrapAttributes, \
+  wrapConditionalBodies, \
+  wrapLoopBodies, \
+  wrapMultilineConditionalAssignment, \
+  wrapMultilineStatementBraces
