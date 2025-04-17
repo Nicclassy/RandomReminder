@@ -15,21 +15,21 @@ final class RandomReminder: Codable {
     let activationEvents: ReminderActivationEvents
     var counts: ReminderCounts
     var state: ReminderState
-    
+
     var interval: ReminderInterval {
         // AnyReminderInterval is only for serialisation/deserialisation
         // so instead get the type-erased protocol value for operations
         reminderInterval.value
     }
-    
+
     var hasBegun: Bool {
         state == .started
     }
-    
+
     var hasPast: Bool {
         state == .finished
     }
-    
+
     init(
         id: ReminderID,
         content: ReminderContent,
@@ -47,7 +47,7 @@ final class RandomReminder: Codable {
         self.state = state
         self.activationEvents = activationEvents
     }
-    
+
     convenience init(
         id: ReminderID = ReminderManager.shared.nextAvailableId(),
         title: String,
@@ -67,15 +67,15 @@ final class RandomReminder: Codable {
             activationEvents: activationEvents ?? ReminderActivationEvents()
         )
     }
-    
+
     func hasEnded(after date: Date) -> Bool {
         date > interval.latest
     }
-    
+
     func hasStarted(after date: Date) -> Bool {
         date > interval.earliest
     }
-    
+
     func durationInSeconds() -> Float {
         Float(interval.earliest.distance(to: interval.latest))
     }
@@ -97,7 +97,7 @@ extension RandomReminder {
             content.title < other.content.title
         }
     }
-    
+
     func filename() -> String {
         URL(string: String(describing: id))!
             .appendingPathExtension(StoredReminders.fileExtension)
@@ -115,7 +115,7 @@ extension RandomReminder: Equatable, Hashable {
     static func == (lhs: RandomReminder, rhs: RandomReminder) -> Bool {
         lhs.id == rhs.id
     }
-    
+
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }

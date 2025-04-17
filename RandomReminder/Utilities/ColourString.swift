@@ -33,7 +33,7 @@ private func termEnvValueExists() -> Bool {
 
 struct ColourString: CustomStringConvertible {
     static let colourStrings: Bool = false
-    
+
     static let red = ansi(31)
     static let blue = ansi(34)
     static let black = ansi(30)
@@ -43,15 +43,15 @@ struct ColourString: CustomStringConvertible {
     static let cyan = ansi(36)
     static let white = ansi(97)
     static let reset = ansi(0)
-    
+
     static let blank = Self(code: String())
-    
+
     let code: String
-    
+
     var description: String {
         code
     }
-    
+
     func callAsFunction(_ string: any CustomStringConvertible) -> String {
         // Credit: https://github.com/onevcat/Rainbow/blob/master/Sources/OutputTarget.swift
         if Self.colourStrings && termEnvValueExists() && isatty(fileno(stdout)) != 0 {

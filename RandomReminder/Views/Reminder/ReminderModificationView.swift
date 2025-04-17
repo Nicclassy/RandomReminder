@@ -18,7 +18,7 @@ struct ReminderModificationView: View {
     @StateObject var preferences: ReminderPreferences
     @State private var closeView = false
     let mode: ReminderModificationMode
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             Grid(alignment: .leading) {
@@ -36,14 +36,14 @@ struct ReminderModificationView: View {
                         .frame(width: 55)
                 }
             }
-            
+
             ReminderScheduleOptionsView(reminder: reminder, preferences: preferences)
             ReminderAudioOptionsView(
                 reminder: reminder,
                 preferences: preferences,
                 useAudioFile: $preferences.useAudioFile
             )
-            
+
             HStack {
                 Button(action: {
                     let newReminder = reminder.build(preferences: preferences)
@@ -51,15 +51,15 @@ struct ReminderModificationView: View {
                         guard let previousReminder = ReminderModificationController.shared.reminder else {
                             fatalError("A reminder should be stored here")
                         }
-                        
+
                         ReminderManager.shared.removeReminder(previousReminder)
                     }
-                    
+
                     withAnimation {
                         ReminderManager.shared.addReminder(newReminder)
                         ReminderModificationController.shared.refreshReminders = true
                     }
-                    
+
                     FancyLogger.info("Created new reminder/edited reminder \(String(reflecting: reminder))")
                     dismissWindow(id: mode == .create ? WindowIds.createReminder : WindowIds.editReminder)
                     ReminderModificationController.shared.refreshReminders = false
@@ -111,7 +111,7 @@ struct ReminderModificationView: View {
         .frame(width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight)
         .padding()
     }
-    
+
     private var finishButtonText: String {
         mode == .create ? "Create" : "Save"
     }

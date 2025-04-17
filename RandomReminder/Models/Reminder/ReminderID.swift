@@ -9,7 +9,7 @@ import Foundation
 
 struct ReminderID: Codable {
     let value: Int
-    
+
     init(_ value: Int) {
         self.value = value
     }
@@ -23,7 +23,7 @@ extension ReminderID {
 
 extension ReminderID: ExpressibleByIntegerLiteral {
     typealias IntegerLiteralType = Int
-    
+
     init(integerLiteral value: IntegerLiteralType) {
         self.value = value
     }
@@ -33,11 +33,11 @@ extension ReminderID: Equatable, Hashable {
     static func == (lhs: ReminderID, rhs: ReminderID) -> Bool {
         lhs.value == rhs.value
     }
-    
+
     static func == (lhs: ReminderID, rhs: Int) -> Bool {
         lhs.value == rhs
     }
-    
+
     func hash(into hasher: inout Hasher) {
         hasher.combine(value)
     }
@@ -53,8 +53,8 @@ extension ReminderID: Strideable {
     func distance(to other: ReminderID) -> Int {
         other.value - value
     }
-   
-   func advanced(by n: Int) -> ReminderID {
-       ReminderID(value + n)
-   }
+
+    func advanced(by n: Int) -> ReminderID {
+        ReminderID(value + n)
+    }
 }

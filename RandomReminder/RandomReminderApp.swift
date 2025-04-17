@@ -10,18 +10,18 @@ import SwiftUI
 @main
 struct RandomReminderApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
+
     var body: some Scene {
         Settings {
             EmptyView()
         }
         .defaultLaunchBehavior(.suppressed)
-        
+
         Window("Create New Reminder", id: WindowIds.createReminder) {
             ReminderModificationView(reminder: .init(), preferences: .init(), mode: .create)
         }
         .windowResizability(.contentSize)
-        
+
         Window("Edit Reminder", id: WindowIds.editReminder) {
             ReminderModificationView(reminder: .init(), preferences: .init(), mode: .edit)
         }

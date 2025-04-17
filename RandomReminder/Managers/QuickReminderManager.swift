@@ -21,9 +21,9 @@ final class QuickReminderManager: ObservableObject {
             totalOccurences: 0
         )
     }
-    
+
     @Published var quickReminder: RandomReminder
-    
+
     var quickReminderEnabled: Binding<Bool> {
         Binding(
             get: { [unowned self] in
@@ -34,11 +34,11 @@ final class QuickReminderManager: ObservableObject {
             }
         )
     }
-    
+
     var quickReminderStarted: Bool {
         quickReminder.state == .started
     }
-    
+
     init(_ quickReminder: RandomReminder? = nil) {
         self.quickReminder = quickReminder ?? Self.defaultQuickReminder
     }
@@ -46,7 +46,7 @@ final class QuickReminderManager: ObservableObject {
     func save() {
         ReminderSerializer.save(quickReminder, filename: quickReminder.filename())
     }
-    
+
     func toggleStarted() {
         quickReminder.state = quickReminder.state == .started ? .upcoming : .started
     }

@@ -1,5 +1,5 @@
 //
-//  SchedulePreferencesView.swift
+//  SchedulingPreferencesView.swift
 //  RandomReminder
 //
 //  Created by Luca Napoli on 5/1/2025.
@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SchedulingPreferencesView: View {
     @ObservedObject var schedulingPreferences: SchedulingPreferences = .shared
-    
+
     var defaultEarliestDate: Binding<Date> {
         Binding(
             get: {
@@ -22,7 +22,7 @@ struct SchedulingPreferencesView: View {
             set: { schedulingPreferences.defaultEarliestTime = $0.timeIntervalSince1970 }
         )
     }
-        
+
     var defaultLatestDate: Binding<Date> {
         Binding(
             get: {
@@ -35,7 +35,7 @@ struct SchedulingPreferencesView: View {
             set: { schedulingPreferences.defaultLatestTime = $0.timeIntervalSince1970 }
         )
     }
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             DualDatePickerView(
@@ -45,19 +45,21 @@ struct SchedulingPreferencesView: View {
                 earliestDate: defaultEarliestDate,
                 latestDate: defaultLatestDate
             )
-            
+
             HStack {
                 Text("Notification delay (seconds):")
                 Spacer()
                 StepperTextField(value: schedulingPreferences.$notificationDelayTime, range: 0...60)
                     .frame(width: 50)
             }
-            PreferenceCaption("Reminders never occur simultaneously. Control the delay between one reminder's notification and the next when multiple reminders are scheduled to occur.") // swiftlint:disable:this line_length
+            PreferenceCaption(
+                "Reminders never occur simultaneously. Control the delay between one reminder's notification and the next when multiple reminders are scheduled to occur."
+            ) // swiftlint:disable:this line_length
         }
         .padding()
         .frame(width: 320, height: 300)
     }
-    
+
     private func intervalOrDefault(interval: TimeInterval, default date: @autoclosure () -> Date) -> TimeInterval {
         interval == 0 ? date().timeIntervalSince1970 : interval
     }

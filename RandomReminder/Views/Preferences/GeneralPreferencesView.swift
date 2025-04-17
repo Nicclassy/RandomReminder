@@ -5,12 +5,12 @@
 //  Created by Luca Napoli on 18/12/2024.
 //
 
-import SwiftUI
 import LaunchAtLogin
+import SwiftUI
 
 struct GeneralPreferencesView: View {
     @ObservedObject var appPreferences: AppPreferences = .shared
-    
+
     var body: some View {
         Form {
             Section {
@@ -32,7 +32,7 @@ struct GeneralPreferencesView: View {
                     AppDelegate.shared.setQuickReminderEnabled(enabled: isEnabled)
                 }
             }
-            
+
             Section {
                 Toggle(isOn: appPreferences.$quickReminderEnabled) {
                     Text("Show reminder counts")
@@ -42,7 +42,7 @@ struct GeneralPreferencesView: View {
                     appPreferences.showReminderCounts = showReminderCount
                 }
             }
-            
+
             Section {
                 Toggle(isOn: appPreferences.$randomiseAudioPlaybackStart) {
                     Text("Randomise audio playback start")

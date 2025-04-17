@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AboutPreferencesView: View {
     @StateObject var appPreferences: AppPreferences = .shared
-    
+
     var body: some View {
         VStack {
             Text("About placeholder text")

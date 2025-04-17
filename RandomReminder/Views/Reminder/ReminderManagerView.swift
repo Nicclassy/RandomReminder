@@ -8,12 +8,17 @@
 import SwiftUI
 
 func reminderPreview() -> RandomReminder {
-    RandomReminder(title: "Hello", text: "You are here!", interval: ReminderDateInterval(earliestDate: Date(), latestDate: Date().addMinutes(1)), totalOccurences: 3)
+    RandomReminder(
+        title: "Hello",
+        text: "You are here!",
+        interval: ReminderDateInterval(earliestDate: Date(), latestDate: Date().addMinutes(1)),
+        totalOccurences: 3
+    )
 }
 
 struct ReminderManagerView: View {
     @State private var reminder = reminderPreview()
-    
+
     var body: some View {
         VStack {
             Text("Title: " + reminder.content.title)

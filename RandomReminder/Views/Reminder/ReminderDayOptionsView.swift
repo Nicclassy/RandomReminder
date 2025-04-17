@@ -1,5 +1,5 @@
 //
-//  ReminderDayPreferencesView.swift
+//  ReminderDayOptionsView.swift
 //  RandomReminder
 //
 //  Created by Luca Napoli on 22/2/2025.
@@ -10,7 +10,7 @@ import SwiftUI
 struct ReminderDayOptionsView: View {
     @ObservedObject var reminder: MutableReminder
     @ObservedObject var preferences: ReminderPreferences
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             Toggle("Remind only on specific days", isOn: $preferences.specificDays)
@@ -45,7 +45,7 @@ struct ReminderDayOptionsView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .padding(.bottom, 10)
-                        
+
                         HStack {
                             Button(action: {
                                 preferences.showSpecificDaysPopover = false

@@ -12,21 +12,21 @@ final class AnyReminderInterval: Codable {
         case timeInterval
         case dateInterval
     }
-    
+
     enum AnyReminderIntervalError: Swift.Error {
         case missingValue
         case unknownType
     }
-    
+
     let value: ReminderInterval
-    
+
     init(_ value: ReminderInterval) {
         self.value = value
     }
-    
+
     convenience init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
+
         if let timeInterval = try? container.decode(ReminderTimeInterval.self, forKey: .timeInterval) {
             self.init(timeInterval)
         } else if let dateInterval = try? container.decode(ReminderDateInterval.self, forKey: .dateInterval) {
@@ -35,10 +35,10 @@ final class AnyReminderInterval: Codable {
             throw AnyReminderIntervalError.missingValue
         }
     }
-    
+
     func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        
+
         if let timeInterval = value as? ReminderTimeInterval {
             try container.encode(timeInterval, forKey: .timeInterval)
         } else if let dateInterval = value as? ReminderDateInterval {

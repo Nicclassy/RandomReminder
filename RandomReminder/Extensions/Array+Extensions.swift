@@ -14,7 +14,7 @@ extension Array {
             return Self(self[chunkStart..<chunkEnd])
         }
     }
-    
+
     func listing(separator: String = ", ") -> String where Element == String {
         guard !isEmpty else { return "" }
         guard count > 1 else { return first! }

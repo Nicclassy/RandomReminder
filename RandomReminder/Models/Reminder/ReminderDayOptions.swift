@@ -1,5 +1,5 @@
 //
-//  ReminderDays.swift
+//  ReminderDayOptions.swift
 //  RandomReminder
 //
 //  Created by Luca Napoli on 19/2/2025.
@@ -13,14 +13,14 @@ struct ReminderDayOptions: OptionSet, CaseIterable, Codable {
     static let friday: Self = .init(rawValue: 1 << 4)
     static let saturday: Self = .init(rawValue: 1 << 5)
     static let sunday: Self = .init(rawValue: 1 << 6)
-    
+
     static let allCases: [Self] = [
         .monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday
     ]
-    
+
     var rawValue: Int
-    
-    // Weekday names will be localised
+
+    /// Weekday names will be localised
     var name: String {
         switch self {
         case .monday: "Monday"

@@ -5,22 +5,22 @@
 //  Created by Luca Napoli on 23/12/2024.
 //
 
-import SwiftUI
-import Settings
 import Combine
+import Settings
+import SwiftUI
 
 private struct ReminderPreferencesRow: View {
     typealias PublishedTimer = Publishers.Autoconnect<Timer.TimerPublisher>
-    
+
     @State private var reminder: RandomReminder
     @State private var reminderInfo: String
     @State private var showDeleteAlert = false
-    
+
     @Binding private var editing: Bool
     private var parentNumberOfRows: Int
     private var parentRowsBeforeScroll: UInt
     private var timer: PublishedTimer
-    
+
     var body: some View {
         HStack {
             Text(reminder.content.title)
@@ -44,7 +44,7 @@ private struct ReminderPreferencesRow: View {
                         } else {
                             ReminderManager.shared.removeReminder(reminder)
                         }
-                        
+
                         FancyLogger.info("Deleted reminder '\(reminder.content.title)'")
                         ReminderModificationController.shared.refreshReminders = false
                     }
@@ -63,7 +63,7 @@ private struct ReminderPreferencesRow: View {
         .padding(.all, 10)
         .padding(.horizontal, 5)
     }
-    
+
     init(
         reminder: RandomReminder,
         updateTimer timer: PublishedTimer,
@@ -83,10 +83,10 @@ private struct ReminderPreferencesRows: View {
     @Binding private var editingReminders: Bool
     private let remindersProvider: () -> [RandomReminder]
     private let timer = Timer.publish(every: 1, on: .current, in: .common).autoconnect()
-    
+
     private let heading: String
     private let rowsBeforeScroll: UInt
-    
+
     var body: some View {
         Group {
             let reminders = remindersProvider()
@@ -108,9 +108,9 @@ private struct ReminderPreferencesRows: View {
             }
         }
     }
-    
+
     init(
-        heading: String, 
+        heading: String,
         rowsBeforeScoll: UInt,
         editingReminders: Binding<Bool>,
         remindersProvider: @autoclosure @escaping () -> [RandomReminder]
@@ -120,7 +120,7 @@ private struct ReminderPreferencesRows: View {
         self.remindersProvider = remindersProvider
         self._editingReminders = editingReminders
     }
-    
+
     @ViewBuilder
     private func rowsHeading(remindersCount: Int) -> some View {
         if AppPreferences.shared.showReminderCounts {
@@ -133,13 +133,13 @@ private struct ReminderPreferencesRows: View {
             Text(heading).font(.headline)
         }
     }
-    
+
     private func frameHeight(for numberOfRows: Int) -> CGFloat {
         ViewConstants.reminderRowHeight * CGFloat(
             min(UInt(numberOfRows), rowsBeforeScroll)
         )
     }
-    
+
     private func rows(reminders: [RandomReminder]) -> some View {
         VStack {
             Divider().opacity(0)
@@ -165,13 +165,12 @@ private struct ReminderPreferencesRows: View {
 
 struct RemindersPreferencesView: View {
     @State private var editingReminders = false
-    @State private var refresh = false
     @ObservedObject var appPreferences: AppPreferences = .shared
     @ObservedObject var reminderModificationController: ReminderModificationController = .shared
     var reminderManager: ReminderManager = .shared
-    
+
     @Environment(\.openWindow) var openWindow
-    
+
     var body: some View {
         Settings.Container(contentWidth: 500) {
             Settings.Section(title: "") {
@@ -183,7 +182,7 @@ struct RemindersPreferencesView: View {
                         remindersProvider: reminderManager.upcomingReminders()
                     )
                     .padding(.bottom, 10)
-                    
+
                     ReminderPreferencesRows(
                         heading: "Past Reminders",
                         rowsBeforeScoll: ViewConstants.pastRemindersBeforeScroll,
@@ -193,7 +192,7 @@ struct RemindersPreferencesView: View {
                     .padding(.bottom, 10)
                 }
                 .padding(.bottom, 5)
-                
+
                 HStack {
                     if editingReminders {
                         Button("Create New Reminder") {}

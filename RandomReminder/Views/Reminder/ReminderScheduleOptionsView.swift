@@ -1,5 +1,5 @@
 //
-//  ReminderSchedulePreferencesView.swift
+//  ReminderScheduleOptionsView.swift
 //  RandomReminder
 //
 //  Created by Luca Napoli on 22/2/2025.
@@ -10,19 +10,19 @@ import SwiftUI
 struct ReminderScheduleOptionsView: View {
     @ObservedObject var reminder: MutableReminder
     @ObservedObject var preferences: ReminderPreferences
-    
+
     var earliestText: String {
         preferences.timesOnly ? "Earliest time:" : "Earliest date:"
     }
-    
+
     var latestText: String {
         preferences.timesOnly ? "Latest time:" : "Latest date:"
     }
-    
+
     var datePickerComponents: DatePickerComponents {
         preferences.timesOnly ? .hourAndMinute : [.date, .hourAndMinute]
     }
-    
+
     var body: some View {
         Grid(alignment: .leading) {
             GridRow {
@@ -40,7 +40,7 @@ struct ReminderScheduleOptionsView: View {
                         }
                     }
                 }
-                
+
                 VStack(alignment: .leading) {
                     HStack(spacing: 0) {
                         Toggle("Repeating every", isOn: $preferences.repeatingEnabled)
@@ -59,13 +59,13 @@ struct ReminderScheduleOptionsView: View {
                 }
             }
             .padding(.bottom, 20)
-            
+
             GridRow {
                 Text(earliestText)
                 Text(latestText)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            
+
             GridRow {
                 let picker = DualDatePicker(
                     displayedComponents: datePickerComponents,

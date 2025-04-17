@@ -11,12 +11,12 @@ import Foundation
 final class Locked<Value> {
     private var value: Value
     private let lock = NSLock()
-    
+
     var wrappedValue: Value {
         get { lock.withLock { value } }
-        set (value) { lock.withLock { self.value = value } }
+        set(value) { lock.withLock { self.value = value } }
     }
-    
+
     init(wrappedValue value: Value) {
         self.value = value
     }

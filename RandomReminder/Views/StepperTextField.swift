@@ -11,7 +11,7 @@ struct StepperTextField: View {
     @Binding var value: Int
     var range: ClosedRange<Int> = Int.min...Int.max
     var spacing: CGFloat = -5
-    
+
     var body: some View {
         HStack(spacing: spacing) {
             TextField("", value: $value, formatter: ReminderConstants.numberFormatter)
@@ -29,7 +29,7 @@ struct StepperTextField: View {
             )
         }
     }
-    
+
     private func constrainValue(_ value: Int, orElse defaultValue: Int) -> Int {
         range.contains(value) ? value : defaultValue
     }
@@ -37,7 +37,7 @@ struct StepperTextField: View {
 
 struct StepperTextField_Previews: PreviewProvider {
     @State private static var value = 1
-    
+
     static var previews: some View {
         StepperTextField(value: $value)
             .padding()

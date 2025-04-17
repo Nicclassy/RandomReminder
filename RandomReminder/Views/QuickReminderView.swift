@@ -12,10 +12,7 @@ struct QuickReminderView: View {
     @State private var earliestDate: Date
     @State private var latestDate: Date
     @StateObject private var quickReminderManager = QuickReminderManager()
-    
-    @ObservedObject private var appPreferences: AppPreferences = .shared
-    private var reminderManager: ReminderManager = .shared
-    
+
     var body: some View {
         VStack(spacing: -25) {
             DualDatePickerView(
@@ -39,7 +36,7 @@ struct QuickReminderView: View {
         .border(.purple)
         .padding()
     }
-    
+
     init(earliestDate: Date = Date(), latestDate: Date? = nil) {
         self.earliestDate = earliestDate
         self.latestDate = latestDate ?? earliestDate.addMinutes(1)

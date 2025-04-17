@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import SwiftUI
 import enum Settings.Settings
+import SwiftUI
 
 extension Settings.PaneIdentifier {
     static let general = Self("general")

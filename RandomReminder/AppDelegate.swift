@@ -11,13 +11,13 @@ import SwiftUI
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private(set) static var shared: AppDelegate!
     private(set) var statusBarController: StatusBarController!
-    
-    func applicationDidFinishLaunching(_ notification: Notification) {
+
+    func applicationDidFinishLaunching(_: Notification) {
         Self.shared = self
         statusBarController = .init()
         ReminderManager.shared.setup()
     }
-    
+
     func setQuickReminderEnabled(enabled: Bool) {
         statusBarController.quickReminderItem.isHidden = !enabled
     }

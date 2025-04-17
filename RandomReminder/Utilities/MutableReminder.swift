@@ -20,7 +20,7 @@ final class MutableReminder: ObservableObject {
         activationEvents: ReminderActivationEvents(),
         occurences: 0
     )
-    
+
     var id: ReminderID
     @Published var title: String
     @Published var text: String
@@ -31,7 +31,7 @@ final class MutableReminder: ObservableObject {
     @Published var repeatInterval: RepeatInterval
     @Published var activationEvents: ReminderActivationEvents
     var occurences: Int
-    
+
     init(
         id: ReminderID,
         title: String,
@@ -55,28 +55,28 @@ final class MutableReminder: ObservableObject {
         self.activationEvents = activationEvents
         self.occurences = occurences
     }
-    
+
     init(reminder: MutableReminder) {
-        id = reminder.id
-        title = reminder.title
-        text = reminder.text
-        totalOccurences = reminder.totalOccurences
-        earliestDate = reminder.earliestDate
-        latestDate = reminder.latestDate
-        days = reminder.days
-        repeatInterval = reminder.repeatInterval
-        activationEvents = reminder.activationEvents
-        occurences = reminder.occurences
+        self.id = reminder.id
+        self.title = reminder.title
+        self.text = reminder.text
+        self.totalOccurences = reminder.totalOccurences
+        self.earliestDate = reminder.earliestDate
+        self.latestDate = reminder.latestDate
+        self.days = reminder.days
+        self.repeatInterval = reminder.repeatInterval
+        self.activationEvents = reminder.activationEvents
+        self.occurences = reminder.occurences
     }
-    
+
     convenience init() {
         self.init(reminder: .default)
     }
-    
+
     func reset() {
         copyFrom(reminder: .default)
     }
-    
+
     func copyFrom(reminder: MutableReminder) {
         id = reminder.id
         title = reminder.title
@@ -89,7 +89,7 @@ final class MutableReminder: ObservableObject {
         activationEvents = reminder.activationEvents
         occurences = reminder.occurences
     }
-    
+
     func copyFrom(reminder: RandomReminder) {
         id = reminder.id
         title = reminder.content.title
@@ -102,7 +102,7 @@ final class MutableReminder: ObservableObject {
         repeatInterval = reminder.interval.repeatInterval
         activationEvents = reminder.activationEvents
     }
-    
+
     func build(preferences reminderPreferences: ReminderPreferences) -> RandomReminder {
         let reminderInterval: ReminderInterval = if reminderPreferences.alwaysRunning {
             ReminderTimeInterval.infinite
@@ -115,7 +115,7 @@ final class MutableReminder: ObservableObject {
         } else {
             ReminderDateInterval(earliestDate: earliestDate, latestDate: latestDate)
         }
-        
+
         return RandomReminder(
             title: title,
             text: text,

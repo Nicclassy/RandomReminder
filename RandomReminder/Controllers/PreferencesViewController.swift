@@ -5,25 +5,23 @@
 //  Created by Luca Napoli on 30/12/2024.
 //
 
-import SwiftUI
 import Settings
+import SwiftUI
 
 // swiftlint:disable identifier_name
 final class PreferencesViewController {
-    private lazy var windowController: SettingsWindowController = {
-        SettingsWindowController(
-            panes: [
-                GeneralPreferencesViewController(),
-                SchedulingPreferencesViewController(),
-                RemindersPreferencesViewController(),
-                AboutPreferencesViewController()
-            ],
-            style: .toolbarItems,
-            animated: true,
-            hidesToolbarForSingleItem: false
-        )
-    }()
-    
+    private lazy var windowController = SettingsWindowController(
+        panes: [
+            GeneralPreferencesViewController(),
+            SchedulingPreferencesViewController(),
+            RemindersPreferencesViewController(),
+            AboutPreferencesViewController()
+        ],
+        style: .toolbarItems,
+        animated: true,
+        hidesToolbarForSingleItem: false
+    )
+
     private let GeneralPreferencesViewController: () -> SettingsPane = {
         Settings.PaneHostingController(
             pane: Settings.Pane(
@@ -38,7 +36,7 @@ final class PreferencesViewController {
             }
         )
     }
-    
+
     private let SchedulingPreferencesViewController: () -> SettingsPane = {
         Settings.PaneHostingController(
             pane: Settings.Pane(
@@ -53,7 +51,7 @@ final class PreferencesViewController {
             }
         )
     }
-    
+
     private let RemindersPreferencesViewController: () -> SettingsPane = {
         Settings.PaneHostingController(
             pane: Settings.Pane(
@@ -68,7 +66,7 @@ final class PreferencesViewController {
             }
         )
     }
-    
+
     private let AboutPreferencesViewController: () -> SettingsPane = {
         Settings.PaneHostingController(
             pane: Settings.Pane(
@@ -83,10 +81,11 @@ final class PreferencesViewController {
             }
         )
     }
-    
+
     func show() {
         windowController.show()
         windowController.window?.center()
     }
 }
+
 // swiftlint:enable identifier_name
