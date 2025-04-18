@@ -16,11 +16,11 @@ It is a non-generic take on a reminders app that is spontaneous in nature and hi
 - [x] A view for editing existing reminders
 - [x] Reminder deletion
 - [x] Display reminders in preferences
-- [ ] Configuration of notifications and a window to guide the user to select the appropriate options
+- [x] Configuration of notifications and a window to guide the user to select the appropriate options
 - [x] An option for launching the application at login
 - [ ] Default preferences for dates/times selected
-- [ ] SwiftLint for in-editor linting
-- [ ] SwiftFormat for code formatting
+- [x] SwiftLint for in-editor linting
+- [x] SwiftFormat for code formatting
 - [ ] Pre-commit hooks for SwiftFormat
 - [ ] Non UI testing, potentially via Docker
 - [ ] Xcode build testing

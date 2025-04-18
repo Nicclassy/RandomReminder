@@ -121,7 +121,8 @@ final class MutableReminder: ObservableObject {
             text: text,
             interval: reminderInterval,
             days: reminderPreferences.specificDays ? days : .allOptions(),
-            totalOccurences: totalOccurences
+            totalOccurences: totalOccurences,
+            activationEvents: reminderPreferences.useAudioFile ? activationEvents : nil
         )
     }
 }

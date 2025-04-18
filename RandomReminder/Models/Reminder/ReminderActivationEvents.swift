@@ -20,7 +20,7 @@ struct ReminderAudioFile: Codable, Equatable, Hashable {
     }
 }
 
-final class ReminderActivationEvents: Codable {
+struct ReminderActivationEvents: Codable {
     var audio: ReminderAudioFile?
 
     init(audio: ReminderAudioFile? = nil) {

@@ -22,7 +22,7 @@ struct ReminderAudioOptionsView: View {
             HStack {
                 let audioFiles = reminderManager.audioFiles
                 if alwaysShowFilePicker || !audioFiles.isEmpty {
-                    Picker("Audio file", selection: $reminder.activationEvents.audio) {
+                    Picker("Audio file", selection: audioFileSelection(audioFiles: audioFiles)) {
                         ForEach(audioFiles, id: \.self) { audioFile in
                             Text(String(describing: audioFile.name)).tag(audioFile)
                         }
@@ -60,6 +60,13 @@ struct ReminderAudioOptionsView: View {
                 .disabled(!useAudioFile)
             }
         }
+    }
+
+    private func audioFileSelection(audioFiles: [ReminderAudioFile]) -> Binding<ReminderAudioFile> {
+        Binding(
+            get: { reminder.activationEvents.audio ?? audioFiles.first! },
+            set: { reminder.activationEvents.audio = $0 }
+        )
     }
 }
 
