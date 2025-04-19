@@ -62,7 +62,13 @@ struct ReminderModificationView: View {
 
                     FancyLogger.info("Created new reminder/edited reminder \(String(reflecting: reminder))")
                     dismissWindow(id: mode == .create ? WindowIds.createReminder : WindowIds.editReminder)
+
                     ReminderModificationController.shared.refreshReminders = false
+                    if mode == .create {
+                        ReminderModificationController.shared.stopCreatingReminder()
+                    } else {
+                        ReminderModificationController.shared.stopEditingReminder()
+                    }
                 }, label: {
                     Text(finishButtonText)
                         .frame(width: 60)
@@ -107,6 +113,11 @@ struct ReminderModificationView: View {
         }
         .onDisappear {
             reminder.reset()
+            if mode == .create {
+                ReminderModificationController.shared.stopCreatingReminder()
+            } else {
+                ReminderModificationController.shared.stopEditingReminder()
+            }
         }
         .frame(width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight)
         .padding()

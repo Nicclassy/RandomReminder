@@ -16,7 +16,9 @@ private struct ReminderPreferencesRow: View {
     @State private var reminderInfo: String
     @State private var showDeleteAlert = false
 
+    @Environment(\.openWindow) var openWindow
     @Binding private var editing: Bool
+
     private var parentNumberOfRows: Int
     private var parentRowsBeforeScroll: UInt
     private var timer: PublishedTimer
@@ -26,10 +28,17 @@ private struct ReminderPreferencesRow: View {
             Text(reminder.content.title)
             Spacer()
             if editing {
-                Button("Edit") {}
+                Button("Edit") {
+                    ReminderModificationController.shared.editingReminder = true
+                    ReminderModificationController.shared.reminder = reminder
+                    openWindow(id: WindowIds.editReminder)
+                }
+                .disabled(!ReminderModificationController.shared.canCreateOrEditReminders())
+
                 Button("Delete") {
                     showDeleteAlert = true
                 }
+                .disabled(!ReminderModificationController.shared.canCreateOrEditReminders())
                 .alert(
                     "Are you sure you want to delete the reminder '\(reminder.content.title)'?",
                     isPresented: $showDeleteAlert
@@ -90,7 +99,6 @@ private struct ReminderPreferencesRows: View {
     var body: some View {
         Group {
             let reminders = remindersProvider()
-            let () = FancyLogger.info("Reminders:", reminders)
             if !reminders.isEmpty {
                 VStack(alignment: .leading) {
                     rowsHeading(remindersCount: reminders.count)
@@ -200,8 +208,14 @@ struct RemindersPreferencesView: View {
                             .disabled(true)
                     } else {
                         Button("Create New Reminder") {
-                            openWindow(id: WindowIds.createReminder)
+                            if ReminderModificationController.shared.canCreateOrEditReminders() {
+                                ReminderModificationController.shared.creatingReminder = true
+                                openWindow(id: WindowIds.createReminder)
+                            } else {
+                                FancyLogger.info("Cannot create reminder while during editing/creation")
+                            }
                         }
+                        .disabled(!ReminderModificationController.shared.canCreateOrEditReminders())
                         .buttonStyle(.borderedProminent)
                     }
                     Spacer()
@@ -218,6 +232,7 @@ struct RemindersPreferencesView: View {
                             editingReminders.toggle()
                         }, label: {
                             Text("Edit Reminders")
+                                .disabled(!ReminderModificationController.shared.canCreateOrEditReminders())
                                 .frame(width: 100)
                         })
                     }
