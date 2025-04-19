@@ -53,8 +53,8 @@ struct SchedulingPreferencesView: View {
                     .frame(width: 50)
             }
             PreferenceCaption(
-                "Reminders never occur simultaneously. Control the delay between one reminder's notification and the next when multiple reminders are scheduled to occur."
-            ) // swiftlint:disable:this line_length
+                "Reminders never occur simultaneously. Control the delay between one reminder's notification and the next when multiple reminders are scheduled to occur." // swiftlint:disable:this line_length
+            )
         }
         .padding()
         .frame(width: 320, height: 300)

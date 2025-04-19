@@ -106,8 +106,18 @@ extension RandomReminder {
 }
 
 extension RandomReminder: CustomStringConvertible {
+    private static let titleOnly = false
+
     var description: String {
-        content.title
+        if Self.titleOnly {
+            return content.title
+        }
+        
+        let mirror = Mirror(reflecting: self)
+        let properties = mirror.children
+            .map { "\($0.label ?? "?") = \($0.value)" }
+            .joined(separator: ", ")
+        return "\(type(of: self)) { \(properties) }"
     }
 }
 

@@ -69,7 +69,7 @@ final class ReminderManager {
                     latestDate: Date().addingTimeInterval(10)
                 ),
                 totalOccurences: 2
-            ), // swiftlint:disable:this line_length
+            ),
             RandomReminder(
                 id: 2,
                 title: "But why",
@@ -79,9 +79,24 @@ final class ReminderManager {
                     latestDate: Date().subtractMinutes(2)
                 ),
                 totalOccurences: 2
-            ) // swiftlint:disable:this line_length
-//            RandomReminder(id: 3, title: "No way", text: "Yes", interval: ReminderDateInterval(earliestDate: Date().subtractMinutes(3), latestDate: Date().subtractMinutes(2)), totalOccurences: 2), // swiftlint:disable:this line_length
-//            RandomReminder(id: 4, title: "Perhaps", text: "Yes", interval: ReminderDateInterval(earliestDate: Date().subtractMinutes(3), latestDate: Date().subtractMinutes(2)), totalOccurences: 2) // swiftlint:disable:this line_length
+            ),
+            RandomReminder(
+                id: 3,
+                title: "Audio happening",
+                text: "Yes",
+                interval: ReminderTimeInterval(
+                    earliestTime: TimeOnly(hour: Date().hour, minute: Date().minute),
+                    latestTime: TimeOnly(hour: Date().hour, minute: (Date().minute + 5) % 60),
+                    interval: .hour
+                ),
+                totalOccurences: 4,
+                activationEvents: ReminderActivationEvents(
+                    audio: ReminderAudioFile(
+                        name: "Sorabji",
+                        url: Bundle.main.url(forResource: "sorabji", withExtension: "wav")!
+                    )
+                )
+            )
         ]
     }
 
@@ -223,7 +238,10 @@ final class ReminderManager {
                 if reminder.hasEnded(after: date) {
                     reminder.state = .finished
                 } else if reminder.hasStarted(after: date) {
-                    guard remind else { return }
+                    guard remind else {
+                        reminder.state = .started
+                        return
+                    }
                     assert(reminder.counts.occurences == 0, "Reminder '\(reminder)' should not have occurrences")
                     startReminder(reminder)
                 }

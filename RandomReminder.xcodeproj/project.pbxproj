@@ -384,10 +384,10 @@
 			buildConfigurationList = 8163F5F42D1241D50052A016 /* Build configuration list for PBXNativeTarget "RandomReminder" */;
 			buildPhases = (
 				8163F5CB2D1241D40052A016 /* Sources */,
+				812D23E52DAD6A3300675783 /* SwiftFormat */,
 				81F921D12D92BF700064ED2E /* SwiftLint */,
 				8163F5CC2D1241D40052A016 /* Frameworks */,
 				8163F5CD2D1241D40052A016 /* Resources */,
-				812D23E52DAD6A3300675783 /* SwiftFormat */,
 				813F31022D2A830000EF6DD1 /* SwiftGen */,
 			);
 			buildRules = (
