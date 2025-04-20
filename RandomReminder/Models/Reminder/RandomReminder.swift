@@ -112,7 +112,7 @@ extension RandomReminder: CustomStringConvertible {
         if Self.titleOnly {
             return content.title
         }
-        
+
         let mirror = Mirror(reflecting: self)
         let properties = mirror.children
             .map { "\($0.label ?? "?") = \($0.value)" }

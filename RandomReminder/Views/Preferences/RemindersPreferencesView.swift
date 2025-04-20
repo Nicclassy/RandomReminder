@@ -16,7 +16,8 @@ private struct ReminderPreferencesRow: View {
     @State private var reminderInfo: String
     @State private var showDeleteAlert = false
 
-    @Environment(\.openWindow) var openWindow
+    @StateObject private var controller: ReminderModificationController = .shared
+    @Environment(\.openWindow) private var openWindow
     @Binding private var editing: Bool
 
     private var parentNumberOfRows: Int
@@ -29,16 +30,16 @@ private struct ReminderPreferencesRow: View {
             Spacer()
             if editing {
                 Button("Edit") {
-                    ReminderModificationController.shared.editingReminder = true
+                    controller.modificationWindowOpen = true
                     ReminderModificationController.shared.reminder = reminder
                     openWindow(id: WindowIds.editReminder)
                 }
-                .disabled(!ReminderModificationController.shared.canCreateOrEditReminders())
+                .disabled(controller.modificationWindowOpen)
 
                 Button("Delete") {
                     showDeleteAlert = true
                 }
-                .disabled(!ReminderModificationController.shared.canCreateOrEditReminders())
+                .disabled(controller.modificationWindowOpen)
                 .alert(
                     "Are you sure you want to delete the reminder '\(reminder.content.title)'?",
                     isPresented: $showDeleteAlert
@@ -173,9 +174,8 @@ private struct ReminderPreferencesRows: View {
 
 struct RemindersPreferencesView: View {
     @State private var editingReminders = false
-    @ObservedObject var appPreferences: AppPreferences = .shared
-    @ObservedObject var reminderModificationController: ReminderModificationController = .shared
-    var reminderManager: ReminderManager = .shared
+    @ObservedObject private var controller: ReminderModificationController = .shared
+    private var reminderManager: ReminderManager = .shared
 
     @Environment(\.openWindow) var openWindow
 
@@ -207,16 +207,17 @@ struct RemindersPreferencesView: View {
                             .buttonStyle(.automatic)
                             .disabled(true)
                     } else {
-                        Button("Create New Reminder") {
-                            if ReminderModificationController.shared.canCreateOrEditReminders() {
-                                ReminderModificationController.shared.creatingReminder = true
-                                openWindow(id: WindowIds.createReminder)
-                            } else {
-                                FancyLogger.info("Cannot create reminder while during editing/creation")
-                            }
+                        let newReminderButton = Button("Create New Reminder") {
+                            controller.modificationWindowOpen = true
+                            openWindow(id: WindowIds.createReminder)
                         }
-                        .disabled(!ReminderModificationController.shared.canCreateOrEditReminders())
-                        .buttonStyle(.borderedProminent)
+                        .disabled(controller.modificationWindowOpen)
+
+                        if controller.modificationWindowOpen {
+                            newReminderButton.buttonStyle(.automatic)
+                        } else {
+                            newReminderButton.buttonStyle(.borderedProminent)
+                        }
                     }
                     Spacer()
                     if editingReminders {
@@ -232,9 +233,9 @@ struct RemindersPreferencesView: View {
                             editingReminders.toggle()
                         }, label: {
                             Text("Edit Reminders")
-                                .disabled(!ReminderModificationController.shared.canCreateOrEditReminders())
                                 .frame(width: 100)
                         })
+                        .disabled(controller.modificationWindowOpen)
                     }
                 }
             }

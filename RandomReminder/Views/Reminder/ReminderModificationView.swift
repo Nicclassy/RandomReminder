@@ -13,7 +13,7 @@ enum ReminderModificationMode {
 }
 
 struct ReminderModificationView: View {
-    @Environment(\.dismissWindow) var dismissWindow
+    @Environment(\.dismissWindow) private var dismissWindow
     @StateObject var reminder: MutableReminder
     @StateObject var preferences: ReminderPreferences
     @State private var closeView = false
@@ -57,18 +57,13 @@ struct ReminderModificationView: View {
 
                     withAnimation {
                         ReminderManager.shared.addReminder(newReminder)
-                        ReminderModificationController.shared.refreshReminders = true
+                        ReminderModificationController.shared.refreshReminders.toggle()
                     }
 
                     FancyLogger.info("Created new reminder/edited reminder \(String(reflecting: reminder))")
                     dismissWindow(id: mode == .create ? WindowIds.createReminder : WindowIds.editReminder)
 
-                    ReminderModificationController.shared.refreshReminders = false
-                    if mode == .create {
-                        ReminderModificationController.shared.stopCreatingReminder()
-                    } else {
-                        ReminderModificationController.shared.stopEditingReminder()
-                    }
+                    ReminderModificationController.shared.modificationWindowOpen = false
                 }, label: {
                     Text(finishButtonText)
                         .frame(width: 60)
@@ -113,11 +108,7 @@ struct ReminderModificationView: View {
         }
         .onDisappear {
             reminder.reset()
-            if mode == .create {
-                ReminderModificationController.shared.stopCreatingReminder()
-            } else {
-                ReminderModificationController.shared.stopEditingReminder()
-            }
+            ReminderModificationController.shared.modificationWindowOpen = false
         }
         .frame(width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight)
         .padding()
