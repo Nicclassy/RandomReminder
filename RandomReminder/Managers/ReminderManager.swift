@@ -21,8 +21,10 @@ final class ReminderManager {
     private var startedRemindersQueue = OperationQueue()
     private var queue = DispatchQueue(label: Constants.bundleID + ".ReminderManager.queue", qos: .userInitiated)
 
-    @Locked private var activeReminders: [ActiveReminderService] = []
-    @Locked private var startedReminders: [ReminderActivatorService] = []
+    private var activeRemindersLock = NSLock()
+    private var startedRemindersLock = NSLock()
+    private var activeReminders: [ActiveReminderService] = []
+    private var startedReminders: [ReminderActivatorService] = []
 
     var reminderIds: Set<ReminderID> {
         queue.sync {
@@ -160,11 +162,10 @@ final class ReminderManager {
     }
 
     func removeReminder(_ reminder: RandomReminder) {
-        guard let index = reminders.firstIndex(of: reminder) else {
-            fatalError("Could not find reminder '\(reminder)' when it was expected to be present")
-        }
-
         queue.sync {
+            guard let index = reminders.firstIndex(of: reminder) else {
+                fatalError("Could not find reminder '\(reminder)' when it was expected to be present")
+            }
             _ = reminders.remove(at: index)
         }
         stopReminder(reminder)
@@ -175,18 +176,22 @@ final class ReminderManager {
 
     func activateReminder(_ reminder: RandomReminder) {
         let activeReminder = ActiveReminderService(reminder: reminder)
-        activeReminders.append(activeReminder)
+        activeRemindersLock.withLock {
+            activeReminders.append(activeReminder)
+        }
         NotificationManager.shared.addReminderNotification(for: activeReminder)
     }
 
     func deactivateReminder(_ reminder: RandomReminder) {
-        guard let index = activeReminders.firstIndex(where: { $0.reminder === reminder }) else {
-            FancyLogger.warn("Reminder '\(reminder)' is not in the active reminders list when it should be")
-            return
-        }
+        activeRemindersLock.withLock {
+            guard let index = activeReminders.firstIndex(where: { $0.reminder === reminder }) else {
+                FancyLogger.warn("Reminder '\(reminder)' is not in the active reminders list when it should be")
+                return
+            }
 
-        activeReminders.remove(at: index)
-        FancyLogger.info("Deactivated reminder '\(reminder)'")
+            activeReminders.remove(at: index)
+            FancyLogger.info("Deactivated reminder '\(reminder)'")
+        }
     }
 
     func startReminder(_ reminder: RandomReminder) {
@@ -197,7 +202,10 @@ final class ReminderManager {
             }
         }
 
-        startedReminders.append(reminderActivator)
+        startedRemindersLock.withLock {
+            startedReminders.append(reminderActivator)
+        }
+
         startedRemindersQueue.addOperation { [self] in
             reminderActivator.start()
             let sleepInterval = tickInterval.seconds()
@@ -211,13 +219,15 @@ final class ReminderManager {
     }
 
     func stopReminder(_ reminder: RandomReminder) {
-        guard let index = startedReminders.firstIndex(where: { $0.reminder === reminder }) else {
-            FancyLogger.warn("Reminder '\(reminder)' was not found when it should be present")
-            return
-        }
+        startedRemindersLock.withLock {
+            guard let index = startedReminders.firstIndex(where: { $0.reminder === reminder }) else {
+                FancyLogger.warn("Reminder '\(reminder)' was not found when it should be present")
+                return
+            }
 
-        startedReminders.remove(at: index)
-        deactivateReminder(reminder)
+            startedReminders.remove(at: index)
+            deactivateReminder(reminder)
+        }
     }
 
     private func deleteReminder(_ reminder: RandomReminder) {
