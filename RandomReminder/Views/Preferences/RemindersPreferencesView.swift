@@ -20,9 +20,9 @@ private struct ReminderPreferencesRow: View {
     @Environment(\.openWindow) private var openWindow
     @Binding private var editing: Bool
 
+    private var timer: PublishedTimer
     private var parentNumberOfRows: Int
     private var parentRowsBeforeScroll: UInt
-    private var timer: PublishedTimer
 
     var body: some View {
         HStack {
@@ -46,12 +46,13 @@ private struct ReminderPreferencesRow: View {
                 ) {
                     Button("Cancel", role: .cancel) {}
                     Button("Delete", role: .destructive) {
-                        ReminderModificationController.shared.refreshReminders = true
                         if parentNumberOfRows > Int(parentRowsBeforeScroll) {
                             withAnimation(.default) {
+                                ReminderModificationController.shared.refreshReminders.toggle()
                                 ReminderManager.shared.removeReminder(reminder)
                             }
                         } else {
+                            ReminderModificationController.shared.refreshReminders.toggle()
                             ReminderManager.shared.removeReminder(reminder)
                         }
 
@@ -78,7 +79,8 @@ private struct ReminderPreferencesRow: View {
         reminder: RandomReminder,
         updateTimer timer: PublishedTimer,
         parentNumberOfRows: Int,
-        parentRowsBeforeScroll: UInt, editing: Binding<Bool>
+        parentRowsBeforeScroll: UInt,
+        editing: Binding<Bool>
     ) {
         self.reminder = reminder
         self.reminderInfo = TimeInfoProvider(reminder: reminder).preferencesInfo()
@@ -90,6 +92,7 @@ private struct ReminderPreferencesRow: View {
 }
 
 private struct ReminderPreferencesRows: View {
+    @ObservedObject private var appPreferences: AppPreferences = .shared
     @Binding private var editingReminders: Bool
     private let remindersProvider: () -> [RandomReminder]
     private let timer = Timer.publish(every: 1, on: .current, in: .common).autoconnect()
@@ -132,7 +135,7 @@ private struct ReminderPreferencesRows: View {
 
     @ViewBuilder
     private func rowsHeading(remindersCount: Int) -> some View {
-        if AppPreferences.shared.showReminderCounts {
+        if appPreferences.showReminderCounts {
             HStack {
                 Text(heading).font(.headline)
                 Spacer()

@@ -34,7 +34,7 @@ struct GeneralPreferencesView: View {
             }
 
             Section {
-                Toggle(isOn: appPreferences.$quickReminderEnabled) {
+                Toggle(isOn: appPreferences.$showReminderCounts) {
                     Text("Show reminder counts")
                     PreferenceCaption("Show the number of reminders in each category in the category's heading.")
                 }
