@@ -62,6 +62,7 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 
 ## Other
+Preview+Extensions.swift
 ContentView.swift
 settings.json
 .DS_Store

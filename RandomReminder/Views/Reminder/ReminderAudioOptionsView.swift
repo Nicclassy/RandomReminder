@@ -13,7 +13,7 @@ struct ReminderAudioOptionsView: View {
     @Binding var useAudioFile: Bool
 
     private let reminderManager: ReminderManager = .shared
-    private let alwaysShowFilePicker: Bool = true
+    private let alwaysShowFilePicker = false
 
     var body: some View {
         VStack(alignment: .leading) {

@@ -21,8 +21,8 @@ final class ReminderManager {
     private var startedRemindersQueue = OperationQueue()
     private var queue = DispatchQueue(label: Constants.bundleID + ".ReminderManager.queue", qos: .userInitiated)
 
-    private var activeRemindersLock = NSLock()
-    private var startedRemindersLock = NSLock()
+    private let activeRemindersLock = NSLock()
+    private let startedRemindersLock = NSLock()
     private var activeReminders: [ActiveReminderService] = []
     private var startedReminders: [ReminderActivatorService] = []
 
@@ -58,48 +58,6 @@ final class ReminderManager {
         }
 
         self.init(reminders)
-    }
-
-    static func previewReminders() -> [RandomReminder] {
-        [
-            RandomReminder(
-                id: 1,
-                title: "Take a 5 minute break",
-                text: "Why",
-                interval: ReminderDateInterval(
-                    earliestDate: Date().addingTimeInterval(-3),
-                    latestDate: Date().addingTimeInterval(10)
-                ),
-                totalOccurences: 2
-            ),
-            RandomReminder(
-                id: 2,
-                title: "But why",
-                text: "Yes",
-                interval: ReminderDateInterval(
-                    earliestDate: Date().subtractMinutes(3),
-                    latestDate: Date().subtractMinutes(2)
-                ),
-                totalOccurences: 2
-            ),
-            RandomReminder(
-                id: 3,
-                title: "Audio happening",
-                text: "Yes",
-                interval: ReminderTimeInterval(
-                    earliestTime: TimeOnly(hour: Date().hour, minute: Date().minute),
-                    latestTime: TimeOnly(hour: Date().hour, minute: (Date().minute + 5) % 60),
-                    interval: .hour
-                ),
-                totalOccurences: 4,
-                activationEvents: ReminderActivationEvents(
-                    audio: ReminderAudioFile(
-                        name: "Sorabji",
-                        url: Bundle.main.url(forResource: "sorabji", withExtension: "wav")!
-                    )
-                )
-            )
-        ]
     }
 
     private static func reminderFileNames() -> [String] {
@@ -207,8 +165,8 @@ final class ReminderManager {
         }
 
         startedRemindersQueue.addOperation { [self] in
-            reminderActivator.start()
             let sleepInterval = tickInterval.seconds()
+            reminderActivator.start()
             while reminderActivator.running {
                 Thread.sleep(forTimeInterval: sleepInterval)
                 reminderActivator.tick()
