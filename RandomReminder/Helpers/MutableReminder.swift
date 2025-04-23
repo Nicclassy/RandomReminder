@@ -99,7 +99,9 @@ final class MutableReminder: ObservableObject {
         earliestDate = reminder.interval.earliest
         latestDate = reminder.interval.latest
         days = reminder.days
-        repeatInterval = reminder.interval.repeatInterval
+        repeatInterval = reminder.interval.repeatInterval == .never
+            ? Self.default.repeatInterval
+            : reminder.interval.repeatInterval
         activationEvents = reminder.activationEvents
     }
 
