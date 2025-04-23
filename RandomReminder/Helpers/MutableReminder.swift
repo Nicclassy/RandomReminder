@@ -8,7 +8,7 @@
 import Foundation
 
 final class MutableReminder: ObservableObject {
-    static let `default` = MutableReminder(
+    private static let `default` = MutableReminder(
         id: .unassigned,
         title: String(),
         text: String(),
