@@ -12,14 +12,17 @@ final class ReminderManager {
     static let shared = ReminderManager(preview: true)
 
     private var persistentChanges = false
-    private var remind = false
+    private var remind = true
 
     private var reminders: [RandomReminder]
     private var timerThread: Thread!
     private var tickInterval: ReminderTickInterval = .seconds(1)
 
     private var startedRemindersQueue = OperationQueue()
-    private var queue = DispatchQueue(label: Constants.bundleID + ".ReminderManager.queue", qos: .userInitiated)
+    private var remindersQueue = DispatchQueue(
+        label: Constants.bundleID + ".ReminderManager.queue",
+        qos: .userInitiated
+    )
 
     private let activeRemindersLock = NSLock()
     private let startedRemindersLock = NSLock()
@@ -27,13 +30,13 @@ final class ReminderManager {
     private var startedReminders: [ReminderActivatorService] = []
 
     var reminderIds: Set<ReminderID> {
-        queue.sync {
+        remindersQueue.sync {
             Set(reminders.map(\.id))
         }
     }
 
     var audioFiles: [ReminderAudioFile] {
-        queue.sync {
+        remindersQueue.sync {
             reminders.compactMap(\.activationEvents.audio)
         }
     }
@@ -80,11 +83,15 @@ final class ReminderManager {
         timerThread = Thread {
             let timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
                 let date = Date()
-                queue.sync { reminders }.forEach { reminder in
-                    if reminder.hasEnded(after: date) {
-                        stopReminder(reminder)
-                    } else if reminder.hasStarted(after: date) {
-                        startReminder(reminder)
+                remindersQueue.sync {
+                    for reminder in reminders where !reminder.hasPast {
+                        if reminder.hasEnded(after: date) {
+                            FancyLogger.info("Reminder '\(reminder)' has ended after \(date)")
+                            stopReminder(reminder)
+                        } else if !reminder.hasBegun && reminder.hasStarted(after: date) {
+                            FancyLogger.info("Starting reminder '\(reminder)'")
+                            startReminder(reminder)
+                        }
                     }
                 }
             }
@@ -95,13 +102,13 @@ final class ReminderManager {
     }
 
     func upcomingReminders() -> [RandomReminder] {
-        queue.sync {
+        remindersQueue.sync {
             reminders.lazy.filter { !$0.hasPast }.sorted { $0.compare(with: $1) }
         }
     }
 
     func pastReminders() -> [RandomReminder] {
-        queue.sync {
+        remindersQueue.sync {
             reminders.lazy.filter { $0.hasPast }.sorted { $0.compare(with: $1) }
         }
     }
@@ -111,7 +118,7 @@ final class ReminderManager {
     }
 
     func addReminder(_ reminder: RandomReminder) {
-        queue.sync {
+        remindersQueue.sync {
             reminders.append(reminder)
         }
         if persistentChanges {
@@ -120,7 +127,7 @@ final class ReminderManager {
     }
 
     func removeReminder(_ reminder: RandomReminder) {
-        queue.sync {
+        remindersQueue.sync {
             guard let index = reminders.firstIndex(of: reminder) else {
                 fatalError("Could not find reminder '\(reminder)' when it was expected to be present")
             }
@@ -200,10 +207,11 @@ final class ReminderManager {
     private func setReminderStates() {
         // Perform this processing prior to the timer so that we don't
         // start reminders that past before the app launched
-        queue.sync {
+        remindersQueue.sync {
             let date = Date()
             reminders.forEach { [self] reminder in
-                if reminder.hasEnded(after: date) {
+                if !reminder.hasPast && reminder.hasEnded(after: date) {
+                    FancyLogger.info("Reminder '\(reminder)' set to finished on state initialisation")
                     reminder.state = .finished
                 } else if reminder.hasStarted(after: date) {
                     guard remind else {
@@ -211,6 +219,7 @@ final class ReminderManager {
                         return
                     }
                     assert(reminder.counts.occurences == 0, "Reminder '\(reminder)' should not have occurrences")
+                    FancyLogger.info("Starting reminder '\(reminder)' on initialisation")
                     startReminder(reminder)
                 }
             }
