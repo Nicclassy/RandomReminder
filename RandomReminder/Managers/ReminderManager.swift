@@ -140,11 +140,15 @@ final class ReminderManager {
     }
 
     func activateReminder(_ reminder: RandomReminder) {
-        let activeReminder = ActiveReminderService(reminder: reminder)
-        activeRemindersLock.withLock {
-            activeReminders.append(activeReminder)
+        if let activeReminder = activeReminders.first(where: { $0.reminder === reminder }) {
+            NotificationManager.shared.addReminderNotification(for: activeReminder)
+        } else {
+            let activeReminder = ActiveReminderService(reminder: reminder)
+            activeRemindersLock.withLock {
+                activeReminders.append(activeReminder)
+            }
+            NotificationManager.shared.addReminderNotification(for: activeReminder)
         }
-        NotificationManager.shared.addReminderNotification(for: activeReminder)
     }
 
     func deactivateReminder(_ reminder: RandomReminder) {
