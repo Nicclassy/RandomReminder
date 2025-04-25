@@ -7,6 +7,8 @@
 
 import Foundation
 
+let backgroundDefault = true
+
 func hex(_ hex: String) -> ColourString {
     let value = Int(hex.trimmingPrefix("#"), radix: 16)!
     let r = (value >> 16) & 0xFF
@@ -15,16 +17,16 @@ func hex(_ hex: String) -> ColourString {
     return rgb(r, g, b)
 }
 
-func rgb(_ r: Int, _ g: Int, _ b: Int) -> ColourString {
-    ColourString(code: String(format: "\033[38;2;%d;%d;%dm", r, g, b))
+func rgb(_ r: Int, _ g: Int, _ b: Int, background: Bool = backgroundDefault) -> ColourString {
+    ColourString(code: String(format: "\u{001B}[%d;2;%d;%d;%dm", background ? 48 : 38, r, g, b))
 }
 
-func xterm256(_ id: Int) -> ColourString {
-    ColourString(code: String(format: "\033[38;5;%dm", id))
+func xterm256(_ id: Int, background: Bool = backgroundDefault) -> ColourString {
+    ColourString(code: String(format: "\u{001B}[%d;5;%dm", background ? 48 : 38, id))
 }
 
-func ansi(_ ansi: Int) -> ColourString {
-    ColourString(code: String(format: "\033[%dm", ansi))
+func ansi(_ ansi: Int, background: Bool = backgroundDefault) -> ColourString {
+    ColourString(code: String(format: "\u{001B}[%dm", background ? ansi + 10 : ansi))
 }
 
 private func termEnvValueExists() -> Bool {

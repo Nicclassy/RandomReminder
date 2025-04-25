@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import os
 
 let loggingEnabled: Bool = true
 
@@ -25,20 +26,45 @@ let errorColours = FancyLogger.Colours(
     string: hex("A53860")
 )
 
+private enum LogLevel {
+    case info
+    case warn
+    case error
+}
+
 private enum FancyLoggerHelper {
-    static func printer(_ args: [Any], colours: FancyLogger.Colours, file: String, function: String, line: UInt) {
+    private static let log = Logger()
+
+    // swiftlint:disable:next function_parameter_count
+    static func printer(
+        _ args: [Any],
+        colours: FancyLogger.Colours,
+        file: String,
+        function: String,
+        line: UInt,
+        level: LogLevel
+    ) {
         guard loggingEnabled else { return }
-        let stackTraceInfo = formatStackTrackInfo(
+        let stackTraceInfo = formatStackTraceInfo(
             file: file,
             function: function,
             line: line,
             colours: colours
         )
         let formattedArgs = formatArgs(args: args, colours: colours)
-        print("\(stackTraceInfo) \(formattedArgs)")
+        let message = "\(stackTraceInfo) \(formattedArgs)"
+
+        switch level {
+        case .info:
+            log.info("\(message)")
+        case .warn:
+            log.warning("\(message)")
+        case .error:
+            log.critical("\(message)")
+        }
     }
 
-    private static func formatStackTrackInfo(
+    private static func formatStackTraceInfo(
         file: String,
         function: String,
         line: UInt,
@@ -74,8 +100,8 @@ private enum FancyLoggerHelper {
     }
 }
 
-final class FancyLogger {
-    final class Colours {
+enum FancyLogger {
+    struct Colours {
         let file: ColourString
         let function: ColourString
         let line: ColourString
@@ -107,18 +133,36 @@ final class FancyLogger {
     static let argsSeparator: String = ":"
     static let printArgsSeparator: String = " "
 
-    @available(*, unavailable)
-    private init() {}
-
     static func info(_ args: Any..., file: String = #file, function: String = #function, line: UInt = #line) {
-        FancyLoggerHelper.printer(args, colours: infoColours, file: file, function: function, line: line)
+        FancyLoggerHelper.printer(
+            args,
+            colours: infoColours,
+            file: file,
+            function: function,
+            line: line,
+            level: .info
+        )
     }
 
     static func warn(_ args: Any..., file: String = #file, function: String = #function, line: UInt = #line) {
-        FancyLoggerHelper.printer(args, colours: errorColours, file: file, function: function, line: line)
+        FancyLoggerHelper.printer(
+            args,
+            colours: errorColours,
+            file: file,
+            function: function,
+            line: line,
+            level: .warn
+        )
     }
 
     static func error(_ args: Any..., file: String = #file, function: String = #function, line: UInt = #line) {
-        FancyLoggerHelper.printer(args, colours: errorColours, file: file, function: function, line: line)
+        FancyLoggerHelper.printer(
+            args,
+            colours: errorColours,
+            file: file,
+            function: function,
+            line: line,
+            level: .error
+        )
     }
 }
