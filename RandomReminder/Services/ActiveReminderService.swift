@@ -22,10 +22,16 @@ final class ActiveReminderService {
     }
 
     func onNotificationDisappear() {
+        reminder.counts.occurences += 1
         FancyLogger.info("Reminder '\(reminder.content.title)' disappeared")
         if let audioPlayer {
             audioPlayer.stop()
         }
+    }
+    
+    func onFinalActivation() {
+        reminder.state = .finished
+        reminder.counts.occurences = 0
     }
 
     private func playReminderAudio() {
@@ -35,7 +41,7 @@ final class ActiveReminderService {
             return
         }
         guard audioPlayer.prepareToPlay() else {
-            FancyLogger.warn("System failed to prepare audio player")
+            FancyLogger.warn("System failed to prepare audio player for '\(audioFile.url)'")
             return
         }
 

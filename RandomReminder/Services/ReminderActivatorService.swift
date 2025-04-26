@@ -8,84 +8,52 @@
 import Foundation
 import SwiftUI
 
-private struct MutableReminderOperations {
-    let reminder: RandomReminder
-    let queue: DispatchQueue
-
-    init(for reminder: RandomReminder) {
-        self.reminder = reminder
-        self.queue = DispatchQueue(
-            label: Constants.bundleID + ".reminder\(reminder.id.value).operations",
-            attributes: .concurrent
-        )
-    }
-
-    func setReminderState(to state: ReminderState) {
-        queue.sync {
-            reminder.state = state
-        }
-    }
-
-    func resetReminder() {
-        queue.sync {
-            reminder.counts.occurences = 0
-        }
-    }
-
-    func activateReminder() {
-        queue.sync {
-            reminder.counts.occurences += 1
-        }
-    }
-}
-
 final class ReminderActivatorService {
     let reminder: RandomReminder
-    let activationProbability: Float
-    let endRemindersDate: Date
-    private let operations: MutableReminderOperations
-
-    var onReminderActivation: () -> Void
+    private let activationProbability: Float
+    private let endRemindersDate: Date
+    private var reminderActivations = 0
     var running = false
+    
+    private let onReminderActivation: () -> Void
+    private let onReminderFinished: () -> Void
 
-    init(reminder: RandomReminder, every interval: ReminderTickInterval, onReminderActivation: @escaping () -> Void) {
+    init(
+        reminder: RandomReminder,
+        every interval: ReminderTickInterval,
+        onReminderActivation: @escaping () -> Void,
+        onReminderFinished: @escaping () -> Void
+    ) {
         self.reminder = reminder
         self.onReminderActivation = onReminderActivation
+        self.onReminderFinished = onReminderFinished
 
-        self.operations = MutableReminderOperations(for: reminder)
         self.activationProbability = (
             Float(reminder.counts.totalOccurences) * Float(interval.seconds()) / reminder.durationInSeconds()
         )
+        // We do this so that the range is inclusive—[startDate, endDate]
         self.endRemindersDate = reminder.interval.latest.addMinutes(1)
+        FancyLogger.info("Reminder '\(reminder)' ends at \(endRemindersDate)")
     }
-
-    func start() {
-        operations.setReminderState(to: .started)
-        running = true
-    }
-
-    func stop() {
-        operations.setReminderState(to: .finished)
-        operations.resetReminder()
-        running = false
-    }
-
+    
     func tick() {
         let reminderWillActivate = reminderWillActivate()
-        if reminderWillActivate && reminder.counts.occurenceIsFinal {
-            operations.activateReminder()
-            onReminderActivation()
+        let isFinalActivation = reminderActivations == reminder.counts.totalOccurences - 1
+        if reminderWillActivate && isFinalActivation {
+            reminderActivations += 1
             FancyLogger.info(
                 "Activated final reminder for '\(reminder)'",
-                "(\(reminder.counts.occurences)/\(reminder.counts.totalOccurences))"
+                "(\(reminderActivations)/\(reminder.counts.totalOccurences))"
             )
-            stop()
+            onReminderActivation()
+            onReminderFinished()
+            running = false
         } else if reminderWillActivate {
-            operations.activateReminder()
+            reminderActivations += 1
             onReminderActivation()
             FancyLogger.info(
                 "Activated '\(reminder)'",
-                "(\(reminder.counts.occurences)/\(reminder.counts.totalOccurences))!"
+                "(\(reminderActivations)/\(reminder.counts.totalOccurences))!"
             )
         } else {
             FancyLogger.info("Did not activate '\(reminder)'")

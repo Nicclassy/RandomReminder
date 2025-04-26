@@ -127,6 +127,7 @@ final class ReminderManager {
     }
 
     func removeReminder(_ reminder: RandomReminder) {
+        // TODO: Use this function
         remindersQueue.sync {
             guard let index = reminders.firstIndex(of: reminder) else {
                 fatalError("Could not find reminder '\(reminder)' when it was expected to be present")
@@ -142,13 +143,14 @@ final class ReminderManager {
     func activateReminder(_ reminder: RandomReminder) {
         if let activeReminder = activeReminders.first(where: { $0.reminder === reminder }) {
             NotificationManager.shared.addReminderNotification(for: activeReminder)
-        } else {
-            let activeReminder = ActiveReminderService(reminder: reminder)
-            activeRemindersLock.withLock {
-                activeReminders.append(activeReminder)
-            }
-            NotificationManager.shared.addReminderNotification(for: activeReminder)
+            return
         }
+
+        let activeReminder = ActiveReminderService(reminder: reminder)
+        activeRemindersLock.withLock {
+            activeReminders.append(activeReminder)
+        }
+        NotificationManager.shared.addReminderNotification(for: activeReminder)
     }
 
     func deactivateReminder(_ reminder: RandomReminder) {
@@ -164,12 +166,16 @@ final class ReminderManager {
     }
 
     func startReminder(_ reminder: RandomReminder) {
-        let reminderActivator = ReminderActivatorService(reminder: reminder, every: tickInterval) { [self] in
-            activateReminder(reminder)
-            if reminder.counts.occurenceIsFinal {
-                stopReminder(reminder)
+        let reminderActivator = ReminderActivatorService(
+            reminder: reminder,
+            every: tickInterval,
+            onReminderActivation: { [self] in
+                activateReminder(reminder)
+            },
+            onReminderFinished: { [self] in
+                deactivateReminder(reminder)
             }
-        }
+        )
 
         startedRemindersLock.withLock {
             startedReminders.append(reminderActivator)
@@ -177,13 +183,14 @@ final class ReminderManager {
 
         startedRemindersQueue.addOperation { [self] in
             let sleepInterval = tickInterval.seconds()
-            reminderActivator.start()
+            reminderActivator.running = true
             while reminderActivator.running {
                 Thread.sleep(forTimeInterval: sleepInterval)
                 reminderActivator.tick()
             }
 
             FancyLogger.info("Finished reminder '\(reminder)'")
+            stopReminder(reminder)
         }
     }
 
@@ -195,7 +202,6 @@ final class ReminderManager {
             }
 
             startedReminders.remove(at: index)
-            deactivateReminder(reminder)
         }
     }
 
@@ -213,11 +219,11 @@ final class ReminderManager {
         // start reminders that past before the app launched
         remindersQueue.sync {
             let date = Date()
-            reminders.forEach { [self] reminder in
+            for reminder in reminders where !reminder.hasPast {
                 if !reminder.hasPast && reminder.hasEnded(after: date) {
                     FancyLogger.info("Reminder '\(reminder)' set to finished on state initialisation")
                     reminder.state = .finished
-                } else if reminder.hasStarted(after: date) {
+                } else if !reminder.hasBegun && reminder.hasStarted(after: date) {
                     guard remind else {
                         reminder.state = .started
                         return
