@@ -14,7 +14,7 @@ final class ReminderActivatorService {
     private let endRemindersDate: Date
     private var reminderActivations = 0
     var running = false
-    
+
     private let onReminderActivation: () -> Void
     private let onReminderFinished: () -> Void
 
@@ -35,7 +35,7 @@ final class ReminderActivatorService {
         self.endRemindersDate = reminder.interval.latest.addMinutes(1)
         FancyLogger.info("Reminder '\(reminder)' ends at \(endRemindersDate)")
     }
-    
+
     func tick() {
         let reminderWillActivate = reminderWillActivate()
         let isFinalActivation = reminderActivations == reminder.counts.totalOccurences - 1

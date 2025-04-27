@@ -15,10 +15,6 @@ struct ReminderCounts: Codable {
         totalOccurences - occurences
     }
 
-    var occurenceIsFinal: Bool {
-        occurences == totalOccurences - 1
-    }
-
     init(occurences: Int, totalOccurences: Int) {
         self.occurences = occurences
         self.totalOccurences = totalOccurences
@@ -26,9 +22,5 @@ struct ReminderCounts: Codable {
 
     init(totalOccurences: Int) {
         self.init(occurences: 0, totalOccurences: totalOccurences)
-    }
-
-    mutating func reset() {
-        occurences = 0
     }
 }

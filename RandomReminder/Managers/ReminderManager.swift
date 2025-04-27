@@ -161,7 +161,7 @@ final class ReminderManager {
             }
 
             activeReminders.remove(at: index)
-            FancyLogger.info("Deactivated reminder '\(reminder)'")
+            FancyLogger.warn("Deactivated reminder '\(reminder)'")
         }
     }
 
@@ -184,12 +184,13 @@ final class ReminderManager {
         startedRemindersQueue.addOperation { [self] in
             let sleepInterval = tickInterval.seconds()
             reminderActivator.running = true
+            reminder.state = .started
             while reminderActivator.running {
                 Thread.sleep(forTimeInterval: sleepInterval)
                 reminderActivator.tick()
             }
 
-            FancyLogger.info("Finished reminder '\(reminder)'")
+            FancyLogger.warn("Finished reminder activator for '\(reminder)'")
             stopReminder(reminder)
         }
     }

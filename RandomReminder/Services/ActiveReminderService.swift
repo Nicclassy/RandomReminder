@@ -28,7 +28,7 @@ final class ActiveReminderService {
             audioPlayer.stop()
         }
     }
-    
+
     func onFinalActivation() {
         reminder.state = .finished
         reminder.counts.occurences = 0
