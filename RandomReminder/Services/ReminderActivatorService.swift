@@ -11,8 +11,7 @@ import SwiftUI
 final class ReminderActivatorService {
     let reminder: RandomReminder
     private let activationProbability: Float
-    private let endRemindersDate: Date
-    private var reminderActivations = 0
+    private var reminderActivations: Int
     var running = false
 
     private let onReminderActivation: () -> Void
@@ -25,6 +24,7 @@ final class ReminderActivatorService {
         onReminderFinished: @escaping () -> Void
     ) {
         self.reminder = reminder
+        self.reminderActivations = reminder.counts.occurences
         self.onReminderActivation = onReminderActivation
         self.onReminderFinished = onReminderFinished
 
@@ -32,7 +32,7 @@ final class ReminderActivatorService {
             Float(reminder.counts.totalOccurences) * Float(interval.seconds()) / reminder.durationInSeconds()
         )
         // We do this so that the range is inclusive—[startDate, endDate]
-        self.endRemindersDate = reminder.interval.latest.addMinutes(1)
+        let endRemindersDate = reminder.interval.latest.addMinutes(1)
         FancyLogger.info("Reminder '\(reminder)' ends at \(endRemindersDate)")
     }
 

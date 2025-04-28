@@ -13,4 +13,10 @@ final class ReminderModificationController: ObservableObject {
     @Published var refreshReminders = false
     @Published var modificationWindowOpen = false
     weak var reminder: RandomReminder?
+
+    func postRefreshRemindersNotification() {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .refreshReminders, object: nil)
+        }
+    }
 }

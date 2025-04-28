@@ -16,7 +16,7 @@ private struct ReminderPreferencesRow: View {
     @State private var reminderInfo: String
     @State private var showDeleteAlert = false
 
-    @StateObject private var controller: ReminderModificationController = .shared
+    @ObservedObject private var controller: ReminderModificationController = .shared
     @Environment(\.openWindow) private var openWindow
     @Binding private var editing: Bool
 
@@ -241,6 +241,12 @@ struct RemindersPreferencesView: View {
                         .disabled(controller.modificationWindowOpen)
                     }
                 }
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .refreshReminders)) { _ in
+            FancyLogger.info("Refresh reminders notification received")
+            withAnimation {
+                controller.refreshReminders.toggle()
             }
         }
     }
