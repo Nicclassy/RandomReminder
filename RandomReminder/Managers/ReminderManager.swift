@@ -12,7 +12,7 @@ final class ReminderManager {
     static let shared = ReminderManager(preview: true)
 
     private var persistentChanges = false
-    private var remind = true
+    private var remind = false
 
     private var reminders: [RandomReminder]
     private var timerThread: Thread!
@@ -76,9 +76,7 @@ final class ReminderManager {
         // https://hackernoon.com/how-to-use-runloop-in-ios-applications
         // for correct timer implementation
         setReminderStates()
-        guard remind else {
-            return
-        }
+        guard remind else { return }
 
         timerThread = Thread {
             let timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
@@ -127,16 +125,20 @@ final class ReminderManager {
     }
 
     func removeReminder(_ reminder: RandomReminder) {
-        // TODO: Use this function
+        if reminder.state == .started {
+            stopReminder(reminder)
+            deactivateReminder(reminder)
+        }
+
+        if persistentChanges {
+            deleteReminder(reminder)
+        }
+
         remindersQueue.sync {
             guard let index = reminders.firstIndex(of: reminder) else {
                 fatalError("Could not find reminder '\(reminder)' when it was expected to be present")
             }
             _ = reminders.remove(at: index)
-        }
-        stopReminder(reminder)
-        if persistentChanges {
-            deleteReminder(reminder)
         }
     }
 
@@ -156,7 +158,7 @@ final class ReminderManager {
     func deactivateReminder(_ reminder: RandomReminder) {
         activeRemindersLock.withLock {
             guard let index = activeReminders.firstIndex(where: { $0.reminder === reminder }) else {
-                FancyLogger.warn("Reminder '\(reminder)' is not in the active reminders list when it should be")
+                FancyLogger.warn("Reminder '\(reminder)' not found in active list")
                 return
             }
 
@@ -198,7 +200,7 @@ final class ReminderManager {
     func stopReminder(_ reminder: RandomReminder) {
         startedRemindersLock.withLock {
             guard let index = startedReminders.firstIndex(where: { $0.reminder === reminder }) else {
-                FancyLogger.warn("Reminder '\(reminder)' was not found when it should be present")
+                FancyLogger.warn("Reminder '\(reminder)' was not found when expected to be present")
                 return
             }
 
@@ -221,13 +223,13 @@ final class ReminderManager {
         remindersQueue.sync {
             let date = Date()
             for reminder in reminders where !reminder.hasPast {
-                if !reminder.hasPast && reminder.hasEnded(after: date) {
+                if reminder.hasEnded(after: date) {
                     FancyLogger.info("Reminder '\(reminder)' set to finished on state initialisation")
                     reminder.state = .finished
                 } else if !reminder.hasBegun && reminder.hasStarted(after: date) {
                     guard remind else {
                         reminder.state = .started
-                        return
+                        continue
                     }
                     assert(reminder.counts.occurences == 0, "Reminder '\(reminder)' should not have occurrences")
                     FancyLogger.info("Starting reminder '\(reminder)' on initialisation")

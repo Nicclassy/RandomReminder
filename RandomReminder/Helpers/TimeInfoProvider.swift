@@ -17,14 +17,14 @@ struct TimeInfoProvider {
         if reminder.hasPast {
             "\(timeDifferenceInfo()) ago"
         } else if reminder.hasBegun {
-            "\(reminder.counts.occurencesLeft) occurences left"
+            "\(reminder.counts.occurencesLeft) \(pluralise("occurence", reminder.counts.occurencesLeft)) left"
         } else {
             "Starting in \(timeDifferenceInfo())"
         }
     }
 
     private func timeDifferenceInfo() -> String {
-        func pluralisedName(for component: Calendar.Component, quantity: UInt) -> String {
+        func pluralisedComponent(for component: Calendar.Component, quantity: UInt) -> String {
             let name = String(describing: component)
             let suffix = quantity != 1 ? "s" : ""
             return "\(quantity) \(name)\(suffix)"
@@ -44,9 +44,13 @@ struct TimeInfoProvider {
                 return nil
             }
 
-            return pluralisedName(for: calendarComponent, quantity: quantity)
+            return pluralisedComponent(for: calendarComponent, quantity: quantity)
         }
 
         return infoParts.isEmpty ? "0 seconds" : infoParts.listing()
+    }
+
+    private func pluralise(_ word: String, _ quantity: Int) -> String {
+        quantity == 1 ? word : word + "s"
     }
 }

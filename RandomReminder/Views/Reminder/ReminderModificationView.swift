@@ -17,6 +17,7 @@ struct ReminderModificationView: View {
     @StateObject var reminder: MutableReminder
     @StateObject var preferences: ReminderPreferences
     @State private var closeView = false
+    private let controller: ReminderModificationController = .shared
     let mode: ReminderModificationMode
 
     var body: some View {
@@ -48,7 +49,7 @@ struct ReminderModificationView: View {
                 Button(action: {
                     let newReminder = reminder.build(preferences: preferences)
                     if mode == .edit {
-                        guard let previousReminder = ReminderModificationController.shared.reminder else {
+                        guard let previousReminder = controller.reminder else {
                             fatalError("A reminder should be stored here")
                         }
 
@@ -57,13 +58,13 @@ struct ReminderModificationView: View {
 
                     withAnimation {
                         ReminderManager.shared.addReminder(newReminder)
-                        ReminderModificationController.shared.refreshReminders.toggle()
+                        controller.refreshReminders.toggle()
                     }
 
                     FancyLogger.info("Created new reminder/edited reminder \(String(reflecting: reminder))")
                     dismissWindow(id: mode == .create ? WindowIds.createReminder : WindowIds.editReminder)
 
-                    ReminderModificationController.shared.modificationWindowOpen = false
+                    controller.modificationWindowOpen = false
                 }, label: {
                     Text(finishButtonText)
                         .frame(width: 60)
@@ -101,14 +102,14 @@ struct ReminderModificationView: View {
         }
         .onAppear {
             guard mode == .edit else { return }
-            guard let reminderToEdit = ReminderModificationController.shared.reminder else {
+            guard let reminderToEdit = controller.reminder else {
                 fatalError("Reminder must be set")
             }
             reminder.copyFrom(reminder: reminderToEdit)
         }
         .onDisappear {
             reminder.reset()
-            ReminderModificationController.shared.modificationWindowOpen = false
+            controller.modificationWindowOpen = false
         }
         .frame(width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight)
         .padding()
