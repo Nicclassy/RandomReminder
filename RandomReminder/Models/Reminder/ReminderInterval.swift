@@ -68,7 +68,6 @@ struct ReminderDateInterval: ReminderInterval {
 }
 
 struct InfiniteReminderInterval: ReminderInterval {
-    // TODO: Replace placeholder values/function
     var earliest: Date {
         .distantPast
     }

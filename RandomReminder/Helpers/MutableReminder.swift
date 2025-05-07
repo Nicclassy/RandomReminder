@@ -107,7 +107,7 @@ final class MutableReminder: ObservableObject {
 
     func build(preferences reminderPreferences: ReminderPreferences) -> RandomReminder {
         let reminderInterval: ReminderInterval = if reminderPreferences.alwaysRunning {
-            ReminderTimeInterval.infinite
+            InfiniteReminderInterval()
         } else if reminderPreferences.timesOnly {
             ReminderTimeInterval(
                 earliestTime: TimeOnly(from: earliestDate),
@@ -115,7 +115,7 @@ final class MutableReminder: ObservableObject {
                 interval: repeatInterval
             )
         } else {
-            ReminderDateInterval(earliestDate: earliestDate, latestDate: latestDate)
+            ReminderDateInterval(earliest: earliestDate, latest: latestDate)
         }
 
         return RandomReminder(

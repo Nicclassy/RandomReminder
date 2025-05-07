@@ -22,21 +22,21 @@ final class ActiveReminderService {
     }
 
     func onNotificationDisappear() {
-        reminder.counts.occurences += 1
-        if reminder.counts.occurences == reminder.counts.totalOccurences {
-            onFinalActivation()
-        }
-
         FancyLogger.info("Reminder '\(reminder.content.title)' disappeared")
         if let audioPlayer {
             audioPlayer.stop()
+        }
+
+        reminder.counts.occurences += 1
+        if reminder.counts.occurences == reminder.counts.totalOccurences {
+            onFinalActivation()
         }
     }
 
     func onFinalActivation() {
         FancyLogger.info("Setting reminder state to finished and resetting occurences")
-        reminder.state = .finished
         reminder.counts.occurences = 0
+        reminder.state = reminder.hasRepeats ? .upcoming : .finished
         ReminderModificationController.shared.postRefreshRemindersNotification()
     }
 

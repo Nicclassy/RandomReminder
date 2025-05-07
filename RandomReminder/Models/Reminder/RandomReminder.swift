@@ -10,9 +10,9 @@ import Foundation
 final class RandomReminder: Codable {
     let id: ReminderID
     let content: ReminderContent
-    let reminderInterval: AnyReminderInterval
     let days: ReminderDayOptions
     let activationEvents: ReminderActivationEvents
+    var reminderInterval: AnyReminderInterval
     var counts: ReminderCounts
     var state: ReminderState
 
@@ -28,6 +28,10 @@ final class RandomReminder: Codable {
 
     var hasPast: Bool {
         state == .finished
+    }
+
+    var hasRepeats: Bool {
+        interval.repeatInterval != .never
     }
 
     init(
@@ -76,6 +80,16 @@ final class RandomReminder: Codable {
         date > interval.earliest
     }
 
+    func advanceToNextRepeat() {
+        // This is the only time we modify reminderInterval—
+        // and this function would never be called in
+        // situations that result in race conditions—
+        // so thankfully we need not have thread-safety/locking
+        // mechanisms for the reminderInterval property
+        let nextInterval = interval.nextRepeat()
+        reminderInterval = AnyReminderInterval(nextInterval)
+    }
+
     func durationInSeconds() -> Float {
         Float(interval.earliest.distance(to: interval.latest))
     }
@@ -106,7 +120,7 @@ extension RandomReminder {
 }
 
 extension RandomReminder: CustomStringConvertible {
-    private static let titleOnly = false
+    private static let titleOnly = true
 
     var description: String {
         if Self.titleOnly {
