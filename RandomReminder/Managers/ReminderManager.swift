@@ -11,8 +11,8 @@ import SwiftUI
 final class ReminderManager {
     static let shared = ReminderManager(preview: true)
 
-    private var persistentChanges = false
-    private var remind = false
+    private let persistentChanges = false
+    private let remind = true
 
     private var reminders: [RandomReminder]
     private var timerThread: Thread!
@@ -51,9 +51,7 @@ final class ReminderManager {
         } else {
             Self.reminderFileNames().compactMap { filename in
                 guard let reminder: RandomReminder = ReminderSerializer.load(filename: filename) else {
-                    return nil
-                }
-                guard reminder.id != .quickReminder else {
+                    FancyLogger.warn("Cannot load file \(filename)")
                     return nil
                 }
                 return reminder
@@ -83,10 +81,7 @@ final class ReminderManager {
                 let date = Date()
                 remindersQueue.sync {
                     for reminder in reminders where !reminder.hasPast {
-                        if reminder.hasEnded(after: date) {
-                            FancyLogger.info("Reminder '\(reminder)' has ended after \(date)")
-                            stopReminder(reminder)
-                        } else if !reminder.hasBegun && reminder.hasStarted(after: date) {
+                        if !reminder.hasBegun && reminder.hasStarted(after: date) {
                             FancyLogger.info("Starting reminder '\(reminder)'")
                             startReminder(reminder)
                         }
@@ -138,7 +133,7 @@ final class ReminderManager {
             guard let index = reminders.firstIndex(of: reminder) else {
                 fatalError("Could not find reminder '\(reminder)' when it was expected to be present")
             }
-            _ = reminders.remove(at: index)
+            reminders.remove(at: index)
         }
     }
 
@@ -192,8 +187,18 @@ final class ReminderManager {
                 reminderActivator.tick()
             }
 
+            if reminderActivator.terminated {
+                // Reminder was deleted
+                return
+            }
+
             FancyLogger.warn("Finished reminder activator for '\(reminder)'")
             stopReminder(reminder)
+
+            if reminder.hasRepeats {
+                FancyLogger.info("Restarted reminder '\(reminder)'")
+                reminder.advanceToNextRepeat()
+            }
         }
     }
 
@@ -204,7 +209,9 @@ final class ReminderManager {
                 return
             }
 
-            startedReminders.remove(at: index)
+            let reminderActivator = startedReminders.remove(at: index)
+            reminderActivator.running = false
+            reminderActivator.terminated = true
         }
     }
 
@@ -223,7 +230,7 @@ final class ReminderManager {
         remindersQueue.sync {
             let date = Date()
             for reminder in reminders where !reminder.hasPast {
-                if reminder.hasEnded(after: date) {
+                if reminder.hasEnded(after: date) && !reminder.hasRepeats {
                     FancyLogger.info("Reminder '\(reminder)' set to finished on state initialisation")
                     reminder.state = .finished
                 } else if !reminder.hasBegun && reminder.hasStarted(after: date) {
