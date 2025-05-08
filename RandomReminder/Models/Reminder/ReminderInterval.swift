@@ -16,18 +16,16 @@ struct ReminderTimeInterval: ReminderInterval {
         false
     }
 
-    init(earliest: Date, latest: Date, interval: RepeatInterval) {
-        self.earliest = earliest
-        self.latest = latest
+    init(earliest: Date, latest: Date, interval: RepeatInterval = .never) {
+        self.earliest = earliest.withoutSeconds()
+        self.latest = latest.withoutSeconds()
         self.repeatInterval = interval
     }
 
     init(earliestTime: TimeOnly, latestTime: TimeOnly, interval: RepeatInterval = .never, date: Date = .now) {
-        self.init(
-            earliest: earliestTime.onDate(date),
-            latest: latestTime.onDate(date),
-            interval: interval
-        )
+        self.earliest = earliestTime.onDate(date)
+        self.latest = latestTime.onDate(date)
+        self.repeatInterval = interval
     }
 
     func nextRepeat() -> Self {

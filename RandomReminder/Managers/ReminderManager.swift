@@ -12,7 +12,7 @@ final class ReminderManager {
     static let shared = ReminderManager(preview: true)
 
     private let persistentChanges = false
-    private let remind = true
+    private let remind = false
 
     private var reminders: [RandomReminder]
     private var timerThread: Thread!
@@ -210,8 +210,10 @@ final class ReminderManager {
             }
 
             let reminderActivator = startedReminders.remove(at: index)
-            reminderActivator.running = false
-            reminderActivator.terminated = true
+            if reminderActivator.running {
+                reminderActivator.running = false
+                reminderActivator.terminated = true
+            }
         }
     }
 

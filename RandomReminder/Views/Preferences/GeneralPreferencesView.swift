@@ -29,7 +29,7 @@ struct GeneralPreferencesView: View {
                     PreferenceCaption(L10n.Preferences.General.QuickReminderEnabled.caption)
                 }
                 .onChange(of: appPreferences.quickReminderEnabled) { _, isEnabled in
-                    AppDelegate.shared.setQuickReminderEnabled(enabled: isEnabled)
+                    FancyLogger.info("Quick reminder was \(isEnabled ? "not" : "") enabled")
                 }
             }
 

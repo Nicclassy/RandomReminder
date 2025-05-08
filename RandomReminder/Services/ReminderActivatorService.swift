@@ -10,9 +10,11 @@ import SwiftUI
 
 final class ReminderActivatorService {
     let reminder: RandomReminder
+    var running = false
+    var terminated = false
+
     private let activationProbability: Float
     private var reminderActivations: Int
-    var running = false
 
     private let onReminderActivation: () -> Void
     private let onReminderFinished: () -> Void

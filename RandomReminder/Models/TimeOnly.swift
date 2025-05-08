@@ -34,7 +34,7 @@ struct TimeOnly: Codable {
         self.minute = 0
     }
 
-    func onDate(date: Date) -> Date {
+    func onDate(_ date: Date) -> Date {
         let calendar = Calendar.current
         let (additionalDays, hours) = hour.quotientAndRemainder(dividingBy: 24)
         var components = calendar.dateComponents([.year, .month, .day], from: date)
@@ -42,10 +42,6 @@ struct TimeOnly: Codable {
         components.hour = hours
         components.minute = minute
         return calendar.date(from: components)!
-    }
-
-    func dateToday() -> Date {
-        onDate(date: Date())
     }
 }
 

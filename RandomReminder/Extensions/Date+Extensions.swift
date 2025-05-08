@@ -57,14 +57,10 @@ extension Date {
         return Calendar.current.date(byAdding: component, value: value, to: self)!
     }
 
-    func sameTimeToday() -> Self? {
+    func withoutSeconds() -> Self {
         let calendar = Calendar.current
-        let today = Date()
-        let todaysTime = calendar.dateComponents([.hour, .minute], from: self)
-        var result = calendar.dateComponents([.year, .month, .day], from: today)
-        result.hour = todaysTime.hour
-        result.minute = todaysTime.minute
-        return calendar.date(from: result)
+        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: self)
+        return calendar.date(from: components)!
     }
 
     func formatYearMonthDay() -> String {

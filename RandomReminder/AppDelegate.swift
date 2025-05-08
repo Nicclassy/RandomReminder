@@ -5,7 +5,6 @@
 //  Created by Luca Napoli on 19/12/2024.
 //
 
-import Foundation
 import SwiftUI
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
@@ -16,9 +15,5 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Self.shared = self
         statusBarController = .init()
         ReminderManager.shared.setup()
-    }
-
-    func setQuickReminderEnabled(enabled: Bool) {
-        statusBarController.quickReminderItem.isHidden = !enabled
     }
 }
