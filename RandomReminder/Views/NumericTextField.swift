@@ -15,7 +15,11 @@ struct NumericTextField: View {
         VStack {
             TextField("", text: $text)
                 .onChange(of: text) { oldValue, newValue in
-                    guard !newValue.isEmpty else { return }
+                    guard !newValue.isEmpty else {
+                        value = 0
+                        return
+                    }
+
                     if let numericValue = Int(newValue) {
                         text = newValue
                         value = numericValue

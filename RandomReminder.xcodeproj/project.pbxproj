@@ -29,6 +29,7 @@
 		8118A1412D6CE2C500A9FF08 /* Sequence+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A1402D6CE2C500A9FF08 /* Sequence+Extensions.swift */; };
 		8118A1432D6CE66200A9FF08 /* OptionSet+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A1422D6CE66200A9FF08 /* OptionSet+Extensions.swift */; };
 		8118A1452D6DD51A00A9FF08 /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A1442D6DD51A00A9FF08 /* Collection+Extensions.swift */; };
+		81265B262DCDD510005C95F2 /* NumericTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81265B252DCDD510005C95F2 /* NumericTextField.swift */; };
 		812D23E72DAD9B4400675783 /* .swiftformat in Resources */ = {isa = PBXBuildFile; fileRef = 812D23E62DAD9B4400675783 /* .swiftformat */; };
 		813F30DD2D22B93E00EF6DD1 /* ColourString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813F30DC2D22B93E00EF6DD1 /* ColourString.swift */; };
 		813F30E62D25FE0B00EF6DD1 /* swiftgen.yml in Resources */ = {isa = PBXBuildFile; fileRef = 813F30E52D25FE0B00EF6DD1 /* swiftgen.yml */; };
@@ -99,6 +100,7 @@
 		8118A1402D6CE2C500A9FF08 /* Sequence+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sequence+Extensions.swift"; sourceTree = "<group>"; };
 		8118A1422D6CE66200A9FF08 /* OptionSet+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OptionSet+Extensions.swift"; sourceTree = "<group>"; };
 		8118A1442D6DD51A00A9FF08 /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
+		81265B252DCDD510005C95F2 /* NumericTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumericTextField.swift; sourceTree = "<group>"; };
 		812D23E62DAD9B4400675783 /* .swiftformat */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftformat; sourceTree = "<group>"; };
 		813F30DC2D22B93E00EF6DD1 /* ColourString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColourString.swift; sourceTree = "<group>"; };
 		813F30E52D25FE0B00EF6DD1 /* swiftgen.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = swiftgen.yml; sourceTree = "<group>"; };
@@ -329,6 +331,7 @@
 			children = (
 				8118A1372D6A6F8200A9FF08 /* Reminder */,
 				8118A12F2D6A6E7F00A9FF08 /* Preferences */,
+				81265B252DCDD510005C95F2 /* NumericTextField.swift */,
 				81B526052D1A4EF7008D36F0 /* DualDatePickerView.swift */,
 				8118A1102D5FA1B000A9FF08 /* StepperTextField.swift */,
 			);
@@ -490,7 +493,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which swiftformat > /dev/null; then\n  swiftformat .\nelse\n  echo \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\nfi\n";
+			shellScript = "if [[ \"${BUILD_DIR}\" =~ \"Previews\" ]]; then\n    exit\nfi\n\nif [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which swiftformat > /dev/null; then\n    swiftformat .\nelse\n    echo \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		813F31022D2A830000EF6DD1 /* SwiftGen */ = {
@@ -551,6 +554,7 @@
 				813F310F2D2EA0E800EF6DD1 /* AnyReminderInterval.swift in Sources */,
 				81DB8EB72DA4FCC600E50650 /* Locked.swift in Sources */,
 				8163F6132D13A90E0052A016 /* StatusBarController.swift in Sources */,
+				81265B262DCDD510005C95F2 /* NumericTextField.swift in Sources */,
 				8118A13F2D6A790E00A9FF08 /* ReminderAudioOptionsView.swift in Sources */,
 				8118A13B2D6A72AC00A9FF08 /* ReminderPreferences.swift in Sources */,
 				8118A1352D6A6E7F00A9FF08 /* SchedulingPreferencesView.swift in Sources */,
