@@ -45,13 +45,13 @@ extension Date {
         isDistant ? self : Calendar.current.date(byAdding: .second, value: seconds, to: self)!
     }
 
-    func addingInterval(_ interval: RepeatInterval) -> Self {
+    func addingInterval(_ interval: RepeatInterval, quantity: Int) -> Self {
         let (component, value): (Calendar.Component, Int) = switch interval {
-        case .minute: (.minute, 1)
-        case .hour: (.hour, 1)
-        case .day: (.day, 1)
-        case .week: (.day, 7)
-        case .month: (.month, 1)
+        case .minute: (.minute, quantity)
+        case .hour: (.hour, quantity)
+        case .day: (.day, quantity)
+        case .week: (.day, quantity * 7)
+        case .month: (.month, quantity)
         default: fatalError("Repeat interval 'never' does not have a corresponding calendar component")
         }
         return Calendar.current.date(byAdding: component, value: value, to: self)!

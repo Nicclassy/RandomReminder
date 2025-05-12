@@ -17,6 +17,7 @@ final class MutableReminder: ObservableObject {
         latestDate: Date().addMinutes(60),
         days: [],
         repeatInterval: .minute,
+        intervalQuantity: 1,
         activationEvents: ReminderActivationEvents(),
         occurences: 0
     )
@@ -29,6 +30,7 @@ final class MutableReminder: ObservableObject {
     @Published var latestDate: Date
     @Published var days: ReminderDayOptions
     @Published var repeatInterval: RepeatInterval
+    @Published var intervalQuantity: Int
     @Published var activationEvents: ReminderActivationEvents
     var occurences: Int
 
@@ -41,6 +43,7 @@ final class MutableReminder: ObservableObject {
         latestDate: Date,
         days: ReminderDayOptions,
         repeatInterval: RepeatInterval,
+        intervalQuantity: Int,
         activationEvents: ReminderActivationEvents,
         occurences: Int
     ) {
@@ -52,6 +55,7 @@ final class MutableReminder: ObservableObject {
         self.latestDate = latestDate
         self.days = days
         self.repeatInterval = repeatInterval
+        self.intervalQuantity = intervalQuantity
         self.activationEvents = activationEvents
         self.occurences = occurences
     }
@@ -65,6 +69,7 @@ final class MutableReminder: ObservableObject {
         self.latestDate = reminder.latestDate
         self.days = reminder.days
         self.repeatInterval = reminder.repeatInterval
+        self.intervalQuantity = reminder.intervalQuantity
         self.activationEvents = reminder.activationEvents
         self.occurences = reminder.occurences
     }
@@ -87,6 +92,7 @@ final class MutableReminder: ObservableObject {
         days = reminder.days
         repeatInterval = reminder.repeatInterval
         activationEvents = reminder.activationEvents
+        intervalQuantity = reminder.intervalQuantity
         occurences = reminder.occurences
     }
 
@@ -102,6 +108,7 @@ final class MutableReminder: ObservableObject {
         repeatInterval = reminder.interval.repeatInterval == .never
             ? Self.default.repeatInterval
             : reminder.interval.repeatInterval
+        intervalQuantity = reminder.interval.intervalQuantity
         activationEvents = reminder.activationEvents
     }
 
@@ -112,10 +119,16 @@ final class MutableReminder: ObservableObject {
             ReminderTimeInterval(
                 earliestTime: TimeOnly(from: earliestDate),
                 latestTime: TimeOnly(from: latestDate),
-                interval: repeatInterval
+                interval: repeatInterval,
+                intervalQuantity: intervalQuantity
             )
         } else {
-            ReminderDateInterval(earliest: earliestDate, latest: latestDate)
+            ReminderDateInterval(
+                earliest: earliestDate,
+                latest: latestDate,
+                repeatInterval: repeatInterval,
+                intervalQuantity: intervalQuantity
+            )
         }
 
         return RandomReminder(

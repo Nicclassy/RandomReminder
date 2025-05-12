@@ -11,30 +11,46 @@ struct ReminderTimeInterval: ReminderInterval {
     let earliest: Date
     let latest: Date
     let repeatInterval: RepeatInterval
+    let intervalQuantity: Int
 
     var isInfinite: Bool {
         false
     }
 
-    init(earliest: Date, latest: Date, interval: RepeatInterval = .never) {
+    init(
+        earliest: Date,
+        latest: Date,
+        interval: RepeatInterval = .never,
+        intervalQuantity: Int = 1
+    ) {
         self.earliest = earliest.withoutSeconds()
         self.latest = latest.withoutSeconds()
         self.repeatInterval = interval
+        self.intervalQuantity = intervalQuantity
     }
 
-    init(earliestTime: TimeOnly, latestTime: TimeOnly, interval: RepeatInterval = .never, date: Date = .now) {
+    init(
+        earliestTime: TimeOnly,
+        latestTime: TimeOnly,
+        interval: RepeatInterval = .never,
+        intervalQuantity: Int = 1,
+        date: Date = .now
+    ) {
         self.earliest = earliestTime.onDate(date)
         self.latest = latestTime.onDate(date)
         self.repeatInterval = interval
+        self.intervalQuantity = intervalQuantity
     }
 
     func nextRepeat() -> Self {
-        let repeatedEarliestDate = earliest.addingInterval(repeatInterval)
+        let repeatedEarliestDate = earliest.addingInterval(repeatInterval, quantity: intervalQuantity)
         let duration = latest.timeIntervalSince(earliest)
+        let repeatedLatestDate = repeatedEarliestDate.addingTimeInterval(duration)
         return Self(
             earliest: repeatedEarliestDate,
-            latest: repeatedEarliestDate.addingTimeInterval(duration),
-            interval: repeatInterval
+            latest: repeatedLatestDate,
+            interval: repeatInterval,
+            intervalQuantity: intervalQuantity
         )
     }
 }
@@ -42,25 +58,34 @@ struct ReminderTimeInterval: ReminderInterval {
 struct ReminderDateInterval: ReminderInterval {
     let earliest: Date
     let latest: Date
-    var repeatInterval: RepeatInterval
+    let repeatInterval: RepeatInterval
+    let intervalQuantity: Int
 
     var isInfinite: Bool {
         false
     }
 
-    init(earliest: Date, latest: Date, repeatInterval: RepeatInterval = .never) {
+    init(
+        earliest: Date,
+        latest: Date,
+        repeatInterval: RepeatInterval = .never,
+        intervalQuantity: Int = 1
+    ) {
         self.earliest = earliest
         self.latest = latest
         self.repeatInterval = repeatInterval
+        self.intervalQuantity = intervalQuantity
     }
 
     func nextRepeat() -> Self {
-        let repeatedEarliestDate = earliest.addingInterval(repeatInterval)
+        let repeatedEarliestDate = earliest.addingInterval(repeatInterval, quantity: intervalQuantity)
         let duration = latest.timeIntervalSince(earliest)
+        let repeatedLatestDate = repeatedEarliestDate.addingTimeInterval(duration)
         return Self(
             earliest: repeatedEarliestDate,
-            latest: repeatedEarliestDate.addingTimeInterval(duration),
-            repeatInterval: repeatInterval
+            latest: repeatedLatestDate,
+            repeatInterval: repeatInterval,
+            intervalQuantity: intervalQuantity
         )
     }
 }
@@ -78,6 +103,10 @@ struct InfiniteReminderInterval: ReminderInterval {
         .never
     }
 
+    var intervalQuantity: Int {
+        0
+    }
+
     var isInfinite: Bool {
         true
     }
@@ -91,6 +120,7 @@ protocol ReminderInterval: Codable {
     var earliest: Date { get }
     var latest: Date { get }
     var repeatInterval: RepeatInterval { get }
+    var intervalQuantity: Int { get }
     var isInfinite: Bool { get }
 
     func nextRepeat() -> Self
