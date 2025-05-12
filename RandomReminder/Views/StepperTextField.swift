@@ -22,7 +22,7 @@ struct StepperTextField: View {
                         value = 0
                         return
                     }
-                    
+
                     if let numericValue = Int(newValue) {
                         value = constrainValue(numericValue, orElse: value)
                         text = String(value)
@@ -43,7 +43,7 @@ struct StepperTextField: View {
             )
         }
     }
-    
+
     init(
         value: Binding<Int>,
         range: ClosedRange<Int> = Int.min...Int.max,

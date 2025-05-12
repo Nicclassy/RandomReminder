@@ -7,6 +7,10 @@
 
 import Foundation
 
+func pluralise(_ word: String, _ quantity: Int) -> String {
+    quantity == 1 ? word : word + "s"
+}
+
 struct TimeInfoProvider {
     private static let orderedCalendarComponents: [Calendar.Component] = [.day, .hour, .minute, .second]
     private static let calendarComponents: Set<Calendar.Component> = [.day, .hour, .minute, .second]
@@ -48,9 +52,5 @@ struct TimeInfoProvider {
         }
 
         return infoParts.isEmpty ? "0 seconds" : infoParts.listing()
-    }
-
-    private func pluralise(_ word: String, _ quantity: Int) -> String {
-        quantity == 1 ? word : word + "s"
     }
 }

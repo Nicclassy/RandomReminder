@@ -45,15 +45,23 @@ struct ReminderScheduleOptionsView: View {
                     HStack(spacing: 0) {
                         Toggle("Repeating every", isOn: $preferences.repeatingEnabled)
                             .disabled(preferences.alwaysRunning)
+                        Spacer().frame(width: 6)
+                        NumericTextField($reminder.intervalQuantity)
+                            .frame(width: 35)
+                            .disabled(!preferences.repeatingEnabled)
                         Picker("", selection: $reminder.repeatInterval) {
                             ForEach(RepeatInterval.allCases, id: \.self) { value in
                                 if value != .never {
-                                    Text(String(describing: value)).tag(value)
+                                    let intervalName = pluralise(
+                                        String(describing: value),
+                                        reminder.intervalQuantity
+                                    )
+                                    Text(intervalName).tag(value)
                                 }
                             }
                         }
                         .disabled(!preferences.repeatingEnabled)
-                        .frame(maxWidth: .infinity)
+                        .frame(width: 100)
                     }
                     Toggle("Always running", isOn: $preferences.alwaysRunning)
                 }

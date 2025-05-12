@@ -32,7 +32,7 @@ struct ReminderModificationView: View {
                     TextField("Description", text: $reminder.text)
                 }
                 GridRow {
-                    Text("Total Occurences:")
+                    Text("Total occurences:")
                     StepperTextField(value: $reminder.totalOccurences, range: totalRemindersRange)
                         .frame(width: 55)
                 }
