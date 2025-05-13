@@ -34,20 +34,34 @@ final class ReminderPreferences: ObservableObject {
         self.useAudioFile = useAudioFile
     }
 
-    func from(reminder: RandomReminder) -> Self {
-        let alwaysRunning = if let interval = reminder.interval as? ReminderTimeInterval, interval.isInfinite {
-            true
-        } else {
-            false
-        }
-        let repeatingEnabled = !alwaysRunning && reminder.interval.repeatInterval != .never
-        let specificDays = !alwaysRunning && !reminder.days.isEmpty
-        let useAudioFile = reminder.activationEvents.audio != nil
-        return Self(
-            repeatingEnabled: repeatingEnabled,
-            alwaysRunning: alwaysRunning,
-            specificDays: specificDays,
-            useAudioFile: useAudioFile
+    convenience init(from reminder: RandomReminder) {
+        self.init(
+            repeatingEnabled: !reminder.interval.isInfinite && reminder.hasRepeats,
+            timesOnly: reminder.interval is ReminderTimeInterval,
+            alwaysRunning: reminder.interval.isInfinite,
+            specificDays: !reminder.interval.isInfinite && !reminder.days.isEmpty,
+            useAudioFile: reminder.activationEvents.audio != nil
         )
+    }
+
+    func copyFrom(reminder: RandomReminder) {
+        repeatingEnabled = !alwaysRunning && reminder.hasRepeats
+        timesOnly = reminder.interval is ReminderTimeInterval
+        alwaysRunning = reminder.interval.isInfinite
+        specificDays = !alwaysRunning && !reminder.days.isEmpty
+        useAudioFile = reminder.activationEvents.audio != nil
+    }
+
+    func reset() {
+        repeatingEnabled = false
+        timesOnly = false
+        alwaysRunning = false
+        specificDays = false
+        useAudioFile = false
+
+        showSpecificDaysPopover = false
+        showTimesOnlyPopover = false
+        showCancelPopover = false
+        showFileImporter = false
     }
 }

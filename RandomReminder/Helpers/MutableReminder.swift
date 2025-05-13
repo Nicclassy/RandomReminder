@@ -74,6 +74,24 @@ final class MutableReminder: ObservableObject {
         self.occurences = reminder.occurences
     }
 
+    convenience init(from reminder: RandomReminder) {
+        self.init(
+            id: reminder.id,
+            title: reminder.content.title,
+            text: reminder.content.text,
+            totalOccurences: reminder.counts.totalOccurences,
+            earliestDate: reminder.interval.earliest,
+            latestDate: reminder.interval.latest,
+            days: reminder.days,
+            repeatInterval: reminder.interval.repeatInterval == .never
+                ? Self.default.repeatInterval
+                : reminder.interval.repeatInterval,
+            intervalQuantity: reminder.interval.intervalQuantity,
+            activationEvents: reminder.activationEvents,
+            occurences: reminder.counts.occurences
+        )
+    }
+
     convenience init() {
         self.init(reminder: .default)
     }
@@ -139,5 +157,27 @@ final class MutableReminder: ObservableObject {
             totalOccurences: totalOccurences,
             activationEvents: reminderPreferences.useAudioFile ? activationEvents : nil
         )
+    }
+}
+
+extension MutableReminder: CustomStringConvertible {
+    var description: String {
+        let mirror = Mirror(self, children: [
+            "id": id,
+            "title": title,
+            "text": text,
+            "totalOccurences": totalOccurences,
+            "earliestDate": earliestDate,
+            "latestDate": latestDate,
+            "days": days,
+            "repeatInterval": repeatInterval,
+            "intervalQuantity": intervalQuantity,
+            "activationEvents": activationEvents,
+            "occurences": occurences
+        ])
+        let properties = mirror.children
+            .map { "\($0.label ?? "?") = \($0.value)" }
+            .joined(separator: ", ")
+        return "\(type(of: self)) { \(properties) }"
     }
 }

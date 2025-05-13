@@ -35,8 +35,6 @@ enum ReminderConstants {
     static let maxReminders = 999
 
     static let reminderDayChunkSize = 3
-
-    static let numberFormatter = NumberFormatter()
 }
 
 enum ViewConstants {

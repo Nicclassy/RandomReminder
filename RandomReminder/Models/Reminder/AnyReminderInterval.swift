@@ -48,3 +48,13 @@ final class AnyReminderInterval: Codable {
         }
     }
 }
+
+extension AnyReminderInterval: CustomStringConvertible {
+    var description: String {
+        let mirror = Mirror(reflecting: value)
+        let properties = mirror.children
+            .map { "\($0.label ?? "?") = \($0.value)" }
+            .joined(separator: ", ")
+        return "\(type(of: self)) { \(properties) }"
+    }
+}
