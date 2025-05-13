@@ -14,10 +14,10 @@ enum ReminderModificationMode {
 
 struct ReminderModificationView: View {
     @Environment(\.dismissWindow) private var dismissWindow
+    @ObservedObject private var controller: ReminderModificationController = .shared
     @StateObject var reminder: MutableReminder
     @StateObject var preferences: ReminderPreferences
     @State private var closeView = false
-    private let controller: ReminderModificationController = .shared
     let mode: ReminderModificationMode
 
     var body: some View {
@@ -101,14 +101,22 @@ struct ReminderModificationView: View {
             }
         }
         .onAppear {
+            guard controller.openedModificationWindow else {
+                controller.openedModificationWindow = true
+                return
+            }
             guard mode == .edit else { return }
             guard let reminderToEdit = controller.reminder else {
                 fatalError("Reminder must be set")
             }
+
             reminder.copyFrom(reminder: reminderToEdit)
+            preferences.copyFrom(reminder: reminderToEdit)
+            controller.modificationWindowOpen = true
         }
         .onDisappear {
             reminder.reset()
+            preferences.reset()
             controller.modificationWindowOpen = false
         }
         .frame(width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight)
@@ -118,7 +126,7 @@ struct ReminderModificationView: View {
     private var finishButtonText: String {
         mode == .create ? "Create" : "Save"
     }
-
+    
     private var totalRemindersRange: ClosedRange<Int> {
         ReminderConstants.minReminders...ReminderConstants.maxReminders
     }

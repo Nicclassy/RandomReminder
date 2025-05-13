@@ -12,6 +12,7 @@ final class ReminderModificationController: ObservableObject {
 
     @Published var refreshReminders = false
     @Published var modificationWindowOpen = false
+    var openedModificationWindow = false
     weak var reminder: RandomReminder?
 
     func postRefreshRemindersNotification() {

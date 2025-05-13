@@ -211,7 +211,6 @@ struct RemindersPreferencesView: View {
                             .disabled(true)
                     } else {
                         let newReminderButton = Button("Create New Reminder") {
-                            controller.modificationWindowOpen = true
                             openWindow(id: WindowIds.createReminder)
                         }
                         .disabled(controller.modificationWindowOpen)
