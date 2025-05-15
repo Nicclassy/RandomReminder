@@ -8,16 +8,12 @@
 import Foundation
 
 extension Date {
-    var hour: Int {
-        Calendar.current.component(.hour, from: self)
-    }
-
     var minute: Int {
         Calendar.current.component(.minute, from: self)
     }
 
-    var isDistant: Bool {
-        self == .distantPast || self == .distantFuture
+    var hour: Int {
+        Calendar.current.component(.hour, from: self)
     }
 
     static func startOfDay(date: Date = Date()) -> Self {
@@ -25,24 +21,21 @@ extension Date {
     }
 
     static func endOfDay(date: Date = Date()) -> Self {
-        // As a consequence of this design, start/end times must be in the domain [start, end].
-        // While it is possible to do [start, end) (e.g. start is 12am and end is 12am),
-        // this is a more confusing alternative
-        Calendar.current.date(byAdding: .day, value: 1, to: startOfDay(date: date).subtractMinutes(1))!
+        Calendar.current.date(byAdding: .day, value: 1, to: startOfDay(date: date))!
     }
 
     func addMinutes(_ minutes: Int) -> Self {
         // This method and the method below are saturating operations.
         // This operation is saturating because of the distant date check
-        isDistant ? self : Calendar.current.date(byAdding: .minute, value: minutes, to: self)!
+        Calendar.current.date(byAdding: .minute, value: minutes, to: self)!
     }
 
     func subtractMinutes(_ minutes: Int) -> Self {
-        isDistant ? self : Calendar.current.date(byAdding: .minute, value: -minutes, to: self)!
+        Calendar.current.date(byAdding: .minute, value: -minutes, to: self)!
     }
 
     func addSeconds(_ seconds: Int) -> Self {
-        isDistant ? self : Calendar.current.date(byAdding: .second, value: seconds, to: self)!
+        Calendar.current.date(byAdding: .second, value: seconds, to: self)!
     }
 
     func addingInterval(_ interval: RepeatInterval, quantity: Int) -> Self {
@@ -52,7 +45,7 @@ extension Date {
         case .day: (.day, quantity)
         case .week: (.day, quantity * 7)
         case .month: (.month, quantity)
-        default: fatalError("Repeat interval 'never' does not have a corresponding calendar component")
+        default: fatalError("Repeat interval \(interval) does not have a corresponding calendar component")
         }
         return Calendar.current.date(byAdding: component, value: value, to: self)!
     }

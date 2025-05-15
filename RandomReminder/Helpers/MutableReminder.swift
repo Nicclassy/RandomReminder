@@ -17,6 +17,7 @@ final class MutableReminder: ObservableObject {
         latestDate: Date().addMinutes(60),
         days: [],
         repeatInterval: .minute,
+        repeatIntervalType: .every,
         intervalQuantity: 1,
         activationEvents: ReminderActivationEvents(),
         occurences: 0
@@ -30,6 +31,7 @@ final class MutableReminder: ObservableObject {
     @Published var latestDate: Date
     @Published var days: ReminderDayOptions
     @Published var repeatInterval: RepeatInterval
+    @Published var repeatIntervalType: RepeatIntervalType
     @Published var intervalQuantity: Int
     @Published var activationEvents: ReminderActivationEvents
     var occurences: Int
@@ -43,6 +45,7 @@ final class MutableReminder: ObservableObject {
         latestDate: Date,
         days: ReminderDayOptions,
         repeatInterval: RepeatInterval,
+        repeatIntervalType: RepeatIntervalType,
         intervalQuantity: Int,
         activationEvents: ReminderActivationEvents,
         occurences: Int
@@ -55,6 +58,7 @@ final class MutableReminder: ObservableObject {
         self.latestDate = latestDate
         self.days = days
         self.repeatInterval = repeatInterval
+        self.repeatIntervalType = repeatIntervalType
         self.intervalQuantity = intervalQuantity
         self.activationEvents = activationEvents
         self.occurences = occurences
@@ -69,6 +73,7 @@ final class MutableReminder: ObservableObject {
         self.latestDate = reminder.latestDate
         self.days = reminder.days
         self.repeatInterval = reminder.repeatInterval
+        self.repeatIntervalType = reminder.repeatIntervalType
         self.intervalQuantity = reminder.intervalQuantity
         self.activationEvents = reminder.activationEvents
         self.occurences = reminder.occurences
@@ -86,6 +91,7 @@ final class MutableReminder: ObservableObject {
             repeatInterval: reminder.interval.repeatInterval == .never
                 ? Self.default.repeatInterval
                 : reminder.interval.repeatInterval,
+            repeatIntervalType: reminder.interval.repeatIntervalType,
             intervalQuantity: reminder.interval.intervalQuantity,
             activationEvents: reminder.activationEvents,
             occurences: reminder.counts.occurences
@@ -109,6 +115,7 @@ final class MutableReminder: ObservableObject {
         latestDate = reminder.latestDate
         days = reminder.days
         repeatInterval = reminder.repeatInterval
+        repeatIntervalType = reminder.repeatIntervalType
         activationEvents = reminder.activationEvents
         intervalQuantity = reminder.intervalQuantity
         occurences = reminder.occurences
@@ -126,6 +133,7 @@ final class MutableReminder: ObservableObject {
         repeatInterval = reminder.interval.repeatInterval == .never
             ? Self.default.repeatInterval
             : reminder.interval.repeatInterval
+        repeatIntervalType = reminder.interval.repeatIntervalType
         intervalQuantity = reminder.interval.intervalQuantity
         activationEvents = reminder.activationEvents
     }
@@ -137,7 +145,8 @@ final class MutableReminder: ObservableObject {
             ReminderTimeInterval(
                 earliestTime: TimeOnly(from: earliestDate),
                 latestTime: TimeOnly(from: latestDate),
-                interval: repeatInterval,
+                repeatInterval: repeatInterval,
+                repeatIntervalType: repeatIntervalType,
                 intervalQuantity: intervalQuantity
             )
         } else {
@@ -145,6 +154,7 @@ final class MutableReminder: ObservableObject {
                 earliest: earliestDate,
                 latest: latestDate,
                 repeatInterval: repeatInterval,
+                repeatIntervalType: repeatIntervalType,
                 intervalQuantity: intervalQuantity
             )
         }
@@ -171,6 +181,7 @@ extension MutableReminder: CustomStringConvertible {
             "latestDate": latestDate,
             "days": days,
             "repeatInterval": repeatInterval,
+            "repeatIntervalType": repeatIntervalType,
             "intervalQuantity": intervalQuantity,
             "activationEvents": activationEvents,
             "occurences": occurences

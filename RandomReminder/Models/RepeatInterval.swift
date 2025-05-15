@@ -7,6 +7,11 @@
 
 import Foundation
 
+enum RepeatIntervalType: Codable, Equatable, Hashable, CaseIterable {
+    case every
+    case after
+}
+
 enum RepeatInterval: Codable, Equatable, Hashable, CaseIterable {
     case never
     case minute
