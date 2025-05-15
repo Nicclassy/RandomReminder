@@ -11,6 +11,7 @@ final class AnyReminderInterval: Codable {
     enum CodingKeys: String, CodingKey {
         case timeInterval
         case dateInterval
+        case infiniteInterval
     }
 
     enum AnyReminderIntervalError: Swift.Error {
@@ -26,8 +27,9 @@ final class AnyReminderInterval: Codable {
 
     convenience init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-
-        if let timeInterval = try? container.decode(ReminderTimeInterval.self, forKey: .timeInterval) {
+        if let infiniteInterval = try? container.decode(InfiniteReminderInterval.self, forKey: .infiniteInterval) {
+            self.init(infiniteInterval)
+        } else if let timeInterval = try? container.decode(ReminderTimeInterval.self, forKey: .timeInterval) {
             self.init(timeInterval)
         } else if let dateInterval = try? container.decode(ReminderDateInterval.self, forKey: .dateInterval) {
             self.init(dateInterval)
@@ -38,11 +40,12 @@ final class AnyReminderInterval: Codable {
 
     func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-
         if let timeInterval = value as? ReminderTimeInterval {
             try container.encode(timeInterval, forKey: .timeInterval)
         } else if let dateInterval = value as? ReminderDateInterval {
             try container.encode(dateInterval, forKey: .dateInterval)
+        } else if let infiniteInterval = value as? ReminderDateInterval {
+            try container.encode(infiniteInterval, forKey: .infiniteInterval)
         } else {
             throw AnyReminderIntervalError.unknownType
         }
