@@ -42,7 +42,7 @@ enum ViewConstants {
     static let pastRemindersBeforeScroll: UInt = 2
     static let reminderRowHeight: CGFloat = 57.5
 
-    static let reminderWindowWidth: CGFloat = 500
+    static let reminderWindowWidth: CGFloat = 550
     static let reminderWindowHeight: CGFloat = 350
 }
 

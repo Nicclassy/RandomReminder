@@ -11,18 +11,6 @@ struct ReminderScheduleOptionsView: View {
     @ObservedObject var reminder: MutableReminder
     @ObservedObject var preferences: ReminderPreferences
 
-    var earliestText: String {
-        preferences.timesOnly ? "Earliest time:" : "Earliest date:"
-    }
-
-    var latestText: String {
-        preferences.timesOnly ? "Latest time:" : "Latest date:"
-    }
-
-    var datePickerComponents: DatePickerComponents {
-        preferences.timesOnly ? .hourAndMinute : [.date, .hourAndMinute]
-    }
-
     var body: some View {
         Grid(alignment: .leading) {
             GridRow {
@@ -43,9 +31,16 @@ struct ReminderScheduleOptionsView: View {
 
                 VStack(alignment: .leading) {
                     HStack(spacing: 0) {
-                        Toggle("Repeating every", isOn: $preferences.repeatingEnabled)
+                        Toggle("Repeat", isOn: $preferences.repeatingEnabled)
                             .disabled(preferences.alwaysRunning)
-                        Spacer().frame(width: 6)
+                        Picker("", selection: $reminder.repeatIntervalType) {
+                            ForEach(RepeatIntervalType.allCases, id: \.self) { value in
+                                Text(String(describing: value)).tag(value)
+                            }
+                        }
+                        .disabled(!preferences.repeatingEnabled)
+                        .frame(width: 70)
+                        Spacer().frame(width: 10)
                         NumericTextField($reminder.intervalQuantity)
                             .frame(width: 35)
                             .disabled(!preferences.repeatingEnabled)
@@ -61,7 +56,7 @@ struct ReminderScheduleOptionsView: View {
                             }
                         }
                         .disabled(!preferences.repeatingEnabled)
-                        .frame(width: 100)
+                        .frame(width: 90)
                     }
                     Toggle("Always running", isOn: $preferences.alwaysRunning)
                 }
@@ -88,6 +83,19 @@ struct ReminderScheduleOptionsView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.bottom, 10)
         }
+        .frame(width: ViewConstants.reminderWindowWidth)
+    }
+
+    private var earliestText: String {
+        preferences.timesOnly ? "Earliest time:" : "Earliest date:"
+    }
+
+    private var latestText: String {
+        preferences.timesOnly ? "Latest time:" : "Latest date:"
+    }
+
+    private var datePickerComponents: DatePickerComponents {
+        preferences.timesOnly ? .hourAndMinute : [.date, .hourAndMinute]
     }
 }
 
