@@ -15,11 +15,6 @@ final class ReminderPreferences: ObservableObject {
     @Published var specificDays: Bool
     @Published var useAudioFile: Bool
 
-    @Published var showSpecificDaysPopover = false
-    @Published var showTimesOnlyPopover = false
-    @Published var showCancelPopover = false
-    @Published var showFileImporter = false
-
     init(
         repeatingEnabled: Bool = false,
         timesOnly: Bool = false,
@@ -58,10 +53,5 @@ final class ReminderPreferences: ObservableObject {
         alwaysRunning = false
         specificDays = false
         useAudioFile = false
-
-        showSpecificDaysPopover = false
-        showTimesOnlyPopover = false
-        showCancelPopover = false
-        showFileImporter = false
     }
 }
