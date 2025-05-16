@@ -88,6 +88,7 @@ final class RandomReminder: Codable {
         // mechanisms for the reminderInterval property
         let nextInterval = interval.nextRepeat()
         reminderInterval = AnyReminderInterval(nextInterval)
+        state = .upcoming
     }
 
     func durationInSeconds() -> Float {

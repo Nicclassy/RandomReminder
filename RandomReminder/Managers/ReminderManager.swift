@@ -5,14 +5,13 @@
 //  Created by Luca Napoli on 6/1/2025.
 //
 
-import Foundation
 import SwiftUI
 
 final class ReminderManager {
     static let shared = ReminderManager(preview: true)
 
     private let persistentChanges = false
-    private let remind = false
+    private let remind = true
 
     private var reminders: [RandomReminder]
     private var timerThread: Thread!
@@ -84,6 +83,9 @@ final class ReminderManager {
                         if !reminder.hasBegun && reminder.hasStarted(after: date) {
                             FancyLogger.info("Starting reminder '\(reminder)'")
                             startReminder(reminder)
+                        } else if reminder.hasBegun && reminder.hasEnded(after: date) {
+                            FancyLogger.info("Stopping reminder '\(reminder)'")
+                            stopReminder(reminder)
                         }
                     }
                 }
@@ -121,7 +123,7 @@ final class ReminderManager {
 
     func removeReminder(_ reminder: RandomReminder) {
         if reminder.state == .started {
-            stopReminder(reminder)
+            stopReminder(reminder, permanent: true)
             deactivateReminder(reminder)
         }
 
@@ -188,13 +190,11 @@ final class ReminderManager {
             }
 
             if reminderActivator.terminated {
-                // Reminder was deleted
+                FancyLogger.info("Reminder '\(reminder)' will not be restarted")
                 return
             }
 
             FancyLogger.warn("Finished reminder activator for '\(reminder)'")
-            stopReminder(reminder)
-
             if reminder.hasRepeats {
                 FancyLogger.info("Restarted reminder '\(reminder)'")
                 reminder.advanceToNextRepeat()
@@ -202,7 +202,7 @@ final class ReminderManager {
         }
     }
 
-    func stopReminder(_ reminder: RandomReminder) {
+    func stopReminder(_ reminder: RandomReminder, permanent: Bool = false) {
         startedRemindersLock.withLock {
             guard let index = startedReminders.firstIndex(where: { $0.reminder === reminder }) else {
                 FancyLogger.warn("Reminder '\(reminder)' was not found when expected to be present")
@@ -210,8 +210,8 @@ final class ReminderManager {
             }
 
             let reminderActivator = startedReminders.remove(at: index)
-            if reminderActivator.running {
-                reminderActivator.running = false
+            reminderActivator.running = false
+            if permanent {
                 reminderActivator.terminated = true
             }
         }
