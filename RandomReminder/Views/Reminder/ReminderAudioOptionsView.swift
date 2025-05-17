@@ -10,6 +10,7 @@ import SwiftUI
 struct ReminderAudioOptionsView: View {
     @ObservedObject var reminder: MutableReminder
     @ObservedObject var preferences: ReminderPreferences
+    @ObservedObject var viewPreferences: ModificationViewPreferences
     @Binding var useAudioFile: Bool
 
     private let reminderManager: ReminderManager = .shared
@@ -33,9 +34,9 @@ struct ReminderAudioOptionsView: View {
                 }
 
                 Button("Choose an audio file") {
-                    preferences.showFileImporter = true
+                    viewPreferences.showFileImporter = true
                 }.fileImporter(
-                    isPresented: $preferences.showFileImporter,
+                    isPresented: $viewPreferences.showFileImporter,
                     allowedContentTypes: [.audio],
                     allowsMultipleSelection: false
                 ) { result in
@@ -71,5 +72,10 @@ struct ReminderAudioOptionsView: View {
 }
 
 #Preview {
-    ReminderAudioOptionsView(reminder: .init(), preferences: .init(), useAudioFile: .constant(true))
+    ReminderAudioOptionsView(
+        reminder: .init(),
+        preferences: .init(),
+        viewPreferences: .init(),
+        useAudioFile: .constant(true)
+    )
 }

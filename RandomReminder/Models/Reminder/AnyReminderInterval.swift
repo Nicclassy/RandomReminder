@@ -40,12 +40,12 @@ final class AnyReminderInterval: Codable {
 
     func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        if let timeInterval = value as? ReminderTimeInterval {
+        if let infiniteInterval = value as? InfiniteReminderInterval {
+            try container.encode(infiniteInterval, forKey: .infiniteInterval)
+        } else if let timeInterval = value as? ReminderTimeInterval {
             try container.encode(timeInterval, forKey: .timeInterval)
         } else if let dateInterval = value as? ReminderDateInterval {
             try container.encode(dateInterval, forKey: .dateInterval)
-        } else if let infiniteInterval = value as? ReminderDateInterval {
-            try container.encode(infiniteInterval, forKey: .infiniteInterval)
         } else {
             throw AnyReminderIntervalError.unknownType
         }

@@ -10,14 +10,15 @@ import SwiftUI
 struct ReminderDayOptionsView: View {
     @ObservedObject var reminder: MutableReminder
     @ObservedObject var preferences: ReminderPreferences
+    @ObservedObject var viewPreferences: ModificationViewPreferences
 
     var body: some View {
         VStack(alignment: .leading) {
             Toggle("Remind only on specific days", isOn: $preferences.specificDays)
                 .onChange(of: preferences.specificDays) { _, showSpecificDaysPopover in
-                    preferences.showSpecificDaysPopover = showSpecificDaysPopover
+                    viewPreferences.showSpecificDaysPopover = showSpecificDaysPopover
                 }
-                .popover(isPresented: $preferences.showSpecificDaysPopover) {
+                .popover(isPresented: $viewPreferences.showSpecificDaysPopover) {
                     VStack(alignment: .leading) {
                         Grid(alignment: .leading) {
                             let chunkedDays = ReminderDayOptions.allCases.chunked(
@@ -48,7 +49,7 @@ struct ReminderDayOptionsView: View {
 
                         HStack {
                             Button(action: {
-                                preferences.showSpecificDaysPopover = false
+                                viewPreferences.showSpecificDaysPopover = false
                             }, label: {
                                 Text("Done")
                                     .frame(width: 50)
@@ -70,5 +71,5 @@ struct ReminderDayOptionsView: View {
 }
 
 #Preview {
-    ReminderDayOptionsView(reminder: .init(), preferences: .init())
+    ReminderDayOptionsView(reminder: .init(), preferences: .init(), viewPreferences: .init())
 }

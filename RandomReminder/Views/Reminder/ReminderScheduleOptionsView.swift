@@ -10,19 +10,25 @@ import SwiftUI
 struct ReminderScheduleOptionsView: View {
     @ObservedObject var reminder: MutableReminder
     @ObservedObject var preferences: ReminderPreferences
+    @ObservedObject var viewPreferences: ModificationViewPreferences
+    @ObservedObject var fields: ModificationViewFields
 
     var body: some View {
         Grid(alignment: .leading) {
             GridRow {
                 VStack(alignment: .leading) {
-                    ReminderDayOptionsView(reminder: reminder, preferences: preferences)
+                    ReminderDayOptionsView(
+                        reminder: reminder,
+                        preferences: preferences,
+                        viewPreferences: viewPreferences
+                    )
                     HStack {
                         Toggle("Use times only", isOn: $preferences.timesOnly)
                             .disabled(preferences.alwaysRunning)
                         HelpLink {
-                            preferences.showTimesOnlyPopover.toggle()
+                            viewPreferences.showTimesOnlyPopover.toggle()
                         }
-                        .popover(isPresented: $preferences.showTimesOnlyPopover) {
+                        .popover(isPresented: $viewPreferences.showTimesOnlyPopover) {
                             Text("The created reminder will occur daily between the specified times.")
                                 .padding()
                         }
@@ -33,17 +39,25 @@ struct ReminderScheduleOptionsView: View {
                     HStack(spacing: 0) {
                         Toggle("Repeat", isOn: $preferences.repeatingEnabled)
                             .disabled(preferences.alwaysRunning)
+
                         Picker("", selection: $reminder.repeatIntervalType) {
                             ForEach(RepeatIntervalType.allCases, id: \.self) { value in
                                 Text(String(describing: value)).tag(value)
                             }
                         }
-                        .disabled(!preferences.repeatingEnabled)
+                        .disabled(!preferences.repeatingEnabled || preferences.alwaysRunning)
                         .frame(width: 70)
+
                         Spacer().frame(width: 10)
-                        NumericTextField($reminder.intervalQuantity)
-                            .frame(width: 35)
-                            .disabled(!preferences.repeatingEnabled)
+
+                        NumericTextField($reminder.intervalQuantity) { text in
+                            DispatchQueue.main.async {
+                                fields.intervalQuantityText = text
+                            }
+                        }
+                        .frame(width: 35)
+                        .disabled(!preferences.repeatingEnabled || preferences.alwaysRunning)
+
                         Picker("", selection: $reminder.repeatInterval) {
                             ForEach(RepeatInterval.allCases, id: \.self) { value in
                                 if value != .never {
@@ -55,7 +69,7 @@ struct ReminderScheduleOptionsView: View {
                                 }
                             }
                         }
-                        .disabled(!preferences.repeatingEnabled)
+                        .disabled(!preferences.repeatingEnabled || preferences.alwaysRunning)
                         .frame(width: 90)
                     }
                     Toggle("Always running", isOn: $preferences.alwaysRunning)
@@ -100,5 +114,5 @@ struct ReminderScheduleOptionsView: View {
 }
 
 #Preview {
-    ReminderScheduleOptionsView(reminder: .init(), preferences: .init())
+    ReminderScheduleOptionsView(reminder: .init(), preferences: .init(), viewPreferences: .init(), fields: .init())
 }
