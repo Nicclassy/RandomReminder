@@ -10,11 +10,20 @@ import SwiftUI
 struct NumericTextField: View {
     @Binding private var value: Int
     @State private var text: String
+    private let onTextChange: ((String) -> Void)?
 
     var body: some View {
         VStack {
             TextField("", text: $text)
+                .onAppear {
+                    text = String(value)
+                    onTextChange?(text)
+                }
                 .onChange(of: text) { oldValue, newValue in
+                    defer {
+                        onTextChange?(text)
+                    }
+
                     guard !newValue.isEmpty else {
                         value = 0
                         return
@@ -34,9 +43,10 @@ struct NumericTextField: View {
         }
     }
 
-    init(_ value: Binding<Int>) {
+    init(_ value: Binding<Int>, onTextChange: ((String) -> Void)? = nil) {
         self._value = value
         self._text = State(initialValue: String(value.wrappedValue))
+        self.onTextChange = onTextChange
     }
 }
 

@@ -11,15 +11,27 @@ import SwiftUI
 struct StepperTextField: View {
     @Binding private var value: Int
     @State private var text: String
-    var range: ClosedRange<Int>
-    var spacing: CGFloat
+    let range: ClosedRange<Int>
+    let spacing: CGFloat
+    private let onTextChange: ((String) -> Void)?
 
     var body: some View {
         HStack(spacing: spacing) {
             TextField("", text: $text)
+                .onAppear {
+                    // The text stays the same otherwise. We want to reset
+                    // it to reflect the changes in the reminder
+                    text = String(value)
+                    onTextChange?(text)
+                }
                 .onChange(of: text) { oldValue, newValue in
+                    defer {
+                        FancyLogger.warn("Triggering onTextChange")
+                        onTextChange?(text)
+                    }
+
                     guard !newValue.isEmpty else {
-                        value = 0
+                        value = range.lowerBound
                         return
                     }
 
@@ -47,12 +59,14 @@ struct StepperTextField: View {
     init(
         value: Binding<Int>,
         range: ClosedRange<Int> = Int.min...Int.max,
-        spacing: CGFloat = -5
+        spacing: CGFloat = -5,
+        onTextChange: ((String) -> Void)? = nil
     ) {
         self._value = value
         self._text = State(initialValue: String(value.wrappedValue))
         self.range = range
         self.spacing = spacing
+        self.onTextChange = onTextChange
     }
 
     private func constrainValue(_ value: Int, orElse defaultValue: Int) -> Int {
