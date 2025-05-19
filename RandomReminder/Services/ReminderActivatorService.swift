@@ -13,8 +13,8 @@ final class ReminderActivatorService {
     var running = false
     var terminated = false
 
-    private let activationProbability: Float
     private var reminderActivations: Int
+    private let activationProbability: Float
 
     private let onReminderActivation: () -> Void
     private let onReminderFinished: () -> Void
@@ -26,6 +26,10 @@ final class ReminderActivatorService {
         onReminderFinished: @escaping () -> Void
     ) {
         self.reminder = reminder
+        // Note: we cannot trust the value of reminder.counts.occurences
+        // for determining how many activations we must do (except for determining this value initially)
+        // because this value (reminder occurences) is incremented
+        // when the notification disappears (as of now)
         self.reminderActivations = reminder.counts.occurences
         self.onReminderActivation = onReminderActivation
         self.onReminderFinished = onReminderFinished
@@ -33,12 +37,16 @@ final class ReminderActivatorService {
         self.activationProbability = (
             Float(reminder.counts.totalOccurences) * Float(interval.seconds()) / reminder.durationInSeconds()
         )
-        // We do this so that the range is inclusive—[startDate, endDate]
-        let endRemindersDate = reminder.interval.latest.addMinutes(1)
+        let endRemindersDate = reminder.interval.latest
         FancyLogger.info("Reminder '\(reminder)' ends at \(endRemindersDate)")
     }
 
     func tick() {
+        guard !terminated else {
+            FancyLogger.info("Activator for '\(reminder)' terminated")
+            return
+        }
+
         let reminderWillActivate = reminderWillActivate()
         let isFinalActivation = reminderActivations == reminder.counts.totalOccurences - 1
         if reminderWillActivate && isFinalActivation {

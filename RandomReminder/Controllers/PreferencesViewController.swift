@@ -5,11 +5,15 @@
 //  Created by Luca Napoli on 30/12/2024.
 //
 
+// swiftlint:disable:next duplicate_imports
 import Settings
+import enum Settings.Settings
 import SwiftUI
 
 // swiftlint:disable identifier_name
 final class PreferencesViewController {
+    private let defaultPane: Settings.PaneIdentifier = .reminders
+
     private lazy var windowController = SettingsWindowController(
         panes: [
             GeneralPreferencesViewController(),
@@ -83,7 +87,7 @@ final class PreferencesViewController {
     }
 
     func show() {
-        windowController.show()
+        windowController.show(pane: defaultPane)
         windowController.window?.center()
     }
 }

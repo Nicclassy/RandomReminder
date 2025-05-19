@@ -10,7 +10,7 @@ import Foundation
 
 final class ActiveReminderService {
     let reminder: RandomReminder
-    var audioPlayer: AVAudioPlayer!
+    private var audioPlayer: AVAudioPlayer!
 
     init(reminder: RandomReminder) {
         self.reminder = reminder
@@ -31,13 +31,13 @@ final class ActiveReminderService {
         if reminder.counts.occurences == reminder.counts.totalOccurences {
             onFinalActivation()
         }
+        ReminderModificationController.shared.postRefreshRemindersNotification()
     }
 
     func onFinalActivation() {
         FancyLogger.info("Setting reminder state to finished and resetting occurences")
         reminder.counts.occurences = 0
         reminder.state = reminder.hasRepeats ? .upcoming : .finished
-        ReminderModificationController.shared.postRefreshRemindersNotification()
     }
 
     private func playReminderAudio() {

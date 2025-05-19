@@ -28,6 +28,7 @@ enum ReminderSerializer {
         }
 
         if !FileManager.default.directoryExists(atPath: StoredReminders.url.path()) {
+            FancyLogger.info("Reminders directory does not exist, creating reminders directory")
             createRemindersDirectory()
         }
 

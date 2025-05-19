@@ -108,6 +108,12 @@ final class ReminderManager {
         }
     }
 
+    func reminderExistsWithSameTitle(as title: String) -> Bool {
+        remindersQueue.sync {
+            reminders.lazy.contains { $0.content.title == title }
+        }
+    }
+
     func nextAvailableId() -> ReminderID {
         (.first...).first { !reminderIds.contains($0) }!
     }
@@ -116,6 +122,7 @@ final class ReminderManager {
         remindersQueue.sync {
             reminders.append(reminder)
         }
+
         if persistentChanges {
             ReminderSerializer.save(reminder, filename: reminder.filename())
         }
@@ -184,6 +191,8 @@ final class ReminderManager {
             let sleepInterval = tickInterval.seconds()
             reminderActivator.running = true
             reminder.state = .started
+            ReminderModificationController.shared.postRefreshRemindersNotification()
+
             while reminderActivator.running {
                 Thread.sleep(forTimeInterval: sleepInterval)
                 reminderActivator.tick()
@@ -198,6 +207,7 @@ final class ReminderManager {
             if reminder.hasRepeats {
                 FancyLogger.info("Restarted reminder '\(reminder)'")
                 reminder.advanceToNextRepeat()
+                ReminderModificationController.shared.postRefreshRemindersNotification()
             }
         }
     }
@@ -221,6 +231,7 @@ final class ReminderManager {
         let url = StoredReminders.url.appendingPathComponent(reminder.filename())
         do {
             try FileManager.default.removeItem(at: url)
+            FancyLogger.info("Deleted reminder file at", url)
         } catch {
             FancyLogger.error("Error removing file:", error)
         }

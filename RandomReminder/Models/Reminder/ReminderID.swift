@@ -21,14 +21,6 @@ extension ReminderID {
     static let first: ReminderID = 1
 }
 
-extension ReminderID: ExpressibleByIntegerLiteral {
-    typealias IntegerLiteralType = Int
-
-    init(integerLiteral value: IntegerLiteralType) {
-        self.value = value
-    }
-}
-
 extension ReminderID: Equatable, Hashable {
     static func == (lhs: ReminderID, rhs: ReminderID) -> Bool {
         lhs.value == rhs.value
@@ -54,7 +46,21 @@ extension ReminderID: Strideable {
         other.value - value
     }
 
-    func advanced(by n: Int) -> ReminderID {
-        ReminderID(value + n)
+    func advanced(by n: Int) -> Self {
+        Self(value + n)
+    }
+}
+
+extension ReminderID: ExpressibleByIntegerLiteral {
+    typealias IntegerLiteralType = Int
+
+    init(integerLiteral value: IntegerLiteralType) {
+        self.value = value
+    }
+}
+
+extension ReminderID: CustomStringConvertible {
+    var description: String {
+        String(value)
     }
 }
