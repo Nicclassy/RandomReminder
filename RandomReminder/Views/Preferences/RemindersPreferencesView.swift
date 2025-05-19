@@ -30,9 +30,9 @@ private struct ReminderPreferencesRow: View {
             Spacer()
             if editing {
                 Button("Edit") {
-                    controller.modificationWindowOpen = true
                     ReminderModificationController.shared.reminder = reminder
                     openWindow(id: WindowIds.editReminder)
+                    controller.modificationWindowOpen = true
                 }
                 .disabled(controller.modificationWindowOpen)
 
@@ -48,16 +48,17 @@ private struct ReminderPreferencesRow: View {
                     Button("Delete", role: .destructive) {
                         if parentNumberOfRows > Int(parentRowsBeforeScroll) {
                             withAnimation(.default) {
-                                ReminderModificationController.shared.refreshReminders.toggle()
+                                controller.refreshReminders.toggle()
                                 ReminderManager.shared.removeReminder(reminder)
                             }
                         } else {
-                            ReminderModificationController.shared.refreshReminders.toggle()
+                            // We do not want to animate the rows if the reminder is deleted
+                            // when there are few rows, because this animation looks very strange
+                            controller.refreshReminders.toggle()
                             ReminderManager.shared.removeReminder(reminder)
                         }
 
                         FancyLogger.info("Deleted reminder '\(reminder.content.title)'")
-                        ReminderModificationController.shared.refreshReminders = false
                     }
                 } message: {
                     Text("Deleted reminders cannot be recovered.")
@@ -212,11 +213,13 @@ struct RemindersPreferencesView: View {
                     } else {
                         let newReminderButton = Button("Create New Reminder") {
                             openWindow(id: WindowIds.createReminder)
+                            controller.modificationWindowOpen = true
                         }
-                        .disabled(controller.modificationWindowOpen)
 
                         if controller.modificationWindowOpen {
-                            newReminderButton.buttonStyle(.automatic)
+                            newReminderButton
+                                .buttonStyle(.automatic)
+                                .disabled(true)
                         } else {
                             newReminderButton.buttonStyle(.borderedProminent)
                         }
@@ -230,6 +233,7 @@ struct RemindersPreferencesView: View {
                                 .frame(width: 100)
                         })
                         .buttonStyle(.borderedProminent)
+                        .disabled(controller.modificationWindowOpen)
                     } else {
                         Button(action: {
                             editingReminders.toggle()
