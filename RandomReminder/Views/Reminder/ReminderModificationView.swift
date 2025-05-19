@@ -24,7 +24,7 @@ struct ReminderModificationView: View {
     @StateObject var preferences: ReminderPreferences = .init()
     @StateObject var viewPreferences: ModificationViewPreferences = .init()
     @StateObject var fields: ModificationViewFields = .init()
-    @State private var error: ValidationError?
+    @State private var validationResult: ValidationResult = .unset
     let mode: ReminderModificationMode
 
     var body: some View {
@@ -71,41 +71,39 @@ struct ReminderModificationView: View {
                         preferences: preferences,
                         fields: fields
                     )
-                    if let error = validator.validate() {
-                        self.error = error
-                        viewPreferences.showReminderErrorAlert = true
+
+                    validationResult = validator.validate()
+                    switch validationResult {
+                    case .success, .unset:
+                        break
+                    case .error, .warning:
+                        viewPreferences.showReminderAlert = true
                         return
                     }
 
-                    let newReminder = reminder.build(preferences: preferences)
-                    if mode == .edit {
-                        guard let previousReminder = controller.reminder else {
-                            fatalError("A reminder should be stored here")
-                        }
-
-                        ReminderManager.shared.removeReminder(previousReminder)
-                    }
-
-                    withAnimation {
-                        ReminderManager.shared.addReminder(newReminder)
-                        controller.refreshReminders.toggle()
-                    }
-
-                    FancyLogger.info("Created new reminder/edited reminder \(String(reflecting: reminder))")
+                    createNewReminder()
                     dismissWindow(id: mode == .create ? WindowIds.createReminder : WindowIds.editReminder)
                 }, label: {
                     Text(finishButtonText)
                         .frame(width: 60)
                 })
                 .alert(
-                    error?.alertText ?? "",
-                    isPresented: $viewPreferences.showReminderErrorAlert,
+                    validationResult.alertText,
+                    isPresented: $viewPreferences.showReminderAlert,
                     actions: {
-                        Button("OK") {}
-                            .buttonStyle(.borderedProminent)
+                        if case .error = validationResult {
+                            Button("OK") {}
+                                .buttonStyle(.borderedProminent)
+                        } else if case .warning = validationResult {
+                            Button("Cancel", role: .cancel) {}
+                            Button("OK") {
+                                createNewReminder()
+                                viewPreferences.closeView = true
+                            }
+                        }
                     },
                     message: {
-                        Text(error?.messageText ?? "")
+                        Text(validationResult.messageText)
                     }
                 )
 
@@ -159,7 +157,7 @@ struct ReminderModificationView: View {
 
             reminder.copyFrom(reminder: reminderToEdit)
             preferences.copyFrom(reminder: reminderToEdit)
-            controller.modificationWindowOpen = true
+            assert(controller.modificationWindowOpen, "modificationWindowOpen should be set to true")
         }
         .onDisappear {
             reminder.reset()
@@ -184,6 +182,21 @@ struct ReminderModificationView: View {
 
     private var totalRemindersRange: ClosedRange<Int> {
         ReminderConstants.minReminders...ReminderConstants.maxReminders
+    }
+
+    private func createNewReminder() {
+        let newReminder = reminder.build(preferences: preferences)
+        if mode == .edit {
+            guard let previousReminder = controller.reminder else {
+                fatalError("A reminder should be stored here")
+            }
+
+            ReminderManager.shared.removeReminder(previousReminder)
+        }
+
+        ReminderManager.shared.addReminder(newReminder)
+        controller.postRefreshRemindersNotification()
+        FancyLogger.info("Created new reminder/edited reminder \(String(reflecting: reminder))")
     }
 }
 

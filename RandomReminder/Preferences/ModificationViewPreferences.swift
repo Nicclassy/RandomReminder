@@ -9,14 +9,14 @@ import Foundation
 
 final class ModificationViewPreferences: ObservableObject {
     @Published var closeView = false
-    @Published var showReminderErrorAlert = false
+    @Published var showReminderAlert = false
     @Published var showSpecificDaysPopover = false
     @Published var showTimesOnlyPopover = false
     @Published var showCancelAlert = false
     @Published var showFileImporter = false
 
     func reset() {
-        showReminderErrorAlert = false
+        showReminderAlert = false
         showSpecificDaysPopover = false
         showTimesOnlyPopover = false
         showCancelAlert = false
