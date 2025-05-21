@@ -29,15 +29,11 @@ final class ActiveReminderService {
 
         reminder.counts.occurences += 1
         if reminder.counts.occurences == reminder.counts.totalOccurences {
-            onFinalActivation()
+            FancyLogger.info("Setting reminder state to finished and resetting occurences")
+            reminder.counts.occurences = 0
+            reminder.state = reminder.hasRepeats ? .upcoming : .finished
         }
-        ReminderModificationController.shared.postRefreshRemindersNotification()
-    }
-
-    func onFinalActivation() {
-        FancyLogger.info("Setting reminder state to finished and resetting occurences")
-        reminder.counts.occurences = 0
-        reminder.state = reminder.hasRepeats ? .upcoming : .finished
+        ReminderManager.shared.onReminderChange(of: reminder)
     }
 
     private func playReminderAudio() {

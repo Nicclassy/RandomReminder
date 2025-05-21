@@ -11,7 +11,7 @@ final class ReminderManager {
     static let shared = ReminderManager(preview: true)
 
     private let persistentChanges = false
-    private let remind = true
+    private let remind = false
 
     private var reminders: [RandomReminder]
     private var timerThread: Thread!
@@ -96,6 +96,15 @@ final class ReminderManager {
         timerThread.start()
     }
 
+    func onReminderChange(of reminder: RandomReminder) {
+        ReminderModificationController.shared.postRefreshRemindersNotification()
+        if persistentChanges {
+            DispatchQueue.global(qos: .utility).async {
+                ReminderSerializer.save(reminder, filename: reminder.filename())
+            }
+        }
+    }
+
     func upcomingReminders() -> [RandomReminder] {
         remindersQueue.sync {
             reminders.lazy.filter { !$0.hasPast }.sorted { $0.compare(with: $1) }
@@ -124,7 +133,9 @@ final class ReminderManager {
         }
 
         if persistentChanges {
-            ReminderSerializer.save(reminder, filename: reminder.filename())
+            DispatchQueue.global(qos: .utility).async {
+                ReminderSerializer.save(reminder, filename: reminder.filename())
+            }
         }
     }
 
@@ -191,7 +202,7 @@ final class ReminderManager {
             let sleepInterval = tickInterval.seconds()
             reminderActivator.running = true
             reminder.state = .started
-            ReminderModificationController.shared.postRefreshRemindersNotification()
+            onReminderChange(of: reminder)
 
             while reminderActivator.running {
                 Thread.sleep(forTimeInterval: sleepInterval)
@@ -207,7 +218,7 @@ final class ReminderManager {
             if reminder.hasRepeats {
                 FancyLogger.info("Restarted reminder '\(reminder)'")
                 reminder.advanceToNextRepeat()
-                ReminderModificationController.shared.postRefreshRemindersNotification()
+                onReminderChange(of: reminder)
             }
         }
     }
