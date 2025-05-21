@@ -104,7 +104,7 @@ enum_case_associated_values_count:
   warning: 3
   error: 4
 line_length: 120
-closure_body_length: 70
+closure_body_length: 90
 function_body_length:
   warning: 50
   error: 70
@@ -121,7 +121,7 @@ file_length:
 large_tuple: 4
 
 number_separator:
-  minimum_length: 5
+  minimum_length: 6
 redundant_type_annotation:
   consider_default_literal_types_redundant: false
 trailing_comma:

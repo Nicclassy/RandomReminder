@@ -40,6 +40,7 @@ extension Date {
 
     func addingInterval(_ interval: RepeatInterval, quantity: Int) -> Self {
         let (component, value): (Calendar.Component, Int) = switch interval {
+        case .second: (.second, quantity)
         case .minute: (.minute, quantity)
         case .hour: (.hour, quantity)
         case .day: (.day, quantity)

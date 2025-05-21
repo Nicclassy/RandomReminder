@@ -14,6 +14,7 @@ enum RepeatIntervalType: Codable, Equatable, Hashable, CaseIterable {
 
 enum RepeatInterval: Codable, Equatable, Hashable, CaseIterable {
     case never
+    case second
     case minute
     case hour
     case day
@@ -23,6 +24,7 @@ enum RepeatInterval: Codable, Equatable, Hashable, CaseIterable {
     func timeInterval() -> TimeInterval {
         switch self {
         case .never: 0
+        case .second: 1
         case .minute: 60
         case .hour: 3600
         case .day: 86400
