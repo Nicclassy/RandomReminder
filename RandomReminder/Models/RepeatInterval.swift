@@ -33,3 +33,5 @@ enum RepeatInterval: Codable, Equatable, Hashable, CaseIterable {
         }
     }
 }
+
+extension RepeatInterval: EnumRawRepresentable {}
