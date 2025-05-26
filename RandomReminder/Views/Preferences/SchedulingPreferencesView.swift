@@ -15,7 +15,7 @@ struct SchedulingPreferencesView: View {
             get: {
                 let timeInterval = intervalOrDefault(
                     interval: schedulingPreferences.defaultEarliestTime,
-                    default: Date.startOfDay()
+                    default: .startOfDay()
                 )
                 return Date(timeIntervalSince1970: timeInterval)
             },
@@ -28,7 +28,7 @@ struct SchedulingPreferencesView: View {
             get: {
                 let timeInterval = intervalOrDefault(
                     interval: schedulingPreferences.defaultLatestTime,
-                    default: Date.endOfDay()
+                    default: .endOfDay()
                 )
                 return Date(timeIntervalSince1970: timeInterval)
             },
@@ -37,27 +37,74 @@ struct SchedulingPreferencesView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
-            DualDatePickerView(
-                earliestHeading: L10n.TimePicker.EarliestDefaultTime.heading,
-                latestHeading: L10n.TimePicker.LatestDefaultTime.heading,
-                displayedComponents: .hourAndMinute,
-                earliestDate: defaultEarliestDate,
-                latestDate: defaultLatestDate
-            )
-
-            HStack {
-                Text("Notification delay (seconds):")
-                Spacer()
-                StepperTextField(value: schedulingPreferences.$notificationDelayTime, range: 0...60)
-                    .frame(width: 50)
+        Form {
+            Section {
+                let picker = DualDatePicker(
+                    displayedComponents: .hourAndMinute,
+                    earliestDate: defaultEarliestDate,
+                    latestDate: defaultLatestDate
+                )
+                
+                Toggle(isOn: .constant(true)) {
+                    HStack {
+                        Text(L10n.TimePicker.EarliestDefaultTime.heading)
+                        Spacer()
+                        picker.earliestDatePicker
+                    }
+                }
+                
+                Toggle(isOn: .constant(true)) {
+                    HStack {
+                        Text(L10n.TimePicker.LatestDefaultTime.heading)
+                        Spacer()
+                        picker.latestDatePicker
+                    }
+                    
+                    PreferenceCaption(
+                        "If enabled, newly created reminders will have these times as their start/end times."
+                    )
+                }
             }
-            PreferenceCaption(
-                "Reminders never occur simultaneously. Control the delay between one reminder's notification and the next when multiple reminders are scheduled to occur." // swiftlint:disable:this line_length
-            )
+            
+            Spacer().frame(height: 20)
+            
+            Section {
+                Toggle(isOn: schedulingPreferences.$notificationGapEnabled) {
+                    VStack(alignment: .leading) {
+                        Text("Allow time between reminders")
+                        HStack {
+                            Text("Minimum time:")
+                                .padding(.trailing, -5)
+                            StepperTextField(
+                                value: schedulingPreferences.$notificationGapTime,
+                                range: 0...999
+                            )
+                            .multilineTextAlignment(.trailing)
+                            .padding(.trailing, -10)
+                            .disabled(!schedulingPreferences.notificationGapEnabled)
+                            
+                            Picker("", selection: schedulingPreferences.$notificationGapTimeUnit) {
+                                ForEach(RepeatInterval.gapIntervals, id: \.self) { interval in
+                                    let intervalName = pluralise(
+                                        String(describing: interval),
+                                        schedulingPreferences.notificationGapTime
+                                    )
+                                    Text(intervalName).tag(interval)
+                                }
+                            }
+                            .frame(width: 100)
+                            .disabled(!schedulingPreferences.notificationGapEnabled)
+                        }
+                    }
+                    
+                    PreferenceCaption(
+                        "Reminders never occur simultaneously. Control the time between one reminder's occurence and the next when multiple reminders are scheduled to occur."
+                    ) // swiftlint:disable:previous line_length
+                }
+            }
         }
-        .padding()
         .frame(width: 320, height: 300)
+        .padding()
     }
 
     private func intervalOrDefault(interval: TimeInterval, default date: @autoclosure () -> Date) -> TimeInterval {
