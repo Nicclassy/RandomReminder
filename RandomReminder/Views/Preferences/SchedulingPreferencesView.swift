@@ -44,30 +44,32 @@ struct SchedulingPreferencesView: View {
                     earliestDate: defaultEarliestDate,
                     latestDate: defaultLatestDate
                 )
-                
-                Toggle(isOn: .constant(true)) {
+
+                Toggle(isOn: schedulingPreferences.$defaultEarliestTimeEnabled) {
                     HStack {
                         Text(L10n.TimePicker.EarliestDefaultTime.heading)
                         Spacer()
                         picker.earliestDatePicker
+                            .disabled(!schedulingPreferences.defaultEarliestTimeEnabled)
                     }
                 }
-                
-                Toggle(isOn: .constant(true)) {
+
+                Toggle(isOn: schedulingPreferences.$defaultLatestTimeEnabled) {
                     HStack {
                         Text(L10n.TimePicker.LatestDefaultTime.heading)
                         Spacer()
                         picker.latestDatePicker
+                            .disabled(!schedulingPreferences.defaultLatestTimeEnabled)
                     }
-                    
+
                     PreferenceCaption(
                         "If enabled, newly created reminders will have these times as their start/end times."
                     )
                 }
             }
-            
-            Spacer().frame(height: 20)
-            
+
+            Spacer().frame(height: ViewConstants.preferencesSpacing)
+
             Section {
                 Toggle(isOn: schedulingPreferences.$notificationGapEnabled) {
                     VStack(alignment: .leading) {
@@ -82,7 +84,7 @@ struct SchedulingPreferencesView: View {
                             .multilineTextAlignment(.trailing)
                             .padding(.trailing, -10)
                             .disabled(!schedulingPreferences.notificationGapEnabled)
-                            
+
                             Picker("", selection: schedulingPreferences.$notificationGapTimeUnit) {
                                 ForEach(RepeatInterval.gapIntervals, id: \.self) { interval in
                                     let intervalName = pluralise(
@@ -96,10 +98,17 @@ struct SchedulingPreferencesView: View {
                             .disabled(!schedulingPreferences.notificationGapEnabled)
                         }
                     }
-                    
+
                     PreferenceCaption(
                         "Reminders never occur simultaneously. Control the time between one reminder's occurence and the next when multiple reminders are scheduled to occur."
                     ) // swiftlint:disable:previous line_length
+                }
+            }
+
+            Spacer().frame(height: ViewConstants.preferencesSpacing)
+            Section {
+                Toggle(isOn: schedulingPreferences.$remindersArePaused) {
+                    Text("Pause all reminders")
                 }
             }
         }
