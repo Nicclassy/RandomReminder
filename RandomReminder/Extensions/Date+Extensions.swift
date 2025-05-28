@@ -24,6 +24,15 @@ extension Date {
         Calendar.current.date(byAdding: .day, value: 1, to: startOfDay(date: date))!
     }
 
+    static func dateToday(withTime timeIntervalSince1970: TimeInterval) -> Self {
+        let calendar = Calendar.current
+        let date = Date(timeIntervalSince1970: timeIntervalSince1970)
+        var result = calendar.dateComponents([.year, .month, .day], from: Date())
+        result.hour = date.hour
+        result.minute = date.minute
+        return calendar.date(from: result)!
+    }
+
     func addMinutes(_ minutes: Int) -> Self {
         // This method and the method below are saturating operations.
         // This operation is saturating because of the distant date check

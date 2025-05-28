@@ -106,6 +106,7 @@ struct SchedulingPreferencesView: View {
             }
 
             Spacer().frame(height: ViewConstants.preferencesSpacing)
+
             Section {
                 Toggle(isOn: schedulingPreferences.$remindersArePaused) {
                     Text("Pause all reminders")

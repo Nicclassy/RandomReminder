@@ -43,11 +43,12 @@ final class ReminderActivatorService {
 
     func tick() {
         guard !terminated else {
-            FancyLogger.info("Activator for '\(reminder)' terminated")
+            FancyLogger.info("Activator for '\(reminder)' has been terminated")
             return
         }
 
-        let reminderWillActivate = reminderWillActivate()
+        let remindersArePaused = !SchedulingPreferences.shared.remindersArePaused
+        let reminderWillActivate = reminderWillActivate() && !remindersArePaused
         let isFinalActivation = reminderActivations == reminder.counts.totalOccurences - 1
         if reminderWillActivate && isFinalActivation {
             reminderActivations += 1

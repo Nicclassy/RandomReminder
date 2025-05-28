@@ -68,7 +68,11 @@ private struct ReminderPreferencesRow: View {
                     .frame(height: 20)
                     .foregroundStyle(.secondary)
                     .onReceive(timer) { _ in
-                        reminderInfo = TimeInfoProvider(reminder: reminder).preferencesInfo()
+                        reminderInfo = if SchedulingPreferences.shared.remindersArePaused {
+                            "Paused"
+                        } else {
+                            TimeInfoProvider(reminder: reminder).preferencesInfo()
+                        }
                     }
             }
         }

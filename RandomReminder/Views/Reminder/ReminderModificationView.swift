@@ -15,6 +15,11 @@ enum ReminderModificationMode {
 final class ModificationViewFields: ObservableObject {
     @Published var occurrencesText: String = ""
     @Published var intervalQuantityText: String = ""
+
+    func reset() {
+        occurrencesText = ""
+        intervalQuantityText = ""
+    }
 }
 
 struct ReminderModificationView: View {
@@ -25,6 +30,7 @@ struct ReminderModificationView: View {
     @StateObject var viewPreferences: ModificationViewPreferences = .init()
     @StateObject var fields: ModificationViewFields = .init()
     @State private var validationResult: ValidationResult = .unset
+    private let schedulingPreferences: SchedulingPreferences = .shared
     let mode: ReminderModificationMode
 
     var body: some View {
@@ -41,11 +47,15 @@ struct ReminderModificationView: View {
                 }
                 GridRow {
                     Text("Total occurences:")
-                    StepperTextField(value: $reminder.totalOccurences, range: totalRemindersRange) { text in
-                        DispatchQueue.main.async {
-                            fields.occurrencesText = text
+                    StepperTextField(
+                        value: $reminder.totalOccurences,
+                        range: reminderOccurencesRange,
+                        onTextChange: { text in
+                            DispatchQueue.main.async {
+                                fields.occurrencesText = text
+                            }
                         }
-                    }
+                    )
                     .frame(width: 55)
                 }
             }
@@ -63,7 +73,6 @@ struct ReminderModificationView: View {
                 useAudioFile: $preferences.useAudioFile
             )
 
-            // swiftlint:disable:next closure_body_length
             HStack {
                 let finishButton = Button(action: {
                     let validator = ReminderValidator(
@@ -147,21 +156,36 @@ struct ReminderModificationView: View {
         }
         .onAppear {
             guard controller.openedModificationWindow else {
+                // We require this check so that when the window is opened for the first time
+                // for editing, the reminder is already set. Hence we do not need
+                // to copy values from the existing values. This is a minor
+                // inconvenience of SwiftUI's declarative design:
+                // that the view in the Window in the app class
+                // is only initialized once. So every subsequent time
+                // we must rely on resetting fields via immutability
                 controller.openedModificationWindow = true
+                if mode == .create {
+                    setDefaultTimes()
+                }
                 return
             }
-            guard mode == .edit else { return }
+
+            assert(controller.modificationWindowOpen, "modificationWindowOpen should be set to true")
+            guard mode == .edit else {
+                setDefaultTimes()
+                return
+            }
             guard let reminderToEdit = controller.reminder else {
                 fatalError("Reminder must be set")
             }
 
             reminder.copyFrom(reminder: reminderToEdit)
             preferences.copyFrom(reminder: reminderToEdit)
-            assert(controller.modificationWindowOpen, "modificationWindowOpen should be set to true")
         }
         .onDisappear {
             reminder.reset()
             preferences.reset()
+            fields.reset()
             controller.modificationWindowOpen = false
         }
         .frame(width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight)
@@ -180,8 +204,17 @@ struct ReminderModificationView: View {
         mode == .create ? "Create" : "Save"
     }
 
-    private var totalRemindersRange: ClosedRange<Int> {
-        ReminderConstants.minReminders...ReminderConstants.maxReminders
+    private var reminderOccurencesRange: ClosedRange<Int> {
+        ReminderConstants.minOccurences...ReminderConstants.maxOccurences
+    }
+
+    private func setDefaultTimes() {
+        if schedulingPreferences.defaultEarliestTimeEnabled {
+            reminder.earliestDate = .dateToday(withTime: schedulingPreferences.defaultEarliestTime)
+        }
+        if schedulingPreferences.defaultLatestTimeEnabled {
+            reminder.latestDate = .dateToday(withTime: schedulingPreferences.defaultLatestTime)
+        }
     }
 
     private func createNewReminder() {
