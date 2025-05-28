@@ -5,6 +5,8 @@
 //  Created by Luca Napoli on 19/2/2025.
 //
 
+import Foundation
+
 struct ReminderDayOptions: OptionSet, CaseIterable, Codable {
     static let monday: Self = .init(rawValue: 1 << 0)
     static let tuesday: Self = .init(rawValue: 1 << 1)
@@ -17,6 +19,12 @@ struct ReminderDayOptions: OptionSet, CaseIterable, Codable {
     static let allCases: [Self] = [
         .monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday
     ]
+    
+    static var today: Self {
+        let date = Date()
+        let weekdayNumber = Calendar.current.component(.weekday, from: date)
+        return Self(weekdayNumber: weekdayNumber)
+    }
 
     var rawValue: Int
 
@@ -31,6 +39,23 @@ struct ReminderDayOptions: OptionSet, CaseIterable, Codable {
         case .saturday: "Saturday"
         case .sunday: "Sunday"
         default: ""
+        }
+    }
+    
+    init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+    
+    init(weekdayNumber: Int) {
+        self = switch weekdayNumber {
+        case 1: .sunday
+        case 2: .monday
+        case 3: .tuesday
+        case 4: .wednesday
+        case 5: .thursday
+        case 6: .friday
+        case 7: .saturday
+        default: fatalError("Unknown weekday number \(weekdayNumber)")
         }
     }
 }

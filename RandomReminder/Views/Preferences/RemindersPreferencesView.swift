@@ -68,8 +68,11 @@ private struct ReminderPreferencesRow: View {
                     .frame(height: 20)
                     .foregroundStyle(.secondary)
                     .onReceive(timer) { _ in
+                        let currentDay = ReminderManager.shared.currentDay
                         reminderInfo = if SchedulingPreferences.shared.remindersArePaused {
                             "Paused"
+                        } else if !reminder.days.contains(currentDay) && !reminder.hasPast {
+                            "Does not occur on \(currentDay.name)"
                         } else {
                             TimeInfoProvider(reminder: reminder).preferencesInfo()
                         }

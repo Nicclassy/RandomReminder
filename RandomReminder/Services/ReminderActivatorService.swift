@@ -47,8 +47,8 @@ final class ReminderActivatorService {
             return
         }
 
-        let remindersArePaused = !SchedulingPreferences.shared.remindersArePaused
-        let reminderWillActivate = reminderWillActivate() && !remindersArePaused
+        let reminderCanActivate = ReminderManager.shared.reminderCanActivate(reminder)
+        let reminderWillActivate = reminderCanActivate && reminderWillActivate()
         let isFinalActivation = reminderActivations == reminder.counts.totalOccurences - 1
         if reminderWillActivate && isFinalActivation {
             reminderActivations += 1

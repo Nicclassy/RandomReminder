@@ -27,6 +27,8 @@ final class ReminderManager {
     private let startedRemindersLock = NSLock()
     private var activeReminders: [ActiveReminderService] = []
     private var startedReminders: [ReminderActivatorService] = []
+    
+    var currentDay: ReminderDayOptions = .today
 
     var reminderIds: Set<ReminderID> {
         remindersQueue.sync {
@@ -73,6 +75,13 @@ final class ReminderManager {
         // https://hackernoon.com/how-to-use-runloop-in-ios-applications
         // for correct timer implementation
         setReminderStates()
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(onDayChanged),
+            name: .NSCalendarDayChanged,
+            object: nil
+        )
+        
         guard remind else { return }
 
         timerThread = Thread {
@@ -103,6 +112,14 @@ final class ReminderManager {
                 ReminderSerializer.save(reminder, filename: reminder.filename())
             }
         }
+    }
+    
+    func reminderCanActivate(_ reminder: RandomReminder) -> Bool {
+        guard !SchedulingPreferences.shared.remindersArePaused else {
+            return false
+        }
+        
+        return reminder.days.contains(currentDay)
     }
 
     func upcomingReminders() -> [RandomReminder] {
@@ -246,6 +263,11 @@ final class ReminderManager {
         } catch {
             FancyLogger.error("Error removing file:", error)
         }
+    }
+    
+    @objc
+    private func onDayChanged() {
+        currentDay = .today
     }
 
     private func setReminderStates() {

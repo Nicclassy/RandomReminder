@@ -65,7 +65,7 @@ final class RandomReminder: Codable {
             id: id,
             content: ReminderContent(title: title, text: text),
             reminderInterval: AnyReminderInterval(interval),
-            days: days ?? [],
+            days: days ?? .allOptions(),
             counts: ReminderCounts(totalOccurences: totalOccurences),
             state: .upcoming,
             activationEvents: activationEvents ?? ReminderActivationEvents()
