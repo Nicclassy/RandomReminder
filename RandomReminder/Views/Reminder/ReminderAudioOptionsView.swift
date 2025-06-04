@@ -44,17 +44,6 @@ struct ReminderAudioOptionsView: View {
                         FancyLogger.error(failure)
                     } else if case let .success(success) = result {
                         let file = success.first!
-                        let gotAccess = file.startAccessingSecurityScopedResource()
-
-                        if !gotAccess {
-                            FancyLogger.warn("No access to selected file")
-                            return
-                        }
-
-                        defer {
-                            file.stopAccessingSecurityScopedResource()
-                        }
-
                         reminder.activationEvents.audio = ReminderAudioFile(name: file.lastPathComponent, url: file)
                     }
                 }

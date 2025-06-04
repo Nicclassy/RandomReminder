@@ -37,13 +37,18 @@ final class ActiveReminderService {
     }
 
     private func playReminderAudio() {
-        guard let audioFile = reminder.activationEvents.audio else { return }
-        guard let audioPlayer = try? AVAudioPlayer(contentsOf: audioFile.url) else {
-            FancyLogger.warn("Audio player cannot play file '\(audioFile.url)'")
+        guard let audioFile = reminder.activationEvents.audio else {
+            FancyLogger.info("Reminder '\(reminder)' has no audio")
+            return
+        }
+
+        let url = audioFile.url
+        guard let audioPlayer = try? AVAudioPlayer(contentsOf: url) else {
+            FancyLogger.warn("Audio player cannot play file '\(url)'")
             return
         }
         guard audioPlayer.prepareToPlay() else {
-            FancyLogger.warn("System failed to prepare audio player for '\(audioFile.url)'")
+            FancyLogger.warn("System failed to prepare audio player for '\(url)'")
             return
         }
 

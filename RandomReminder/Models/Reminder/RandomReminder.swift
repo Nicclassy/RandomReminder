@@ -34,6 +34,10 @@ final class RandomReminder: Codable {
         interval.repeatInterval != .never
     }
 
+    var hasAudio: Bool {
+        activationEvents.audio != nil
+    }
+
     init(
         id: ReminderID,
         content: ReminderContent,
@@ -84,7 +88,7 @@ final class RandomReminder: Codable {
         // This is the only time we modify reminderInterval—
         // and this function would never be called in
         // situations that result in race conditions—
-        // so thankfully we need not have thread-safety/locking
+        // so thankfully we need not have thread-safety
         // mechanisms for the reminderInterval property
         let nextInterval = interval.nextRepeat()
         reminderInterval = AnyReminderInterval(nextInterval)
@@ -117,6 +121,14 @@ extension RandomReminder {
         URL(string: String(describing: id))!
             .appendingPathExtension(StoredReminders.fileExtension)
             .path()
+    }
+
+    func audioFileBookmarkKey() -> String {
+        guard let audioFile = activationEvents.audio else {
+            fatalError("Cannot create a bookmark key for a reminder without an audio file.")
+        }
+
+        return "\(id).\(audioFile.name)"
     }
 }
 
