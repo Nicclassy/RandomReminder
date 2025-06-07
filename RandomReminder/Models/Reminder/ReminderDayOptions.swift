@@ -19,7 +19,7 @@ struct ReminderDayOptions: OptionSet, CaseIterable, Codable {
     static let allCases: [Self] = [
         .monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday
     ]
-    
+
     static var today: Self {
         let date = Date()
         let weekdayNumber = Calendar.current.component(.weekday, from: date)
@@ -31,21 +31,34 @@ struct ReminderDayOptions: OptionSet, CaseIterable, Codable {
     /// Weekday names will be localised
     var name: String {
         switch self {
-        case .monday: "Monday"
-        case .tuesday: "Tuesday"
-        case .wednesday: "Wednesday"
-        case .thursday: "Thursday"
-        case .friday: "Friday"
-        case .saturday: "Saturday"
-        case .sunday: "Sunday"
-        default: ""
+        case .monday: L10n.monday
+        case .tuesday: L10n.tuesday
+        case .wednesday: L10n.wednesday
+        case .thursday: L10n.thursday
+        case .friday: L10n.friday
+        case .saturday: L10n.saturday
+        case .sunday: L10n.sunday
+        default: fatalError("Unknown name for instance with raw value \(rawValue)")
         }
     }
-    
+
+    var weekdayNumber: Int {
+        switch self {
+        case .sunday: 1
+        case .monday: 2
+        case .tuesday: 3
+        case .wednesday: 4
+        case .thursday: 5
+        case .friday: 6
+        case .saturday: 7
+        default: fatalError("No weekday number for \(self)")
+        }
+    }
+
     init(rawValue: Int) {
         self.rawValue = rawValue
     }
-    
+
     init(weekdayNumber: Int) {
         self = switch weekdayNumber {
         case 1: .sunday
@@ -57,5 +70,25 @@ struct ReminderDayOptions: OptionSet, CaseIterable, Codable {
         case 7: .saturday
         default: fatalError("Unknown weekday number \(weekdayNumber)")
         }
+    }
+
+    func nextOccurringDay() -> Self {
+        let today = ReminderManager.shared.currentDay
+        var weekdayNumber = today != .saturday ? today.weekdayNumber + 1 : 1
+        for _ in 1...7 {
+            let day = Self(weekdayNumber: weekdayNumber)
+            if contains(day) {
+                return day
+            }
+            weekdayNumber = weekdayNumber != 7 ? weekdayNumber + 1 : 1
+        }
+
+        fatalError("Could not find next occuring day")
+    }
+}
+
+extension ReminderDayOptions: CustomStringConvertible {
+    var description: String {
+        name
     }
 }

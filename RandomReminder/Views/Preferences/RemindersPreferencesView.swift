@@ -72,7 +72,7 @@ private struct ReminderPreferencesRow: View {
                         reminderInfo = if SchedulingPreferences.shared.remindersArePaused {
                             "Paused"
                         } else if !reminder.days.contains(currentDay) && !reminder.hasPast {
-                            "Does not occur on \(currentDay.name)"
+                            "Resumes on \(reminder.days.nextOccurringDay())"
                         } else {
                             TimeInfoProvider(reminder: reminder).preferencesInfo()
                         }

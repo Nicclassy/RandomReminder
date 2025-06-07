@@ -49,7 +49,9 @@ struct ReminderDayOptionsView: View {
 
                         HStack {
                             Button(action: {
-                                viewPreferences.showSpecificDaysPopover = false
+                                DispatchQueue.main.async {
+                                    viewPreferences.showSpecificDaysPopover = false
+                                }
                             }, label: {
                                 Text("Done")
                                     .frame(width: 50)

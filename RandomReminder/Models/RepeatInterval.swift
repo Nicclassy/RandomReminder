@@ -7,6 +7,8 @@
 
 import Foundation
 
+typealias TimeUnit = RepeatInterval
+
 enum RepeatIntervalType: Codable, Equatable, Hashable, CaseIterable {
     case every
     case after
@@ -41,5 +43,3 @@ extension RepeatInterval {
 }
 
 extension RepeatInterval: EnumRawRepresentable {}
-
-typealias TimeUnit = RepeatInterval
