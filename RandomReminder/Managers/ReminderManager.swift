@@ -10,14 +10,13 @@ import SwiftUI
 final class ReminderManager {
     static let shared = ReminderManager(preview: true)
 
-    private let persistentChanges = false
     private let remind = false
+    private let persistentChanges = false
 
     private var reminders: [RandomReminder]
     private var timerThread: Thread!
     private var tickInterval: ReminderTickInterval = .seconds(1)
 
-    private var startedRemindersQueue = OperationQueue()
     private var remindersQueue = DispatchQueue(
         label: Constants.bundleID + ".ReminderManager.queue",
         qos: .userInitiated
@@ -27,7 +26,7 @@ final class ReminderManager {
     private let startedRemindersLock = NSLock()
     private var activeReminders: [ActiveReminderService] = []
     private var startedReminders: [ReminderActivatorService] = []
-    
+
     var currentDay: ReminderDayOptions = .today
 
     var reminderIds: Set<ReminderID> {
@@ -74,14 +73,14 @@ final class ReminderManager {
         // All credits go to
         // https://hackernoon.com/how-to-use-runloop-in-ios-applications
         // for correct timer implementation
-        setReminderStates()
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(onDayChanged),
             name: .NSCalendarDayChanged,
             object: nil
         )
-        
+        setReminderStates()
+
         guard remind else { return }
 
         timerThread = Thread {
@@ -113,12 +112,12 @@ final class ReminderManager {
             }
         }
     }
-    
+
     func reminderCanActivate(_ reminder: RandomReminder) -> Bool {
         guard !SchedulingPreferences.shared.remindersArePaused else {
             return false
         }
-        
+
         return reminder.days.contains(currentDay)
     }
 
@@ -215,14 +214,14 @@ final class ReminderManager {
             startedReminders.append(reminderActivator)
         }
 
-        startedRemindersQueue.addOperation { [self] in
-            let sleepInterval = tickInterval.seconds()
+        Task.detached(priority: .utility) { [self] in
+            let sleepInterval = UInt64(tickInterval.seconds() * 1_000_000_000)
             reminderActivator.running = true
             reminder.state = .started
             onReminderChange(of: reminder)
 
             while reminderActivator.running {
-                Thread.sleep(forTimeInterval: sleepInterval)
+                try? await Task.sleep(nanoseconds: sleepInterval)
                 reminderActivator.tick()
             }
 
@@ -236,6 +235,8 @@ final class ReminderManager {
                 FancyLogger.info("Restarted reminder '\(reminder)'")
                 reminder.advanceToNextRepeat()
                 onReminderChange(of: reminder)
+            } else {
+                reminder.state = .finished
             }
         }
     }
@@ -264,7 +265,7 @@ final class ReminderManager {
             FancyLogger.error("Error removing file:", error)
         }
     }
-    
+
     @objc
     private func onDayChanged() {
         currentDay = .today
