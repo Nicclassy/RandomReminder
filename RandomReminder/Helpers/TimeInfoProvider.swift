@@ -7,15 +7,6 @@
 
 import Foundation
 
-/// This function will be replaced in the future with proper localizations
-func pluralise(_ word: String, _ quantity: Int? = nil) -> String {
-    if let quantity {
-        quantity == 1 ? word : word + "s"
-    } else {
-        word + "s"
-    }
-}
-
 struct TimeInfoProvider {
     private static let orderedCalendarComponents: [Calendar.Component] = [.day, .hour, .minute, .second]
     private static let calendarComponents: Set<Calendar.Component> = [.day, .hour, .minute, .second]
@@ -23,10 +14,11 @@ struct TimeInfoProvider {
     let reminder: RandomReminder
 
     static func timeDifferenceInfo(from start: Date, to end: Date = .now) -> String {
-        func pluralisedComponent(for component: Calendar.Component, quantity: UInt) -> String {
-            let name = String(describing: component)
-            let suffix = quantity != 1 ? "s" : ""
-            return "\(quantity) \(name)\(suffix)"
+        func componentName(_ component: Calendar.Component, for quantity: Int) -> String {
+            guard let unit = TimeUnit(rawValue: String(describing: component)) else {
+                fatalError("Cannot convert \(component) into a TimeUnit")
+            }
+            return unit.name(for: quantity)
         }
 
         let components = Calendar.current.dateComponents(
@@ -35,7 +27,7 @@ struct TimeInfoProvider {
             to: start
         )
         if let days = components.day, days >= 7 {
-            return ">1 week"
+            return L10n.Preferences.Reminders.longerThanOneWeek
         }
 
         let infoParts: [String] = Self.orderedCalendarComponents.compactMap { calendarComponent in
@@ -43,20 +35,28 @@ struct TimeInfoProvider {
                 return nil
             }
 
-            return pluralisedComponent(for: calendarComponent, quantity: quantity)
+            return componentName(calendarComponent, for: Int(exactly: quantity)!)
         }
 
-        return infoParts.isEmpty ? "0 seconds" : infoParts.listing()
+        return infoParts.listing()
     }
 
     func preferencesInfo() -> String {
         if reminder.hasPast {
-            "\(timeDifferenceInfo()) ago"
-        } else if reminder.hasBegun {
-            "\(reminder.counts.occurencesLeft) \(pluralise("occurence", reminder.counts.occurencesLeft)) left"
-        } else {
-            "Starting in \(timeDifferenceInfo())"
+            return L10n.Preferences.Reminders.ago(timeDifferenceInfo())
         }
+        if reminder.hasBegun {
+            if reminder.counts.occurencesLeft == 1 {
+                return L10n.Preferences.Reminders.singleOccurenceLeft
+            }
+            return L10n.Preferences.Reminders.multipleOccurencesLeft(reminder.counts.occurencesLeft)
+        }
+        
+        let info = timeDifferenceInfo()
+        if info.isEmpty {
+            return L10n.Preferences.Reminders.startingNow
+        }
+        return L10n.Preferences.Reminders.startingIn(info)
     }
 
     func timeDifferenceInfo() -> String {

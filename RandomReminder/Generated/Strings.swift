@@ -10,6 +10,47 @@ import Foundation
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
 internal enum L10n {
+  /// day
+  internal static let day = L10n.tr("Localizable", "day", fallback: "day")
+  /// days
+  internal static let days = L10n.tr("Localizable", "days", fallback: "days")
+  /// Friday
+  internal static let friday = L10n.tr("Localizable", "friday", fallback: "Friday")
+  /// hour
+  internal static let hour = L10n.tr("Localizable", "hour", fallback: "hour")
+  /// hours
+  internal static let hours = L10n.tr("Localizable", "hours", fallback: "hours")
+  /// minute
+  internal static let minute = L10n.tr("Localizable", "minute", fallback: "minute")
+  /// minutes
+  internal static let minutes = L10n.tr("Localizable", "minutes", fallback: "minutes")
+  /// Monday
+  internal static let monday = L10n.tr("Localizable", "monday", fallback: "Monday")
+  /// month
+  internal static let month = L10n.tr("Localizable", "month", fallback: "month")
+  /// months
+  internal static let months = L10n.tr("Localizable", "months", fallback: "months")
+  /// Saturday
+  internal static let saturday = L10n.tr("Localizable", "saturday", fallback: "Saturday")
+  /// Localizable.strings
+  ///   RandomReminder
+  /// 
+  ///   Created by Luca Napoli on 2/1/2025.
+  internal static let second = L10n.tr("Localizable", "second", fallback: "second")
+  /// seconds
+  internal static let seconds = L10n.tr("Localizable", "seconds", fallback: "seconds")
+  /// Sunday
+  internal static let sunday = L10n.tr("Localizable", "sunday", fallback: "Sunday")
+  /// Thursday
+  internal static let thursday = L10n.tr("Localizable", "thursday", fallback: "Thursday")
+  /// Tuesday
+  internal static let tuesday = L10n.tr("Localizable", "tuesday", fallback: "Tuesday")
+  /// Wednesday
+  internal static let wednesday = L10n.tr("Localizable", "wednesday", fallback: "Wednesday")
+  /// week
+  internal static let week = L10n.tr("Localizable", "week", fallback: "week")
+  /// weeks
+  internal static let weeks = L10n.tr("Localizable", "weeks", fallback: "weeks")
   internal enum DatePicker {
     internal enum EarliestDate {
       /// Earliest date:
@@ -35,6 +76,26 @@ internal enum L10n {
         internal static let caption = L10n.tr("Localizable", "preferences.general.quick-reminder-enabled.caption", fallback: "Show Quick Reminder in the menu bar item's menu.")
       }
     }
+    internal enum Reminders {
+      /// %@ ago
+      internal static func ago(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "preferences.reminders.ago", String(describing: p1), fallback: "%@ ago")
+      }
+      /// >1 week
+      internal static let longerThanOneWeek = L10n.tr("Localizable", "preferences.reminders.longer-than-one-week", fallback: ">1 week")
+      /// %d occurences left
+      internal static func multipleOccurencesLeft(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "preferences.reminders.multiple-occurences-left", p1, fallback: "%d occurences left")
+      }
+      /// 1 occurence left
+      internal static let singleOccurenceLeft = L10n.tr("Localizable", "preferences.reminders.single-occurence-left", fallback: "1 occurence left")
+      /// Starting in %@
+      internal static func startingIn(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "preferences.reminders.starting-in", String(describing: p1), fallback: "Starting in %@")
+      }
+      /// Starting now
+      internal static let startingNow = L10n.tr("Localizable", "preferences.reminders.starting-now", fallback: "Starting now")
+    }
     internal enum Tab {
       /// About
       internal static let about = L10n.tr("Localizable", "preferences.tab.about", fallback: "About")
@@ -45,10 +106,7 @@ internal enum L10n {
     }
   }
   internal enum StatusBar {
-    /// Localizable.strings
-    ///   RandomReminder
-    /// 
-    ///   Created by Luca Napoli on 2/1/2025.
+    /// Preferences
     internal static let preferences = L10n.tr("Localizable", "status-bar.preferences", fallback: "Preferences")
     /// Quit
     internal static let quit = L10n.tr("Localizable", "status-bar.quit", fallback: "Quit")
