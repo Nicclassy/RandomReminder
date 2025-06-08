@@ -23,7 +23,7 @@ enum RepeatInterval: Codable, Equatable, Hashable, CaseIterable {
     case week
     case month
 
-    func timeInterval() -> TimeInterval {
+    var timeInterval: TimeInterval {
         switch self {
         case .never: 0
         case .second: 1
@@ -33,6 +33,34 @@ enum RepeatInterval: Codable, Equatable, Hashable, CaseIterable {
         case .week: 604_800
         case .month: 2_629_746
         }
+    }
+    
+    var singularName: String {
+        switch self {
+        case .second: L10n.second
+        case .minute: L10n.minute
+        case .hour: L10n.hour
+        case .day: L10n.day
+        case .week: L10n.week
+        case .month: L10n.month
+        case .never: fatalError("singularName shouldn't be called on .never")
+        }
+    }
+    
+    var pluralName: String {
+        switch self {
+        case .second: L10n.seconds
+        case .minute: L10n.minutes
+        case .hour: L10n.hours
+        case .day: L10n.days
+        case .week: L10n.weeks
+        case .month: L10n.months
+        case .never: fatalError("pluralName shouldn't be called on .never")
+        }
+    }
+    
+    func name(for quantity: Int) -> String {
+        quantity == 1 ? singularName : pluralName
     }
 }
 

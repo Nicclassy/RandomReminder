@@ -6,6 +6,29 @@
   
 */
 
+// MARK: Time
+"second" = "second";
+"seconds" = "seconds";
+"minute" = "minute";
+"minutes" = "minutes";
+"hour" = "hour";
+"hours" = "hours";
+"day" = "day";
+"days" = "days";
+"week" = "week";
+"weeks" = "weeks";
+"month" = "month";
+"months" = "months";
+
+// MARK: Days
+"monday" = "Monday";
+"tuesday" = "Tuesday";
+"wednesday" = "Wednesday";
+"thursday" = "Thursday";
+"friday" = "Friday";
+"saturday" = "Saturday";
+"sunday" = "Sunday";
+
 // MARK: Status Bar
 
 "status-bar.preferences" = "Preferences";

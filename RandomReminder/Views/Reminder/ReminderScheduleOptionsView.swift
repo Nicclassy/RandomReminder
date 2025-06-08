@@ -59,13 +59,10 @@ struct ReminderScheduleOptionsView: View {
                         .disabled(!preferences.repeatingEnabled || preferences.alwaysRunning)
 
                         Picker("", selection: $reminder.repeatInterval) {
-                            ForEach(RepeatInterval.allCases, id: \.self) { value in
-                                if value != .never {
-                                    let intervalName = pluralise(
-                                        String(describing: value),
-                                        reminder.intervalQuantity
-                                    )
-                                    Text(intervalName).tag(value)
+                            ForEach(RepeatInterval.allCases, id: \.self) { interval in
+                                if interval != .never {
+                                    let intervalName = interval.name(for: reminder.intervalQuantity)
+                                    Text(intervalName).tag(interval)
                                 }
                             }
                         }

@@ -87,9 +87,8 @@ struct SchedulingPreferencesView: View {
 
                             Picker("", selection: schedulingPreferences.$notificationGapTimeUnit) {
                                 ForEach(RepeatInterval.gapIntervals, id: \.self) { interval in
-                                    let intervalName = pluralise(
-                                        String(describing: interval),
-                                        schedulingPreferences.notificationGapTime
+                                    let intervalName = interval.name(
+                                        for: schedulingPreferences.notificationGapTime
                                     )
                                     Text(intervalName).tag(interval)
                                 }
