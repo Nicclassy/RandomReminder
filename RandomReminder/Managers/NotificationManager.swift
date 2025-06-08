@@ -79,6 +79,10 @@ final class NotificationManager {
         // if the user clicks on the notification, not if they swipe it/click X),
         // so this solution will suffice for now.
         let reminder = reminderService.reminder
+        if ReminderModificationController.shared.isEditingReminder(reminder) {
+            // Do not remind
+            return
+        }
 
         // Hasn't appeared yet. Wait to confirm it appears.
         // This may not seem necessary, but there is sometimes a delay
@@ -108,7 +112,7 @@ final class NotificationManager {
         if schedulingPreferences.notificationGapEnabled {
             let notificationGap = UInt64(
                 schedulingPreferences.notificationGapTime
-                    * Int(schedulingPreferences.notificationGapTimeUnit.timeInterval())
+                * Int(schedulingPreferences.notificationGapTimeUnit.timeInterval)
             )
             FancyLogger.info("Sleeping for \(notificationGap) seconds")
             try? await Task.sleep(nanoseconds: notificationGap * 1_000_000_000)

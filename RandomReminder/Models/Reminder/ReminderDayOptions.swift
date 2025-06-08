@@ -73,7 +73,7 @@ struct ReminderDayOptions: OptionSet, CaseIterable, Codable {
     }
 
     func nextOccurringDay() -> Self {
-        let today = ReminderManager.shared.currentDay
+        let today = ReminderManager.shared.todaysDay
         var weekdayNumber = today != .saturday ? today.weekdayNumber + 1 : 1
         for _ in 1...7 {
             let day = Self(weekdayNumber: weekdayNumber)

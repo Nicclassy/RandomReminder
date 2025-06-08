@@ -22,6 +22,7 @@ final class ActiveReminderService {
     }
 
     func onNotificationDisappear() {
+        // Reminder mutations
         FancyLogger.info("Reminder '\(reminder.content.title)' disappeared")
         if let audioPlayer {
             audioPlayer.stop()
@@ -56,6 +57,8 @@ final class ActiveReminderService {
         if AppPreferences.shared.randomiseAudioPlaybackStart {
             audioPlayer.currentTime = .random(in: 0..<audioPlayer.duration)
         }
+
+        FancyLogger.info("Playing audio", url)
         audioPlayer.play()
     }
 }

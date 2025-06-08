@@ -27,7 +27,7 @@ final class ReminderManager {
     private var activeReminders: [ActiveReminderService] = []
     private var startedReminders: [ReminderActivatorService] = []
 
-    var currentDay: ReminderDayOptions = .today
+    var todaysDay: ReminderDayOptions = .today
 
     var reminderIds: Set<ReminderID> {
         remindersQueue.sync {
@@ -118,7 +118,7 @@ final class ReminderManager {
             return false
         }
 
-        return reminder.days.contains(currentDay)
+        return reminder.days.contains(todaysDay)
     }
 
     func upcomingReminders() -> [RandomReminder] {
@@ -217,6 +217,7 @@ final class ReminderManager {
         Task.detached(priority: .utility) { [self] in
             let sleepInterval = UInt64(tickInterval.seconds() * 1_000_000_000)
             reminderActivator.running = true
+            // Reminder mutations
             reminder.state = .started
             onReminderChange(of: reminder)
 
@@ -229,7 +230,8 @@ final class ReminderManager {
                 FancyLogger.info("Reminder '\(reminder)' will not be restarted")
                 return
             }
-
+            
+            // Reminder mutations
             FancyLogger.warn("Finished reminder activator for '\(reminder)'")
             if reminder.hasRepeats {
                 FancyLogger.info("Restarted reminder '\(reminder)'")
@@ -268,7 +270,7 @@ final class ReminderManager {
 
     @objc
     private func onDayChanged() {
-        currentDay = .today
+        todaysDay = .today
     }
 
     private func setReminderStates() {
@@ -279,6 +281,7 @@ final class ReminderManager {
             for reminder in reminders where !reminder.hasPast {
                 if reminder.hasEnded(after: date) && !reminder.hasRepeats {
                     FancyLogger.info("Reminder '\(reminder)' set to finished on state initialisation")
+                    // Reminder mutations
                     reminder.state = .finished
                 } else if !reminder.hasBegun && reminder.hasStarted(after: date) {
                     guard remind else {

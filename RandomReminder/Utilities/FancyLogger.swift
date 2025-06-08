@@ -9,6 +9,7 @@ import Foundation
 import os
 
 let loggingEnabled: Bool = true
+let useOsLog: Bool = true
 
 let infoColours = FancyLogger.Colours(
     file: hex("CFBAF0"),
@@ -53,6 +54,11 @@ private enum FancyLoggerHelper {
         )
         let formattedArgs = formatArgs(args: args, colours: colours)
         let message = "\(stackTraceInfo) \(formattedArgs)"
+
+        guard useOsLog else {
+            print(message)
+            return
+        }
 
         switch level {
         case .info:

@@ -5,9 +5,8 @@
 //  Created by Luca Napoli on 30/12/2024.
 //
 
-// swiftlint:disable:next duplicate_imports
 import Settings
-import enum Settings.Settings
+import enum Settings.Settings // swiftlint:disable:this duplicate_imports
 import SwiftUI
 
 // swiftlint:disable identifier_name

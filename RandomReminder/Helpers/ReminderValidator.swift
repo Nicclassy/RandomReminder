@@ -51,6 +51,11 @@ struct ReminderValidator {
                 alertText: "Reminder duration is too short",
                 messageText: "A reminder that repeats every fixed period must last at least as long as that period."
             )
+        } else if reminderWillNeverHappen() {
+            .error(
+                alertText: "Reminder will never happen",
+                messageText: "The specific days option is enabled, but no days have been selected"
+            )
         } else if ReminderManager.shared.reminderExistsWithSameTitle(as: reminder.title) {
             .warning(
                 alertText: "A reminder already exists with the title '\(reminder.title)'",
@@ -70,7 +75,11 @@ struct ReminderValidator {
         let latestDate = reminder.latestDate
         let reminderDuration = latestDate.timeIntervalSince(earliestDate)
         let repeatIntervalDuration =
-            reminder.repeatInterval.timeInterval() * TimeInterval(reminder.intervalQuantity)
+            reminder.repeatInterval.timeInterval * TimeInterval(reminder.intervalQuantity)
         return reminderDuration > repeatIntervalDuration
+    }
+
+    private func reminderWillNeverHappen() -> Bool {
+        reminder.days.isEmpty && preferences.specificDays
     }
 }
