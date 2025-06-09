@@ -20,8 +20,12 @@ final class ReminderModificationController: ObservableObject {
             NotificationCenter.default.post(name: .refreshReminders, object: nil)
         }
     }
-    
-    func isEditingReminder(_ reminder: RandomReminder) -> Bool {
-        self.reminder == reminder
+
+    func isEditingReminder(with id: ReminderID) -> Bool {
+        if let reminder, reminder.id == id {
+            true
+        } else {
+            false
+        }
     }
 }

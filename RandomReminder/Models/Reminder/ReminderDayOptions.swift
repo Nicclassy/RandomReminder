@@ -86,9 +86,3 @@ struct ReminderDayOptions: OptionSet, CaseIterable, Codable {
         fatalError("Could not find next occuring day")
     }
 }
-
-extension ReminderDayOptions: CustomStringConvertible {
-    var description: String {
-        name
-    }
-}

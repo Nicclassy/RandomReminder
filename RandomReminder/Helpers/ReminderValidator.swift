@@ -56,7 +56,7 @@ struct ReminderValidator {
                 alertText: "Reminder will never happen",
                 messageText: "The specific days option is enabled, but no days have been selected"
             )
-        } else if ReminderManager.shared.reminderExistsWithSameTitle(as: reminder.title) {
+        } else if reminderWithSameTitleExists() {
             .warning(
                 alertText: "A reminder already exists with the title '\(reminder.title)'",
                 messageText: "Are you sure you want to create a new reminder with the same title?"
@@ -77,6 +77,12 @@ struct ReminderValidator {
         let repeatIntervalDuration =
             reminder.repeatInterval.timeInterval * TimeInterval(reminder.intervalQuantity)
         return reminderDuration > repeatIntervalDuration
+    }
+
+    private func reminderWithSameTitleExists() -> Bool {
+        let isEditingThisReminder = ReminderModificationController.shared.isEditingReminder(with: reminder.id)
+        let reminderWithSameTitleExists = ReminderManager.shared.reminderWithSameTitleExists(as: reminder.title)
+        return !isEditingThisReminder && reminderWithSameTitleExists
     }
 
     private func reminderWillNeverHappen() -> Bool {
