@@ -7,17 +7,39 @@
 */
 
 // MARK: Time
+"short-seconds" = "s";
+"short-minutes" = "m";
+"short-hours" = "h";
+"short-days" = "d";
+"short-weeks" = "w";
+"short-months" = "mo";
+
+"medium-second" = "sec";
+"medium-minute" = "min";
+"medium-hour" = "hr";
+"medium-day" = "day";
+"medium-week" = "week";
+"medium-month" = "month";
+
+"medium-seconds" = "secs";
+"medium-minutes" = "mins";
+"medium-hours" = "hrs";
+"medium-days" = "days";
+"medium-weeks" = "weeks";
+"medium-months" = "months";
+
 "second" = "second";
-"seconds" = "seconds";
 "minute" = "minute";
-"minutes" = "minutes";
 "hour" = "hour";
-"hours" = "hours";
 "day" = "day";
-"days" = "days";
 "week" = "week";
-"weeks" = "weeks";
 "month" = "month";
+
+"seconds" = "seconds";
+"minutes" = "minutes";
+"hours" = "hours";
+"days" = "days";
+"weeks" = "weeks";
 "months" = "months";
 
 // MARK: Days

@@ -49,8 +49,20 @@ struct GeneralPreferencesView: View {
                     PreferenceCaption("Start reminder audio playback from a random point in reminders' files.")
                 }
             }
+
+            Spacer().frame(height: 10)
+
+            Section {
+                Text("Time Format").padding(.leading, 20)
+                Picker("", selection: appPreferences.$timeFormat) {
+                    Text("hours, minutes, seconds").tag(TimeFormat.long)
+                    Text("hrs, mins, secs").tag(TimeFormat.medium)
+                    Text("h, m, s").tag(TimeFormat.short)
+                }
+                .pickerStyle(RadioGroupPickerStyle())
+            }
         }
-        .frame(width: 320, height: 250)
+        .frame(width: 320, height: 300)
     }
 }
 
