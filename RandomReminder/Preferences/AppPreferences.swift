@@ -15,6 +15,7 @@ final class AppPreferences: ObservableObject {
     @AppStorage("quickReminderEnabled") var quickReminderEnabled = true
     @AppStorage("quickReminderStarted") var quickReminderStarted = false
     @AppStorage("randomiseAudioPlaybackStart") var randomiseAudioPlaybackStart = true
+    @AppStorage("timeFormat") var timeFormat: TimeFormat = .long
 
     private init() {}
 }

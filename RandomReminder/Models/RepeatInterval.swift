@@ -34,33 +34,18 @@ enum RepeatInterval: Codable, Equatable, Hashable, CaseIterable {
         case .month: 2_629_746
         }
     }
-    
-    var singularName: String {
-        switch self {
-        case .second: L10n.second
-        case .minute: L10n.minute
-        case .hour: L10n.hour
-        case .day: L10n.day
-        case .week: L10n.week
-        case .month: L10n.month
-        case .never: fatalError("singularName shouldn't be called on .never")
-        }
-    }
-    
-    var pluralName: String {
-        switch self {
-        case .second: L10n.seconds
-        case .minute: L10n.minutes
-        case .hour: L10n.hours
-        case .day: L10n.days
-        case .week: L10n.weeks
-        case .month: L10n.months
-        case .never: fatalError("pluralName shouldn't be called on .never")
-        }
-    }
-    
+
     func name(for quantity: Int) -> String {
-        quantity == 1 ? singularName : pluralName
+        let plural = quantity != 1
+        return switch self {
+        case .second: TimeInfoProvider.seconds(plural: plural)
+        case .minute: TimeInfoProvider.minutes(plural: plural)
+        case .hour: TimeInfoProvider.hours(plural: plural)
+        case .day: TimeInfoProvider.days(plural: plural)
+        case .week: TimeInfoProvider.weeks(plural: plural)
+        case .month: TimeInfoProvider.months(plural: plural)
+        default: fatalError("The interval 'never' does not have a name")
+        }
     }
 }
 

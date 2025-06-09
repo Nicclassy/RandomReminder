@@ -7,9 +7,16 @@
 
 import Foundation
 
+enum TimeFormat: CaseIterable, EnumRawRepresentable {
+    case short
+    case medium
+    case long
+}
+
 struct TimeInfoProvider {
     private static let orderedCalendarComponents: [Calendar.Component] = [.day, .hour, .minute, .second]
     private static let calendarComponents: Set<Calendar.Component> = [.day, .hour, .minute, .second]
+    private static let appPreferences: AppPreferences = .shared
 
     let reminder: RandomReminder
 
@@ -18,6 +25,7 @@ struct TimeInfoProvider {
             guard let unit = TimeUnit(rawValue: String(describing: component)) else {
                 fatalError("Cannot convert \(component) into a TimeUnit")
             }
+
             return unit.name(for: quantity)
         }
 
@@ -35,7 +43,11 @@ struct TimeInfoProvider {
                 return nil
             }
 
-            return componentName(calendarComponent, for: Int(exactly: quantity)!)
+            let componentName = componentName(calendarComponent, for: Int(exactly: quantity)!)
+            if Self.appPreferences.timeFormat == .short {
+                return "\(quantity)\(componentName)"
+            }
+            return "\(quantity) \(componentName)"
         }
 
         return infoParts.listing()
@@ -51,7 +63,7 @@ struct TimeInfoProvider {
             }
             return L10n.Preferences.Reminders.multipleOccurencesLeft(reminder.counts.occurencesLeft)
         }
-        
+
         let info = timeDifferenceInfo()
         if info.isEmpty {
             return L10n.Preferences.Reminders.startingNow
@@ -61,5 +73,67 @@ struct TimeInfoProvider {
 
     func timeDifferenceInfo() -> String {
         Self.timeDifferenceInfo(from: reminder.interval.earliest)
+    }
+}
+
+extension TimeInfoProvider {
+    static func seconds(plural: Bool) -> String {
+        if appPreferences.timeFormat == .short {
+            L10n.shortSeconds
+        } else if appPreferences.timeFormat == .medium {
+            plural ? L10n.mediumSeconds : L10n.mediumSecond
+        } else {
+            plural ? L10n.seconds : L10n.second
+        }
+    }
+
+    static func minutes(plural: Bool) -> String {
+        if appPreferences.timeFormat == .short {
+            L10n.shortMinutes
+        } else if appPreferences.timeFormat == .medium {
+            plural ? L10n.mediumMinutes : L10n.mediumMinute
+        } else {
+            plural ? L10n.minutes : L10n.minute
+        }
+    }
+
+    static func hours(plural: Bool) -> String {
+        if appPreferences.timeFormat == .short {
+            L10n.shortHours
+        } else if appPreferences.timeFormat == .medium {
+            plural ? L10n.mediumHours : L10n.mediumHour
+        } else {
+            plural ? L10n.hours : L10n.hour
+        }
+    }
+
+    static func days(plural: Bool) -> String {
+        if appPreferences.timeFormat == .short {
+            L10n.shortDays
+        } else if appPreferences.timeFormat == .medium {
+            plural ? L10n.mediumDays : L10n.mediumDay
+        } else {
+            plural ? L10n.day : L10n.days
+        }
+    }
+
+    static func weeks(plural: Bool) -> String {
+        if appPreferences.timeFormat == .short {
+            L10n.shortWeeks
+        } else if appPreferences.timeFormat == .medium {
+            plural ? L10n.mediumWeeks : L10n.mediumWeek
+        } else {
+            plural ? L10n.weeks : L10n.week
+        }
+    }
+
+    static func months(plural: Bool) -> String {
+        if appPreferences.timeFormat == .short {
+            L10n.shortMonths
+        } else if appPreferences.timeFormat == .medium {
+            plural ? L10n.mediumMonths : L10n.mediumMonth
+        } else {
+            plural ? L10n.months : L10n.month
+        }
     }
 }

@@ -20,6 +20,30 @@ internal enum L10n {
   internal static let hour = L10n.tr("Localizable", "hour", fallback: "hour")
   /// hours
   internal static let hours = L10n.tr("Localizable", "hours", fallback: "hours")
+  /// day
+  internal static let mediumDay = L10n.tr("Localizable", "medium-day", fallback: "day")
+  /// days
+  internal static let mediumDays = L10n.tr("Localizable", "medium-days", fallback: "days")
+  /// hr
+  internal static let mediumHour = L10n.tr("Localizable", "medium-hour", fallback: "hr")
+  /// hrs
+  internal static let mediumHours = L10n.tr("Localizable", "medium-hours", fallback: "hrs")
+  /// min
+  internal static let mediumMinute = L10n.tr("Localizable", "medium-minute", fallback: "min")
+  /// mins
+  internal static let mediumMinutes = L10n.tr("Localizable", "medium-minutes", fallback: "mins")
+  /// month
+  internal static let mediumMonth = L10n.tr("Localizable", "medium-month", fallback: "month")
+  /// months
+  internal static let mediumMonths = L10n.tr("Localizable", "medium-months", fallback: "months")
+  /// sec
+  internal static let mediumSecond = L10n.tr("Localizable", "medium-second", fallback: "sec")
+  /// secs
+  internal static let mediumSeconds = L10n.tr("Localizable", "medium-seconds", fallback: "secs")
+  /// week
+  internal static let mediumWeek = L10n.tr("Localizable", "medium-week", fallback: "week")
+  /// weeks
+  internal static let mediumWeeks = L10n.tr("Localizable", "medium-weeks", fallback: "weeks")
   /// minute
   internal static let minute = L10n.tr("Localizable", "minute", fallback: "minute")
   /// minutes
@@ -32,13 +56,25 @@ internal enum L10n {
   internal static let months = L10n.tr("Localizable", "months", fallback: "months")
   /// Saturday
   internal static let saturday = L10n.tr("Localizable", "saturday", fallback: "Saturday")
+  /// second
+  internal static let second = L10n.tr("Localizable", "second", fallback: "second")
+  /// seconds
+  internal static let seconds = L10n.tr("Localizable", "seconds", fallback: "seconds")
+  /// d
+  internal static let shortDays = L10n.tr("Localizable", "short-days", fallback: "d")
+  /// h
+  internal static let shortHours = L10n.tr("Localizable", "short-hours", fallback: "h")
+  /// m
+  internal static let shortMinutes = L10n.tr("Localizable", "short-minutes", fallback: "m")
+  /// mo
+  internal static let shortMonths = L10n.tr("Localizable", "short-months", fallback: "mo")
   /// Localizable.strings
   ///   RandomReminder
   /// 
   ///   Created by Luca Napoli on 2/1/2025.
-  internal static let second = L10n.tr("Localizable", "second", fallback: "second")
-  /// seconds
-  internal static let seconds = L10n.tr("Localizable", "seconds", fallback: "seconds")
+  internal static let shortSeconds = L10n.tr("Localizable", "short-seconds", fallback: "s")
+  /// w
+  internal static let shortWeeks = L10n.tr("Localizable", "short-weeks", fallback: "w")
   /// Sunday
   internal static let sunday = L10n.tr("Localizable", "sunday", fallback: "Sunday")
   /// Thursday
