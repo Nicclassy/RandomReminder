@@ -16,7 +16,21 @@ struct ReminderDayOptionsView: View {
         VStack(alignment: .leading) {
             Toggle("Remind only on specific days", isOn: $preferences.specificDays)
                 .onChange(of: preferences.specificDays) { _, showSpecificDaysPopover in
-                    viewPreferences.showSpecificDaysPopover = showSpecificDaysPopover
+                    if viewPreferences.viewAppeared {
+                        DispatchQueue.main.async {
+                            viewPreferences.showSpecificDaysPopover = showSpecificDaysPopover
+                        }
+                    }
+                }
+                .onAppear {
+                    DispatchQueue.main.async {
+                        viewPreferences.viewAppeared = true
+                    }
+                }
+                .onDisappear {
+                    DispatchQueue.main.async {
+                        viewPreferences.viewAppeared = false
+                    }
                 }
                 .popover(isPresented: $viewPreferences.showSpecificDaysPopover) {
                     VStack(alignment: .leading) {
@@ -58,7 +72,9 @@ struct ReminderDayOptionsView: View {
                             })
                             .buttonStyle(.borderedProminent)
                             Button(action: {
-                                reminder.days = []
+                                DispatchQueue.main.async {
+                                    reminder.days = []
+                                }
                             }, label: {
                                 Text("Reset")
                                     .frame(width: 50)
