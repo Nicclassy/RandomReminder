@@ -8,7 +8,9 @@
 import Foundation
 
 final class ModificationViewPreferences: ObservableObject {
+    @Published var viewAppeared = false
     @Published var closeView = false
+    @Published var refreshView = false
     @Published var showReminderAlert = false
     @Published var showSpecificDaysPopover = false
     @Published var showTimesOnlyPopover = false

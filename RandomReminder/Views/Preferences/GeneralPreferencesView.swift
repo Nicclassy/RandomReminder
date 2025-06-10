@@ -60,6 +60,10 @@ struct GeneralPreferencesView: View {
                     Text("h, m, s").tag(TimeFormat.short)
                 }
                 .pickerStyle(RadioGroupPickerStyle())
+                .onChange(of: appPreferences.timeFormat) {
+                    FancyLogger.info("Posting refresh modification window notification")
+                    ReminderModificationController.shared.postRefreshModificationWindowNotification()
+                }
             }
         }
         .frame(width: 320, height: 300)

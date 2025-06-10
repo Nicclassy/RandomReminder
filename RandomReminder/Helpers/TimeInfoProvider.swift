@@ -113,7 +113,7 @@ extension TimeInfoProvider {
         } else if appPreferences.timeFormat == .medium {
             plural ? L10n.mediumDays : L10n.mediumDay
         } else {
-            plural ? L10n.day : L10n.days
+            plural ? L10n.days : L10n.day
         }
     }
 
