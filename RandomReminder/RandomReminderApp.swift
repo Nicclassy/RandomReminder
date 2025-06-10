@@ -23,12 +23,7 @@ struct RandomReminderApp: App {
         .windowResizability(.contentSize)
 
         Window("Edit Reminder", id: WindowIds.editReminder) {
-            let controller = ReminderModificationController.shared
-            ReminderModificationView(
-                reminder: MutableReminder(from: controller.reminder!),
-                preferences: ReminderPreferences(from: controller.reminder!),
-                mode: .edit
-            )
+            ReminderModificationView(mode: .edit)
         }
         .windowResizability(.contentSize)
     }

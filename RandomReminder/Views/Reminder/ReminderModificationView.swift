@@ -24,12 +24,13 @@ final class ModificationViewFields: ObservableObject {
 
 struct ReminderModificationView: View {
     @Environment(\.dismissWindow) private var dismissWindow
-    @ObservedObject private var controller: ReminderModificationController = .shared
     @StateObject var reminder: MutableReminder = .init()
     @StateObject var preferences: ReminderPreferences = .init()
     @StateObject var viewPreferences: ModificationViewPreferences = .init()
     @StateObject var fields: ModificationViewFields = .init()
     @State private var validationResult: ValidationResult = .unset
+
+    @ObservedObject private var controller: ReminderModificationController = .shared
     private let schedulingPreferences: SchedulingPreferences = .shared
     let mode: ReminderModificationMode
 
@@ -155,22 +156,6 @@ struct ReminderModificationView: View {
             }
         }
         .onAppear {
-            guard controller.openedModificationWindow else {
-                // We require this check so that when the window is opened for the first time
-                // for editing, the reminder is already set. Hence we do not need
-                // to copy values from the existing values. This is a minor
-                // inconvenience of SwiftUI's declarative design:
-                // that the view in the Window in the app class
-                // is only initialized once. So every subsequent time
-                // we must rely on resetting fields via immutability
-                controller.openedModificationWindow = true
-                if mode == .create {
-                    setDefaultTimes()
-                }
-                return
-            }
-
-            assert(controller.modificationWindowOpen, "modificationWindowOpen should be set to true")
             guard mode == .edit else {
                 setDefaultTimes()
                 return
@@ -187,6 +172,10 @@ struct ReminderModificationView: View {
             preferences.reset()
             fields.reset()
             controller.modificationWindowOpen = false
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .refreshModificationWindow)) { _ in
+            FancyLogger.info("Refresh modification window toggled")
+            viewPreferences.refreshView.toggle()
         }
         .frame(width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight)
         .padding()
