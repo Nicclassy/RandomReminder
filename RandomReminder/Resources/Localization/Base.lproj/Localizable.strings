@@ -85,3 +85,17 @@
 "preferences.reminders.longer-than-one-week" = ">1 week";
 "preferences.reminders.starting-now" = "Starting now";
 "preferences.reminders.starting-in" = "Starting in %@";
+
+"preferences.reminders.rows.edit" = "Edit";
+"preferences.reminders.rows.delete" = "Delete";
+"preferences.reminders.rows.cancel" = "Cancel";
+"preferences.reminders.rows.delete-alert" = "Are you sure you want to delete the reminder '%@'?";
+"preferences.reminders.rows.delete-caption" = "Deleted reminders cannot be recovered.";
+"preferences.reminders.rows.paused" = "Paused";
+"preferences.reminders.rows.resumes-on" = "Resumes on %@";
+"preferences.reminders.reminders-count" = "Reminders: %d";
+"preferences.reminders.upcoming" = "Upcoming Reminders";
+"preferences.reminders.past" = "Past Reminders";
+"preferences.reminders.create-new" = "Create New Reminder";
+"preferences.reminders.finish-editing" = "Finish Editing";
+"preferences.reminders.edit" = "Edit Reminders";

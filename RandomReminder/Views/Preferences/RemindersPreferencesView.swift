@@ -29,23 +29,24 @@ private struct ReminderPreferencesRow: View {
             Text(reminder.content.title)
             Spacer()
             if editing {
-                Button("Edit") {
+                Button(L10n.Preferences.Reminders.Rows.edit) {
+                    FancyLogger.info("Edit window opened")
                     ReminderModificationController.shared.reminder = reminder
                     openWindow(id: WindowIds.editReminder)
                     controller.modificationWindowOpen = true
                 }
                 .disabled(controller.modificationWindowOpen)
 
-                Button("Delete") {
+                Button(L10n.Preferences.Reminders.Rows.delete) {
                     showDeleteAlert = true
                 }
                 .disabled(controller.modificationWindowOpen)
                 .alert(
-                    "Are you sure you want to delete the reminder '\(reminder.content.title)'?",
+                    L10n.Preferences.Reminders.Rows.deleteAlert(reminder.content.title),
                     isPresented: $showDeleteAlert
                 ) {
-                    Button("Cancel", role: .cancel) {}
-                    Button("Delete", role: .destructive) {
+                    Button(L10n.Preferences.Reminders.Rows.cancel, role: .cancel) {}
+                    Button(L10n.Preferences.Reminders.Rows.delete, role: .destructive) {
                         if parentNumberOfRows > Int(parentRowsBeforeScroll) {
                             withAnimation(.default) {
                                 controller.refreshReminders.toggle()
@@ -61,18 +62,18 @@ private struct ReminderPreferencesRow: View {
                         FancyLogger.info("Deleted reminder '\(reminder.content.title)'")
                     }
                 } message: {
-                    Text("Deleted reminders cannot be recovered.")
+                    Text(L10n.Preferences.Reminders.Rows.deleteCaption)
                 }
             } else {
                 Text(reminderInfo)
                     .frame(height: 20)
                     .foregroundStyle(.secondary)
                     .onReceive(timer) { _ in
-                        let currentDay = ReminderManager.shared.todaysDay
+                        let todaysDay = ReminderManager.shared.todaysDay
                         reminderInfo = if SchedulingPreferences.shared.remindersArePaused {
-                            "Paused"
-                        } else if !reminder.days.contains(currentDay) && !reminder.hasPast {
-                            "Resumes on \(reminder.days.nextOccurringDay())"
+                            L10n.Preferences.Reminders.Rows.paused
+                        } else if !reminder.days.contains(todaysDay) && !reminder.hasPast {
+                            L10n.Preferences.Reminders.Rows.resumesOn(reminder.days.nextOccurringDay())
                         } else {
                             TimeInfoProvider(reminder: reminder).preferencesInfo()
                         }
@@ -147,7 +148,7 @@ private struct ReminderPreferencesRows: View {
             HStack {
                 Text(heading).font(.headline)
                 Spacer()
-                Text("Reminders: \(remindersCount)")
+                Text(L10n.Preferences.Reminders.remindersCount(remindersCount))
             }
         } else {
             Text(heading).font(.headline)
@@ -186,7 +187,7 @@ private struct ReminderPreferencesRows: View {
 struct RemindersPreferencesView: View {
     @State private var editingReminders = false
     @ObservedObject private var controller: ReminderModificationController = .shared
-    private var reminderManager: ReminderManager = .shared
+    private let reminderManager: ReminderManager = .shared
 
     @Environment(\.openWindow) var openWindow
 
@@ -195,7 +196,7 @@ struct RemindersPreferencesView: View {
             Settings.Section(title: "") {
                 VStack(alignment: .leading) {
                     ReminderPreferencesRows(
-                        heading: "Upcoming reminders",
+                        heading: L10n.Preferences.Reminders.upcoming,
                         rowsBeforeScoll: ViewConstants.upcomingRemindersBeforeScroll,
                         editingReminders: $editingReminders,
                         remindersProvider: reminderManager.upcomingReminders()
@@ -203,7 +204,7 @@ struct RemindersPreferencesView: View {
                     .padding(.bottom, 10)
 
                     ReminderPreferencesRows(
-                        heading: "Past Reminders",
+                        heading: L10n.Preferences.Reminders.past,
                         rowsBeforeScoll: ViewConstants.pastRemindersBeforeScroll,
                         editingReminders: $editingReminders,
                         remindersProvider: reminderManager.pastReminders()
@@ -214,11 +215,11 @@ struct RemindersPreferencesView: View {
 
                 HStack {
                     if editingReminders {
-                        Button("Create New Reminder") {}
+                        Button(L10n.Preferences.Reminders.createNew) {}
                             .buttonStyle(.automatic)
                             .disabled(true)
                     } else {
-                        let newReminderButton = Button("Create New Reminder") {
+                        let newReminderButton = Button(L10n.Preferences.Reminders.createNew) {
                             openWindow(id: WindowIds.createReminder)
                             controller.modificationWindowOpen = true
                         }
@@ -236,7 +237,7 @@ struct RemindersPreferencesView: View {
                         Button(action: {
                             editingReminders.toggle()
                         }, label: {
-                            Text("Finish Editing")
+                            Text(L10n.Preferences.Reminders.finishEditing)
                                 .frame(width: 100)
                         })
                         .buttonStyle(.borderedProminent)
@@ -245,12 +246,18 @@ struct RemindersPreferencesView: View {
                         Button(action: {
                             editingReminders.toggle()
                         }, label: {
-                            Text("Edit Reminders")
+                            Text(L10n.Preferences.Reminders.edit)
                                 .frame(width: 100)
                         })
                         .disabled(controller.modificationWindowOpen)
                     }
                 }
+            }
+        }
+        .onDisappear {
+            if editingReminders {
+                FancyLogger.info("Finishing editing")
+                editingReminders.toggle()
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .refreshReminders)) { _ in
