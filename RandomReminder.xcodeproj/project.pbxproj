@@ -31,6 +31,7 @@
 		8118A1452D6DD51A00A9FF08 /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A1442D6DD51A00A9FF08 /* Collection+Extensions.swift */; };
 		81265B262DCDD510005C95F2 /* NumericTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81265B252DCDD510005C95F2 /* NumericTextField.swift */; };
 		812D23E72DAD9B4400675783 /* .swiftformat in Resources */ = {isa = PBXBuildFile; fileRef = 812D23E62DAD9B4400675783 /* .swiftformat */; };
+		812F8F642DFF2D2A008232A6 /* ReminderDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 812F8F632DFF2D2A008232A6 /* ReminderDescriptionView.swift */; };
 		813F30DD2D22B93E00EF6DD1 /* ColourString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813F30DC2D22B93E00EF6DD1 /* ColourString.swift */; };
 		813F30E62D25FE0B00EF6DD1 /* swiftgen.yml in Resources */ = {isa = PBXBuildFile; fileRef = 813F30E52D25FE0B00EF6DD1 /* swiftgen.yml */; };
 		813F30EE2D261FD300EF6DD1 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813F30EC2D261FD300EF6DD1 /* PreferencesViewController.swift */; };
@@ -106,6 +107,7 @@
 		8118A1442D6DD51A00A9FF08 /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
 		81265B252DCDD510005C95F2 /* NumericTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumericTextField.swift; sourceTree = "<group>"; };
 		812D23E62DAD9B4400675783 /* .swiftformat */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftformat; sourceTree = "<group>"; };
+		812F8F632DFF2D2A008232A6 /* ReminderDescriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderDescriptionView.swift; sourceTree = "<group>"; };
 		813F30DC2D22B93E00EF6DD1 /* ColourString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColourString.swift; sourceTree = "<group>"; };
 		813F30E52D25FE0B00EF6DD1 /* swiftgen.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = swiftgen.yml; sourceTree = "<group>"; };
 		813F30EC2D261FD300EF6DD1 /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 				8118A13E2D6A790E00A9FF08 /* ReminderAudioOptionsView.swift */,
 				8118A1382D6A712F00A9FF08 /* ReminderScheduleOptionsView.swift */,
 				8118A13C2D6A786900A9FF08 /* ReminderDayOptionsView.swift */,
+				812F8F632DFF2D2A008232A6 /* ReminderDescriptionView.swift */,
 			);
 			path = Reminder;
 			sourceTree = "<group>";
@@ -579,6 +582,7 @@
 				8118A1262D68C62100A9FF08 /* ReminderActivationEvents.swift in Sources */,
 				8118A1112D5FA1B000A9FF08 /* StepperTextField.swift in Sources */,
 				81412F942DD7C12300BD2EA3 /* ModificationViewPreferences.swift in Sources */,
+				812F8F642DFF2D2A008232A6 /* ReminderDescriptionView.swift in Sources */,
 				814C2BB22DBF6658001929CB /* Notification+Extensions.swift in Sources */,
 				8118A1432D6CE66200A9FF08 /* OptionSet+Extensions.swift in Sources */,
 				81B5261A2D213905008D36F0 /* Settings+Extensions.swift in Sources */,

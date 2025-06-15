@@ -18,10 +18,10 @@ It is a non-generic take on a reminders app that is spontaneous in nature and hi
 - [x] Display reminders in preferences
 - [x] Configuration of notifications and a window to guide the user to select the appropriate options
 - [x] An option for launching the application at login
-- [ ] Default preferences for dates/times selected
+- [x] Default preferences for dates/times selected
 - [x] SwiftLint for in-editor linting
 - [x] SwiftFormat for code formatting
-- [ ] Pre-commit hooks for SwiftFormat
+- [ ] Pre-commit hooks for SwiftFormat and SwiftLint
 - [ ] Non UI testing, potentially via Docker
 - [ ] Xcode build testing
 - [ ] `CONTRIBUTING.md` post-release

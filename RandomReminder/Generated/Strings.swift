@@ -117,11 +117,23 @@ internal enum L10n {
       internal static func ago(_ p1: Any) -> String {
         return L10n.tr("Localizable", "preferences.reminders.ago", String(describing: p1), fallback: "%@ ago")
       }
+      /// Create New Reminder
+      internal static let createNew = L10n.tr("Localizable", "preferences.reminders.create-new", fallback: "Create New Reminder")
+      /// Edit Reminders
+      internal static let edit = L10n.tr("Localizable", "preferences.reminders.edit", fallback: "Edit Reminders")
+      /// Finish Editing
+      internal static let finishEditing = L10n.tr("Localizable", "preferences.reminders.finish-editing", fallback: "Finish Editing")
       /// >1 week
       internal static let longerThanOneWeek = L10n.tr("Localizable", "preferences.reminders.longer-than-one-week", fallback: ">1 week")
       /// %d occurences left
       internal static func multipleOccurencesLeft(_ p1: Int) -> String {
         return L10n.tr("Localizable", "preferences.reminders.multiple-occurences-left", p1, fallback: "%d occurences left")
+      }
+      /// Past Reminders
+      internal static let past = L10n.tr("Localizable", "preferences.reminders.past", fallback: "Past Reminders")
+      /// Reminders: %d
+      internal static func remindersCount(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "preferences.reminders.reminders-count", p1, fallback: "Reminders: %d")
       }
       /// 1 occurence left
       internal static let singleOccurenceLeft = L10n.tr("Localizable", "preferences.reminders.single-occurence-left", fallback: "1 occurence left")
@@ -131,6 +143,28 @@ internal enum L10n {
       }
       /// Starting now
       internal static let startingNow = L10n.tr("Localizable", "preferences.reminders.starting-now", fallback: "Starting now")
+      /// Upcoming Reminders
+      internal static let upcoming = L10n.tr("Localizable", "preferences.reminders.upcoming", fallback: "Upcoming Reminders")
+      internal enum Rows {
+        /// Cancel
+        internal static let cancel = L10n.tr("Localizable", "preferences.reminders.rows.cancel", fallback: "Cancel")
+        /// Delete
+        internal static let delete = L10n.tr("Localizable", "preferences.reminders.rows.delete", fallback: "Delete")
+        /// Are you sure you want to delete the reminder '%@'?
+        internal static func deleteAlert(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "preferences.reminders.rows.delete-alert", String(describing: p1), fallback: "Are you sure you want to delete the reminder '%@'?")
+        }
+        /// Deleted reminders cannot be recovered.
+        internal static let deleteCaption = L10n.tr("Localizable", "preferences.reminders.rows.delete-caption", fallback: "Deleted reminders cannot be recovered.")
+        /// Edit
+        internal static let edit = L10n.tr("Localizable", "preferences.reminders.rows.edit", fallback: "Edit")
+        /// Paused
+        internal static let paused = L10n.tr("Localizable", "preferences.reminders.rows.paused", fallback: "Paused")
+        /// Resumes on %@
+        internal static func resumesOn(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "preferences.reminders.rows.resumes-on", String(describing: p1), fallback: "Resumes on %@")
+        }
+      }
     }
     internal enum Tab {
       /// About
