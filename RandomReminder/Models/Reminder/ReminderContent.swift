@@ -7,7 +7,12 @@
 
 import Foundation
 
+enum ReminderDescription: Codable {
+    case text(String)
+    case command(String)
+}
+
 struct ReminderContent: Codable {
     var title: String
-    var text: String
+    var description: ReminderDescription
 }

@@ -11,7 +11,7 @@ final class MutableReminder: ObservableObject {
     private static let `default` = MutableReminder(
         id: .unassigned,
         title: String(),
-        text: String(),
+        descriptionContent: .text(""),
         totalOccurences: 1,
         earliestDate: Date(),
         latestDate: Date().addMinutes(60),
@@ -25,7 +25,7 @@ final class MutableReminder: ObservableObject {
 
     var id: ReminderID
     @Published var title: String
-    @Published var text: String
+    @Published var description: ReminderDescription
     @Published var totalOccurences: Int
     @Published var earliestDate: Date
     @Published var latestDate: Date
@@ -39,7 +39,7 @@ final class MutableReminder: ObservableObject {
     init(
         id: ReminderID,
         title: String,
-        text: String,
+        descriptionContent: ReminderDescription,
         totalOccurences: Int,
         earliestDate: Date,
         latestDate: Date,
@@ -52,7 +52,7 @@ final class MutableReminder: ObservableObject {
     ) {
         self.id = id
         self.title = title
-        self.text = text
+        self.description = descriptionContent
         self.totalOccurences = totalOccurences
         self.earliestDate = earliestDate
         self.latestDate = latestDate
@@ -67,7 +67,7 @@ final class MutableReminder: ObservableObject {
     init(reminder: MutableReminder) {
         self.id = reminder.id
         self.title = reminder.title
-        self.text = reminder.text
+        self.description = reminder.description
         self.totalOccurences = reminder.totalOccurences
         self.earliestDate = reminder.earliestDate
         self.latestDate = reminder.latestDate
@@ -83,7 +83,7 @@ final class MutableReminder: ObservableObject {
         self.init(
             id: reminder.id,
             title: reminder.content.title,
-            text: reminder.content.text,
+            descriptionContent: reminder.content.description,
             totalOccurences: reminder.counts.totalOccurences,
             earliestDate: reminder.interval.earliest,
             latestDate: reminder.interval.latest,
@@ -109,7 +109,7 @@ final class MutableReminder: ObservableObject {
     func copyFrom(reminder: MutableReminder) {
         id = reminder.id
         title = reminder.title
-        text = reminder.text
+        description = reminder.description
         totalOccurences = reminder.totalOccurences
         earliestDate = reminder.earliestDate
         latestDate = reminder.latestDate
@@ -124,7 +124,7 @@ final class MutableReminder: ObservableObject {
     func copyFrom(reminder: RandomReminder) {
         id = reminder.id
         title = reminder.content.title
-        text = reminder.content.text
+        description = reminder.content.description
         occurences = reminder.counts.occurences
         totalOccurences = reminder.counts.totalOccurences
         earliestDate = reminder.interval.earliest
@@ -139,6 +139,7 @@ final class MutableReminder: ObservableObject {
     }
 
     func build(preferences reminderPreferences: ReminderPreferences) -> RandomReminder {
+        let repeatInterval = reminderPreferences.repeatingEnabled ? repeatInterval : .never
         let reminderInterval: ReminderInterval = if reminderPreferences.alwaysRunning {
             InfiniteReminderInterval()
         } else if reminderPreferences.timesOnly {
@@ -161,7 +162,7 @@ final class MutableReminder: ObservableObject {
 
         return RandomReminder(
             title: title,
-            text: text,
+            description: description,
             interval: reminderInterval,
             days: reminderPreferences.specificDays ? days : .allOptions(),
             totalOccurences: totalOccurences,
@@ -170,12 +171,12 @@ final class MutableReminder: ObservableObject {
     }
 }
 
-extension MutableReminder: CustomStringConvertible {
-    var description: String {
+extension MutableReminder {
+    var reflectedDescription: String {
         let mirror = Mirror(self, children: [
             "id": id,
             "title": title,
-            "text": text,
+            "description": description,
             "totalOccurences": totalOccurences,
             "earliestDate": earliestDate,
             "latestDate": latestDate,

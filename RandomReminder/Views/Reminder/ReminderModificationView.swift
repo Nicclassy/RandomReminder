@@ -44,7 +44,31 @@ struct ReminderModificationView: View {
                 }
                 GridRow {
                     Text("Reminder description:")
-                    TextField("Description", text: $reminder.text)
+                    HStack {
+                        TextField("Description", text: Binding(
+                            get: {
+                                if case let .text(content) = reminder.description {
+                                    content
+                                } else {
+                                    "Reminder description set by command"
+                                }
+                            },
+                            set: { newValue, _ in
+                                if case .text = reminder.description {
+                                    reminder.description = .text(newValue)
+                                } else {
+                                    fatalError("This should not be reachable")
+                                }
+                            }
+                        ))
+                        Spacer()
+                        Button(
+                            action: {},
+                            label: {
+                                Text("⌘")
+                            }
+                        )
+                    }
                 }
                 GridRow {
                     Text("Total occurences:")

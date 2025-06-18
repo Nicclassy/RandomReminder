@@ -22,8 +22,15 @@ final class NotificationManager {
         let reminder = service.reminder
 
         content.title = reminder.content.title
-        if !reminder.content.text.isEmpty {
-            content.subtitle = reminder.content.text
+        let subtitle = if case let .text(text) = reminder.content.description {
+            text
+        } else if case let .command(text) = reminder.content.description {
+            text
+        } else {
+            fatalError("Unreachable code")
+        }
+        if !subtitle.isEmpty {
+            content.subtitle = subtitle
                 + " (\(reminder.counts.occurences)/\(reminder.counts.totalOccurences))"
         }
         content.sound = .default
@@ -33,11 +40,10 @@ final class NotificationManager {
         FancyLogger.info("Waiting to add request of reminder '\(reminder)' to the queue")
 
         queue.async { [self] in
-            notificationCentre.add(request)
             FancyLogger.error("Processing for \(service.reminder)")
             let semaphore = DispatchSemaphore(value: 0)
             Task {
-                await processNotification(for: service)
+                await processNotification(for: service, with: request)
                 semaphore.signal()
             }
             semaphore.wait()
@@ -65,7 +71,10 @@ final class NotificationManager {
         }
     }
 
-    private func processNotification(for reminderService: ActiveReminderService) async {
+    private func processNotification(
+        for reminderService: ActiveReminderService,
+        with request: UNNotificationRequest
+    ) async {
         // An important point before this lengthy explanation.
         // Swift really should have a way to do something when a notification appears/
         // when it disappears. But it does not!
@@ -79,12 +88,23 @@ final class NotificationManager {
         // if the user clicks on the notification, not if they swipe it/click X),
         // so this solution will suffice for now.
         let reminder = reminderService.reminder
-        if ReminderModificationController.shared.isEditingReminder(reminder) {
+        guard !ReminderModificationController.shared.isEditingReminder(with: reminder.id) else {
             // Do not remind
+            FancyLogger.info("Cannot reminder '\(reminder)' because it is being edited")
             return
         }
 
-        // Hasn't appeared yet. Wait to confirm it appears.
+        // Eventually, we need to check if the reminder is past. This
+        // will be tricky
+
+        do {
+            try await notificationCentre.add(request)
+        } catch {
+            FancyLogger.error("Error adding notifiation:", error)
+            return
+        }
+
+        // May not have appeared yet. Wait to confirm it appears.
         // This may not seem necessary, but there is sometimes a delay
         // between when the notification request is added
         // and when it actually appears.
@@ -112,7 +132,7 @@ final class NotificationManager {
         if schedulingPreferences.notificationGapEnabled {
             let notificationGap = UInt64(
                 schedulingPreferences.notificationGapTime
-                * Int(schedulingPreferences.notificationGapTimeUnit.timeInterval)
+                    * Int(schedulingPreferences.notificationGapTimeUnit.timeInterval)
             )
             FancyLogger.info("Sleeping for \(notificationGap) seconds")
             try? await Task.sleep(nanoseconds: notificationGap * 1_000_000_000)

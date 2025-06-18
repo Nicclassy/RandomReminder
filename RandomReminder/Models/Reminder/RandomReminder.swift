@@ -59,7 +59,7 @@ final class RandomReminder: Codable {
     convenience init(
         id: ReminderID = ReminderManager.shared.nextAvailableId(),
         title: String,
-        text: String,
+        description: ReminderDescription,
         interval: ReminderInterval,
         days: ReminderDayOptions? = nil,
         totalOccurences: Int,
@@ -67,7 +67,7 @@ final class RandomReminder: Codable {
     ) {
         self.init(
             id: id,
-            content: ReminderContent(title: title, text: text),
+            content: ReminderContent(title: title, description: description),
             reminderInterval: AnyReminderInterval(interval),
             days: days ?? .allOptions(),
             counts: ReminderCounts(totalOccurences: totalOccurences),
@@ -136,10 +136,10 @@ extension RandomReminder: CustomStringConvertible {
     private static let titleOnly = true
 
     var description: String {
-        if Self.titleOnly {
-            return content.title
-        }
+        Self.titleOnly ? content.title : reflectedDescription
+    }
 
+    var reflectedDescription: String {
         let mirror = Mirror(reflecting: self)
         let properties = mirror.children
             .map { "\($0.label ?? "?") = \($0.value)" }
