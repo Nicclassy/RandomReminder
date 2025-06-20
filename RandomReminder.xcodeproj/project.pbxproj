@@ -80,6 +80,7 @@
 		81E8D2032DB9815C00F1BF97 /* MutableReminder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81E8D1FF2DB9815C00F1BF97 /* MutableReminder.swift */; };
 		81E8D2042DB9815C00F1BF97 /* TimeInfoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81E8D2012DB9815C00F1BF97 /* TimeInfoProvider.swift */; };
 		81E8D2052DB9815C00F1BF97 /* ReminderSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81E8D2002DB9815C00F1BF97 /* ReminderSerializer.swift */; };
+		81ECAC372E03244A0065F8B8 /* Subprocess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ECAC362E03244A0065F8B8 /* Subprocess.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -155,6 +156,7 @@
 		81E8D1FF2DB9815C00F1BF97 /* MutableReminder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutableReminder.swift; sourceTree = "<group>"; };
 		81E8D2002DB9815C00F1BF97 /* ReminderSerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderSerializer.swift; sourceTree = "<group>"; };
 		81E8D2012DB9815C00F1BF97 /* TimeInfoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInfoProvider.swift; sourceTree = "<group>"; };
+		81ECAC362E03244A0065F8B8 /* Subprocess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subprocess.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -398,6 +400,7 @@
 				81412F912DD7A20200BD2EA3 /* ReminderValidator.swift */,
 				818895A52DDF0BE9005B55C0 /* AutoRawRepresentable.swift */,
 				818895A72DDF129E005B55C0 /* EnumRawRepresentable.swift */,
+				81ECAC362E03244A0065F8B8 /* Subprocess.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -602,6 +605,7 @@
 				813F31052D2B320700EF6DD1 /* ReminderManager.swift in Sources */,
 				81C043622D8AEEC60074E60B /* NotificationManager.swift in Sources */,
 				8118A1332D6A6E7F00A9FF08 /* PreferenceCaption.swift in Sources */,
+				81ECAC372E03244A0065F8B8 /* Subprocess.swift in Sources */,
 				8118A13D2D6A786900A9FF08 /* ReminderDayOptionsView.swift in Sources */,
 				81A529F42DB76EC900E71409 /* Preview+Extensions.swift in Sources */,
 				8118A1342D6A6E7F00A9FF08 /* RemindersPreferencesView.swift in Sources */,
