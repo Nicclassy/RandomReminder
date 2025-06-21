@@ -41,23 +41,23 @@ struct Subprocess {
     init(command: String) {
         self.command = command
     }
-    
+
     private static func withThrowingTimeout(
         seconds: TimeInterval = timeoutSeconds,
         operation: @escaping () throws -> Void
     ) -> SubprocessResult {
         let semaphore = DispatchSemaphore(value: 0)
         var result: SubprocessResult = .success
-        
+
         Task.detached {
             do {
                 try operation()
-            } catch let error {
+            } catch {
                 result = .error(error.localizedDescription)
             }
             semaphore.signal()
         }
-        
+
         let timeoutResult = semaphore.wait(timeout: .now() + seconds)
         return timeoutResult == .timedOut ? .timeout(seconds) : result
     }
@@ -89,11 +89,11 @@ struct Subprocess {
 
         var outputData: Data?
         var errorData: Data?
-        
+
         do {
             outputData = try outputPipe.fileHandleForReading.readToEnd()
             errorData = try errorPipe.fileHandleForReading.readToEnd()
-        } catch let error {
+        } catch {
             return .error(error.localizedDescription)
         }
 

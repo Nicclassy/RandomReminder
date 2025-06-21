@@ -11,13 +11,13 @@ private struct DescriptionProcess {
     let output: String
     let result: SubprocessResult
     let hasExecuted: Bool
-    
+
     init(output: String, result: SubprocessResult, hasExecuted: Bool = true) {
         self.output = output
         self.result = result
         self.hasExecuted = hasExecuted
     }
-    
+
     init() {
         self.init(output: "", result: .success, hasExecuted: false)
     }
@@ -25,45 +25,49 @@ private struct DescriptionProcess {
 
 struct ReminderDescriptionView: View {
     private static let codeFont: Font = .system(size: 12, design: .monospaced)
+    private static let defaultCommand = "ping 127.0.0.1"
 
-    @State private var command: String = "ping 127.0.0.1" // python3 -c \"print('Hello World')\"
+    @State private var command: String = Self.defaultCommand
     @State private var process: DescriptionProcess = .init()
+    @State private var isExecutingCommand = false
+    @FocusState private var commandIsFocused: Bool
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Enter the command to be executed when the reminder occurs:")
+            Text("Enter the Bash command to be executed when this reminder occurs:")
             TextField("", text: $command).font(Self.codeFont)
+                .focused($commandIsFocused)
+                .onSubmit {
+                    if commandIsFocused {
+                        runCommand()
+                    }
+                }
             ScrollView { output }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color(NSColor.textBackgroundColor))
 
             HStack {
-                Button("Save") {}
-                    .buttonStyle(.borderedProminent)
+                if command.isEmpty {
+                    Button("Save") {}
+                        .disabled(true)
+                } else {
+                    Button("Save") {}
+                        .buttonStyle(.borderedProminent)
+                }
                 Button("Cancel") {}
                 Spacer()
-                Button("Run") {
-                    Task(priority: .userInitiated) {
-                        var subprocess = Subprocess(command: command)
-                        FancyLogger.info("Executing command '\(command)'")
-                        let result = subprocess.run()
-                        FancyLogger.info("Result: \(result)")
-
-                        await MainActor.run { [subprocess] in
-                            FancyLogger.info("Command output: \(subprocess.stdout)")
-                            FancyLogger.info("Command errors: \(subprocess.stderr)")
-                            if !subprocess.stderr.isEmpty {
-                                process = DescriptionProcess(output: subprocess.stdout, result: .error(subprocess.stderr))
-                            } else {
-                                process = DescriptionProcess(output: subprocess.stdout, result: result)
-                            }
-                        }
+                if command.isEmpty {
+                    Button("Run") {}
+                        .disabled(true)
+                } else {
+                    Button("Run") {
+                        runCommand()
                     }
+                    .disabled(isExecutingCommand)
                 }
                 Button(
                     action: {
-                        command = ""
-                        process = .init()
+                        reset()
                     },
                     label: {
                         Image(systemName: "trash")
@@ -71,10 +75,13 @@ struct ReminderDescriptionView: View {
                 )
             }
         }
+        .onDisappear {
+            reset()
+        }
         .padding(20)
         .frame(width: 300, height: 200)
     }
-    
+
     @ViewBuilder
     private var output: some View {
         if !process.hasExecuted {
@@ -89,6 +96,43 @@ struct ReminderDescriptionView: View {
         } else {
             Text(process.output).font(Self.codeFont)
         }
+    }
+
+    private func runCommand() {
+        Task {
+            await MainActor.run {
+                isExecutingCommand = true
+            }
+
+            let (subprocess, result) = await withCheckedContinuation { continuation in
+                DispatchQueue.global(qos: .userInitiated).async {
+                    var subprocess = Subprocess(command: command)
+                    let result = subprocess.run()
+                    continuation.resume(returning: (subprocess, result))
+                }
+            }
+
+            await MainActor.run {
+                process = if !subprocess.stderr.isEmpty {
+                    DescriptionProcess(
+                        output: subprocess.stdout,
+                        result: .error(subprocess.stderr)
+                    )
+                } else {
+                    DescriptionProcess(
+                        output: subprocess.stdout,
+                        result: result
+                    )
+                }
+
+                isExecutingCommand = false
+            }
+        }
+    }
+
+    private func reset() {
+        command = Self.defaultCommand
+        process = .init()
     }
 }
 
