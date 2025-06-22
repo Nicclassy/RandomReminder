@@ -23,7 +23,9 @@ final class ModificationViewFields: ObservableObject {
 }
 
 struct ReminderModificationView: View {
+    @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
+
     @StateObject var reminder: MutableReminder = .init()
     @StateObject var preferences: ReminderPreferences = .init()
     @StateObject var viewPreferences: ModificationViewPreferences = .init()
@@ -63,7 +65,9 @@ struct ReminderModificationView: View {
                         ))
                         Spacer()
                         Button(
-                            action: {},
+                            action: {
+                                openWindow(id: WindowIds.descriptionCommand)
+                            },
                             label: {
                                 Text("⌘")
                             }
@@ -174,6 +178,7 @@ struct ReminderModificationView: View {
                     // Therefore, it is necessary to close the window itself instead
                     if viewPreferences.closeView {
                         NSApp.keyWindow?.close()
+                        dismissWindow(id: WindowIds.descriptionCommand)
                         viewPreferences.closeView = false
                     }
                 }
@@ -195,6 +200,7 @@ struct ReminderModificationView: View {
             reminder.reset()
             preferences.reset()
             fields.reset()
+            dismissWindow(id: WindowIds.descriptionCommand)
             controller.modificationWindowOpen = false
         }
         .onReceive(NotificationCenter.default.publisher(for: .refreshModificationWindow)) { _ in

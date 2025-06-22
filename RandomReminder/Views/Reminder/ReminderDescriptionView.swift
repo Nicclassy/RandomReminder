@@ -25,7 +25,9 @@ private struct DescriptionProcess {
 
 struct ReminderDescriptionView: View {
     private static let codeFont: Font = .system(size: 12, design: .monospaced)
-    private static let defaultCommand = "ping 127.0.0.1"
+    private static let defaultCommand = ""
+
+    @Environment(\.dismissWindow) private var dismissWindow
 
     @State private var command: String = Self.defaultCommand
     @State private var process: DescriptionProcess = .init()
@@ -51,10 +53,14 @@ struct ReminderDescriptionView: View {
                     Button("Save") {}
                         .disabled(true)
                 } else {
-                    Button("Save") {}
-                        .buttonStyle(.borderedProminent)
+                    Button("Save") {
+                        dismissWindow(id: WindowIds.descriptionCommand)
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
-                Button("Cancel") {}
+                Button("Cancel") {
+                    dismissWindow(id: WindowIds.descriptionCommand)
+                }
                 Spacer()
                 if command.isEmpty {
                     Button("Run") {}

@@ -50,6 +50,7 @@ enum ViewConstants {
 enum WindowIds {
     static let createReminder = "create-reminder"
     static let editReminder = "edit-reminder"
+    static let descriptionCommand = "description-command"
 }
 
 enum Constants {

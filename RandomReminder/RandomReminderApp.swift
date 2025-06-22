@@ -26,5 +26,10 @@ struct RandomReminderApp: App {
             ReminderModificationView(mode: .edit)
         }
         .windowResizability(.contentSize)
+
+        Window("Description Command", id: WindowIds.descriptionCommand) {
+            ReminderDescriptionView()
+        }
+        .windowResizability(.contentSize)
     }
 }
