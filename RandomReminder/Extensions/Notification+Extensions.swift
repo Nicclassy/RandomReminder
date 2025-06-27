@@ -8,6 +8,7 @@
 import Foundation
 
 extension Notification.Name {
-    static let refreshReminders = Notification.Name("refreshReminders")
-    static let refreshModificationWindow = Notification.Name("refreshModificationWindow")
+    static let refreshReminders = Self("refreshReminders")
+    static let refreshModificationWindow = Self("refreshModificationWindow")
+    static let descriptionCommandSet = Self("descriptionCommandSet")
 }

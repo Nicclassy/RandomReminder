@@ -47,22 +47,19 @@ struct ReminderModificationView: View {
                 GridRow {
                     Text("Reminder description:")
                     HStack {
-                        TextField("Description", text: Binding(
-                            get: {
-                                if case let .text(content) = reminder.description {
-                                    content
-                                } else {
-                                    "Reminder description set by command"
-                                }
-                            },
-                            set: { newValue, _ in
-                                if case .text = reminder.description {
-                                    reminder.description = .text(newValue)
-                                } else {
-                                    fatalError("This should not be reachable")
-                                }
+                        if case let .text(description) = reminder.description {
+                            TextField(
+                                "Description",
+                                text: Binding(
+                                    get: { description },
+                                    set: { reminder.description = .text($0) }
+                                )
+                            )
+                        } else {
+                            Button("Delete description command") {
+                                reminder.description = .text("")
                             }
-                        ))
+                        }
                         Spacer()
                         Button(
                             action: {
@@ -206,6 +203,9 @@ struct ReminderModificationView: View {
         .onReceive(NotificationCenter.default.publisher(for: .refreshModificationWindow)) { _ in
             FancyLogger.info("Refresh modification window toggled")
             viewPreferences.refreshView.toggle()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .descriptionCommandSet)) { _ in
+            reminder.description = .command(controller.descriptionCommand)
         }
         .frame(width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight)
         .padding()

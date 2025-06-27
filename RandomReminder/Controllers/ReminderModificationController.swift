@@ -13,6 +13,7 @@ final class ReminderModificationController: ObservableObject {
     @Published var refreshReminders = false
     @Published var refreshModificationWindow = false
     @Published var modificationWindowOpen = false
+    var descriptionCommand = ""
     weak var reminder: RandomReminder?
 
     func postRefreshRemindersNotification() {
@@ -27,11 +28,14 @@ final class ReminderModificationController: ObservableObject {
         }
     }
 
-    func isEditingReminder(with id: ReminderID) -> Bool {
-        if let reminder, reminder.id == id {
-            true
-        } else {
-            false
+    func setDescriptionCommand(_ command: String) {
+        descriptionCommand = command
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .descriptionCommandSet, object: nil)
         }
+    }
+
+    func isEditingReminder(with id: ReminderID) -> Bool {
+        reminder?.id == id
     }
 }

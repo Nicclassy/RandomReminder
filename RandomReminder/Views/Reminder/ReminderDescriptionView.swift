@@ -54,6 +54,7 @@ struct ReminderDescriptionView: View {
                         .disabled(true)
                 } else {
                     Button("Save") {
+                        ReminderModificationController.shared.setDescriptionCommand(command)
                         dismissWindow(id: WindowIds.descriptionCommand)
                     }
                     .buttonStyle(.borderedProminent)

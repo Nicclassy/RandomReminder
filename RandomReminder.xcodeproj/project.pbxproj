@@ -32,6 +32,7 @@
 		81265B262DCDD510005C95F2 /* NumericTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81265B252DCDD510005C95F2 /* NumericTextField.swift */; };
 		812D23E72DAD9B4400675783 /* .swiftformat in Resources */ = {isa = PBXBuildFile; fileRef = 812D23E62DAD9B4400675783 /* .swiftformat */; };
 		812F8F642DFF2D2A008232A6 /* ReminderDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 812F8F632DFF2D2A008232A6 /* ReminderDescriptionView.swift */; };
+		813D09552E089DCA0065FDCB /* .pre-commit-config.yaml in Resources */ = {isa = PBXBuildFile; fileRef = 813D09542E089DCA0065FDCB /* .pre-commit-config.yaml */; };
 		813F30DD2D22B93E00EF6DD1 /* ColourString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813F30DC2D22B93E00EF6DD1 /* ColourString.swift */; };
 		813F30E62D25FE0B00EF6DD1 /* swiftgen.yml in Resources */ = {isa = PBXBuildFile; fileRef = 813F30E52D25FE0B00EF6DD1 /* swiftgen.yml */; };
 		813F30EE2D261FD300EF6DD1 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 813F30EC2D261FD300EF6DD1 /* PreferencesViewController.swift */; };
@@ -109,6 +110,7 @@
 		81265B252DCDD510005C95F2 /* NumericTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumericTextField.swift; sourceTree = "<group>"; };
 		812D23E62DAD9B4400675783 /* .swiftformat */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftformat; sourceTree = "<group>"; };
 		812F8F632DFF2D2A008232A6 /* ReminderDescriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderDescriptionView.swift; sourceTree = "<group>"; };
+		813D09542E089DCA0065FDCB /* .pre-commit-config.yaml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = ".pre-commit-config.yaml"; sourceTree = "<group>"; };
 		813F30DC2D22B93E00EF6DD1 /* ColourString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColourString.swift; sourceTree = "<group>"; };
 		813F30E52D25FE0B00EF6DD1 /* swiftgen.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = swiftgen.yml; sourceTree = "<group>"; };
 		813F30EC2D261FD300EF6DD1 /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 				8163F5D12D1241D40052A016 /* RandomReminder */,
 				8118A1192D63E42A00A9FF08 /* README.md */,
 				8118A1182D63E42A00A9FF08 /* LICENSE */,
+				813D09542E089DCA0065FDCB /* .pre-commit-config.yaml */,
 				81C373172D8F288900A98A59 /* .swiftlint.yml */,
 				812D23E62DAD9B4400675783 /* .swiftformat */,
 				818DEF402DAE6D18005F5AEA /* .swift-version */,
@@ -487,6 +490,7 @@
 				81C373182D8F288900A98A59 /* .swiftlint.yml in Resources */,
 				8163F5D72D1241D50052A016 /* Assets.xcassets in Resources */,
 				813F30E62D25FE0B00EF6DD1 /* swiftgen.yml in Resources */,
+				813D09552E089DCA0065FDCB /* .pre-commit-config.yaml in Resources */,
 				8118A11A2D63E42A00A9FF08 /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
