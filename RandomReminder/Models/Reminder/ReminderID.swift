@@ -9,9 +9,11 @@ import Foundation
 
 struct ReminderID: Codable {
     let value: Int
+    let creationDate: Date
 
     init(_ value: Int) {
         self.value = value
+        self.creationDate = .now
     }
 }
 
@@ -23,7 +25,7 @@ extension ReminderID {
 
 extension ReminderID: Equatable, Hashable {
     static func == (lhs: ReminderID, rhs: ReminderID) -> Bool {
-        lhs.value == rhs.value
+        lhs.value == rhs.value && lhs.creationDate == rhs.creationDate
     }
 
     static func == (lhs: ReminderID, rhs: Int) -> Bool {
@@ -32,6 +34,7 @@ extension ReminderID: Equatable, Hashable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(value)
+        hasher.combine(creationDate)
     }
 }
 
@@ -55,7 +58,7 @@ extension ReminderID: ExpressibleByIntegerLiteral {
     typealias IntegerLiteralType = Int
 
     init(integerLiteral value: IntegerLiteralType) {
-        self.value = value
+        self.init(value)
     }
 }
 

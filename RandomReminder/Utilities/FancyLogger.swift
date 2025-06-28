@@ -9,7 +9,7 @@ import Foundation
 import os
 
 let loggingEnabled: Bool = true
-let useOsLog: Bool = true
+let useOsLog: Bool = false
 
 let infoColours = FancyLogger.Colours(
     file: hex("CFBAF0"),

@@ -49,7 +49,7 @@ struct Subprocess {
         let semaphore = DispatchSemaphore(value: 0)
         var result: SubprocessResult = .success
 
-        Task.detached {
+        Task.detached(priority: .userInitiated) {
             do {
                 try operation()
             } catch {
@@ -62,6 +62,7 @@ struct Subprocess {
         return timeoutResult == .timedOut ? .timeout(seconds) : result
     }
 
+    @discardableResult
     mutating func run() -> SubprocessResult {
         let process = Process()
         process.arguments = ["-c", command]
@@ -93,7 +94,7 @@ struct Subprocess {
         do {
             outputData = try outputPipe.fileHandleForReading.readToEnd()
             errorData = try errorPipe.fileHandleForReading.readToEnd()
-        } catch {
+        } catch let error {
             return .error(error.localizedDescription)
         }
 

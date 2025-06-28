@@ -94,6 +94,9 @@ final class ReminderManager {
                         } else if reminder.hasBegun && reminder.hasEnded(after: date) {
                             FancyLogger.info("Stopping reminder '\(reminder)'")
                             stopReminder(reminder)
+                        } else if reminder.hasEnded(after: date) {
+                            FancyLogger.info("Reminder '\(reminder) will end but has not started")
+                            resetReminder(reminder)
                         }
                     }
                 }
@@ -120,6 +123,12 @@ final class ReminderManager {
 
         return reminder.days.contains(todaysDay)
     }
+    
+    func reminderExists(_ reminder: RandomReminder) -> Bool {
+        remindersQueue.sync {
+            reminders.lazy.contains(reminder)
+        }
+    }
 
     func upcomingReminders() -> [RandomReminder] {
         remindersQueue.sync {
@@ -133,14 +142,14 @@ final class ReminderManager {
         }
     }
 
-    func reminderExistsWithSameTitle(as title: String) -> Bool {
+    func reminderWithSameTitleExists(as title: String) -> Bool {
         remindersQueue.sync {
             reminders.lazy.contains { $0.content.title == title }
         }
     }
 
     func nextAvailableId() -> ReminderID {
-        (.first...).first { !reminderIds.contains($0) }!
+        (.first...).first { !reminderIds.map(\.value).contains($0.value) }!
     }
 
     func addReminder(_ reminder: RandomReminder) {
@@ -156,7 +165,7 @@ final class ReminderManager {
     }
 
     func removeReminder(_ reminder: RandomReminder) {
-        if reminder.state == .started {
+        if remind && reminder.state == .started {
             stopReminder(reminder, permanent: true)
             deactivateReminder(reminder)
         }
@@ -226,19 +235,10 @@ final class ReminderManager {
                 reminderActivator.tick()
             }
 
-            if reminderActivator.terminated {
-                FancyLogger.info("Reminder '\(reminder)' will not be restarted")
-                return
-            }
-            
-            // Reminder mutations
-            FancyLogger.warn("Finished reminder activator for '\(reminder)'")
-            if reminder.hasRepeats {
-                FancyLogger.info("Restarted reminder '\(reminder)'")
-                reminder.advanceToNextRepeat()
-                onReminderChange(of: reminder)
+            if !reminderActivator.terminated {
+                resetReminder(reminder)
             } else {
-                reminder.state = .finished
+                FancyLogger.info("Reminder '\(reminder)' will not be restarted")
             }
         }
     }
@@ -255,6 +255,19 @@ final class ReminderManager {
             if permanent {
                 reminderActivator.terminated = true
             }
+        }
+    }
+
+    func resetReminder(_ reminder: RandomReminder) {
+        // Reminder mutations
+        FancyLogger.warn("Finished reminder activator for '\(reminder)'")
+        if reminder.hasRepeats {
+            FancyLogger.info("Restarted reminder '\(reminder)'")
+            reminder.advanceToNextRepeat()
+            onReminderChange(of: reminder)
+        } else {
+            FancyLogger.info("Setting '\(reminder)' to past")
+            reminder.state = .finished
         }
     }
 
