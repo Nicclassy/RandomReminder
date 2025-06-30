@@ -60,7 +60,6 @@
 		8163F60A2D139C230052A016 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 8163F6092D139C230052A016 /* LaunchAtLogin */; };
 		8163F60E2D13A7540052A016 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8163F60D2D13A7540052A016 /* AppDelegate.swift */; };
 		8163F6132D13A90E0052A016 /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8163F6112D13A90E0052A016 /* StatusBarController.swift */; };
-		818895A62DDF0BE9005B55C0 /* AutoRawRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818895A52DDF0BE9005B55C0 /* AutoRawRepresentable.swift */; };
 		818895A82DDF129E005B55C0 /* EnumRawRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818895A72DDF129E005B55C0 /* EnumRawRepresentable.swift */; };
 		818DEF412DAE6D18005F5AEA /* .swift-version in Resources */ = {isa = PBXBuildFile; fileRef = 818DEF402DAE6D18005F5AEA /* .swift-version */; };
 		819BDD472D8C059C005059AD /* ActiveReminderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 819BDD462D8C059C005059AD /* ActiveReminderService.swift */; };
@@ -138,7 +137,6 @@
 		8163F5DB2D1241D50052A016 /* RandomReminder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RandomReminder.entitlements; sourceTree = "<group>"; };
 		8163F60D2D13A7540052A016 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8163F6112D13A90E0052A016 /* StatusBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusBarController.swift; sourceTree = "<group>"; };
-		818895A52DDF0BE9005B55C0 /* AutoRawRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoRawRepresentable.swift; sourceTree = "<group>"; };
 		818895A72DDF129E005B55C0 /* EnumRawRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumRawRepresentable.swift; sourceTree = "<group>"; };
 		818DEF402DAE6D18005F5AEA /* .swift-version */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-version"; sourceTree = "<group>"; };
 		819BDD462D8C059C005059AD /* ActiveReminderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveReminderService.swift; sourceTree = "<group>"; };
@@ -401,7 +399,6 @@
 				81E8D2002DB9815C00F1BF97 /* ReminderSerializer.swift */,
 				81E8D2012DB9815C00F1BF97 /* TimeInfoProvider.swift */,
 				81412F912DD7A20200BD2EA3 /* ReminderValidator.swift */,
-				818895A52DDF0BE9005B55C0 /* AutoRawRepresentable.swift */,
 				818895A72DDF129E005B55C0 /* EnumRawRepresentable.swift */,
 				81ECAC362E03244A0065F8B8 /* Subprocess.swift */,
 			);
@@ -598,7 +595,6 @@
 				813F31252D3BB42800EF6DD1 /* ReminderID.swift in Sources */,
 				8163F5D32D1241D40052A016 /* RandomReminderApp.swift in Sources */,
 				813F31202D3B1D2900EF6DD1 /* JSONDecoder+Extensions.swift in Sources */,
-				818895A62DDF0BE9005B55C0 /* AutoRawRepresentable.swift in Sources */,
 				813F30F92D27D86500EF6DD1 /* Strings.swift in Sources */,
 				813F30FD2D292A0000EF6DD1 /* ReminderTickInterval.swift in Sources */,
 				81B526062D1A4EF7008D36F0 /* DualDatePickerView.swift in Sources */,
