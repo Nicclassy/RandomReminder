@@ -18,35 +18,35 @@ final class NotificationManager {
     private init() {}
 
     func addReminderNotification(for service: ActiveReminderService) {
-        let content = UNMutableNotificationContent()
-        let reminder = service.reminder
-
-        content.title = reminder.content.title
-        let subtitle = if case let .text(text) = reminder.content.description {
-            text
-        } else if case let .command(text) = reminder.content.description {
-            text
-        } else {
-            fatalError("Unreachable code")
-        }
-        if !subtitle.isEmpty {
-            content.subtitle = subtitle
-                + " (\(reminder.counts.occurences)/\(reminder.counts.totalOccurences))"
-        }
-        content.sound = .default
-        content.userInfo = ["reminderId": reminder.id.value]
-
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-        FancyLogger.info("Waiting to add request of reminder '\(reminder)' to the queue")
-
+        FancyLogger.info("Waiting to add request of reminder '\(service.reminder)' to the queue")
         queue.async { [self] in
-            FancyLogger.error("Processing for \(service.reminder)")
+            let reminder = service.reminder
+            let content = UNMutableNotificationContent()
+
+            content.title = reminder.content.title
+            content.subtitle = notificationSubtitle(for: reminder)
+            content.sound = .default
+            content.userInfo = ["reminderId": reminder.id.value]
+
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
             let semaphore = DispatchSemaphore(value: 0)
             Task {
+                FancyLogger.error("Processing for \(service.reminder)")
                 await processNotification(for: service, with: request)
                 semaphore.signal()
             }
             semaphore.wait()
+        }
+    }
+
+    private func notificationSubtitle(for reminder: RandomReminder) -> String {
+        switch reminder.content.description {
+        case let .text(subtitle):
+            return subtitle
+        case let .command(command):
+            var subprocess = Subprocess(command: command)
+            subprocess.run()
+            return subprocess.stdout
         }
     }
 
@@ -71,6 +71,30 @@ final class NotificationManager {
         }
     }
 
+    private func reminderCanOccur(_ reminder: RandomReminder) -> Bool {
+        guard ReminderManager.shared.reminderExists(reminder) else {
+            FancyLogger.info("Reminder '\(reminder)' no longer exists")
+            return false
+        }
+
+        guard !ReminderModificationController.shared.isEditingReminder(with: reminder.id) else {
+            FancyLogger.info("Reminder '\(reminder)' cannot occur because it is being edited")
+            return false
+        }
+
+        guard !reminder.hasPast else {
+            FancyLogger.info("Reminder '\(reminder)' had a scheduled notification but has past")
+            return false
+        }
+
+        guard ReminderManager.shared.reminderCanActivate(reminder) else {
+            FancyLogger.info("Reminder '\(reminder)' cannot activate and therefore cannot occur")
+            return false
+        }
+
+        return true
+    }
+
     private func processNotification(
         for reminderService: ActiveReminderService,
         with request: UNNotificationRequest
@@ -87,16 +111,17 @@ final class NotificationManager {
         // but UNNotificationDelegate only informs the program
         // if the user clicks on the notification, not if they swipe it/click X),
         // so this solution will suffice for now.
+        // At least by using a Task instead of GCD based synchronisation,
+        // we can use Task.sleep instead of Thread.sleep for waiting for things.
+        // This isn't a major issue, but when a sleep for 1 hour might be required
+        // between notifications, it might be problematic
         let reminder = reminderService.reminder
-        guard !ReminderModificationController.shared.isEditingReminder(with: reminder.id) else {
-            // Do not remind
-            FancyLogger.info("Cannot reminder '\(reminder)' because it is being edited")
+        guard reminderCanOccur(reminder) else {
             return
         }
 
         // Eventually, we need to check if the reminder is past. This
         // will be tricky
-
         do {
             try await notificationCentre.add(request)
         } catch {
@@ -130,9 +155,9 @@ final class NotificationManager {
         }
 
         if schedulingPreferences.notificationGapEnabled {
+            let notificationGapTimeInterval = Int(schedulingPreferences.notificationGapTimeUnit.timeInterval)
             let notificationGap = UInt64(
-                schedulingPreferences.notificationGapTime
-                    * Int(schedulingPreferences.notificationGapTimeUnit.timeInterval)
+                schedulingPreferences.notificationGapTime * notificationGapTimeInterval
             )
             FancyLogger.info("Sleeping for \(notificationGap) seconds")
             try? await Task.sleep(nanoseconds: notificationGap * 1_000_000_000)
