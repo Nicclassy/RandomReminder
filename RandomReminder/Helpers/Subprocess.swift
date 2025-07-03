@@ -94,7 +94,7 @@ struct Subprocess {
         do {
             outputData = try outputPipe.fileHandleForReading.readToEnd()
             errorData = try errorPipe.fileHandleForReading.readToEnd()
-        } catch let error {
+        } catch {
             return .error(error.localizedDescription)
         }
 

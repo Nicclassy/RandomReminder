@@ -5,7 +5,6 @@
 //  Created by Luca Napoli on 23/12/2024.
 //
 
-import Foundation
 import SwiftUI
 
 final class ReminderActivatorService {

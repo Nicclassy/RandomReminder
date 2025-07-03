@@ -121,9 +121,13 @@ final class ReminderManager {
             return false
         }
 
-        return reminder.days.contains(todaysDay)
+        guard reminder.days.contains(todaysDay) else {
+            return false
+        }
+
+        return true
     }
-    
+
     func reminderExists(_ reminder: RandomReminder) -> Bool {
         remindersQueue.sync {
             reminders.lazy.contains(reminder)

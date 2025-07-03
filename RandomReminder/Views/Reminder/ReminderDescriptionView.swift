@@ -29,7 +29,7 @@ struct ReminderDescriptionView: View {
 
     @Environment(\.dismissWindow) private var dismissWindow
 
-    @State private var command: String = Self.defaultCommand
+    @State private var command = Self.defaultCommand
     @State private var process: DescriptionProcess = .init()
     @State private var isExecutingCommand = false
     @FocusState private var commandIsFocused: Bool

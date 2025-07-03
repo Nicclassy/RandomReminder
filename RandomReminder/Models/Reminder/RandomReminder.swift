@@ -122,14 +122,6 @@ extension RandomReminder {
             .appendingPathExtension(StoredReminders.fileExtension)
             .path()
     }
-
-    func audioFileBookmarkKey() -> String {
-        guard let audioFile = activationEvents.audio else {
-            fatalError("Cannot create a bookmark key for a reminder without an audio file.")
-        }
-
-        return "\(id).\(audioFile.name)"
-    }
 }
 
 extension RandomReminder: CustomStringConvertible {
