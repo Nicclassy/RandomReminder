@@ -11,4 +11,5 @@ extension Notification.Name {
     static let refreshReminders = Self("refreshReminders")
     static let refreshModificationWindow = Self("refreshModificationWindow")
     static let descriptionCommandSet = Self("descriptionCommandSet")
+    static let editDescriptionCommand = Self("editDescriptionCommand")
 }

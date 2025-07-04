@@ -24,8 +24,8 @@ private struct DescriptionProcess {
 }
 
 struct ReminderDescriptionView: View {
+    static let defaultCommand = ""
     private static let codeFont: Font = .system(size: 12, design: .monospaced)
-    private static let defaultCommand = ""
 
     @Environment(\.dismissWindow) private var dismissWindow
 
@@ -81,6 +81,9 @@ struct ReminderDescriptionView: View {
                     }
                 )
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .editDescriptionCommand)) { _ in
+            command = ReminderModificationController.shared.descriptionCommand
         }
         .onDisappear {
             reset()
