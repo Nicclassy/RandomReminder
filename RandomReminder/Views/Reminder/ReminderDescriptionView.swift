@@ -49,29 +49,24 @@ struct ReminderDescriptionView: View {
                 .background(Color(NSColor.textBackgroundColor))
 
             HStack {
-                if command.isEmpty {
-                    Button("Save") {}
-                        .disabled(true)
-                } else {
-                    Button("Save") {
-                        ReminderModificationController.shared.setDescriptionCommand(command)
-                        dismissWindow(id: WindowIds.descriptionCommand)
-                    }
-                    .buttonStyle(.borderedProminent)
+                Button("Save") {
+                    ReminderModificationController.shared.setDescriptionCommand(command)
+                    dismissWindow(id: WindowIds.descriptionCommand)
                 }
+                .disabled(command.isEmpty)
+                .if(!command.isEmpty) { it in
+                    it.buttonStyle(.borderedProminent)
+                }
+                
                 Button("Cancel") {
                     dismissWindow(id: WindowIds.descriptionCommand)
                 }
                 Spacer()
-                if command.isEmpty {
-                    Button("Run") {}
-                        .disabled(true)
-                } else {
-                    Button("Run") {
-                        runCommand()
-                    }
-                    .disabled(isExecutingCommand)
+                Button("Run") {
+                    runCommand()
                 }
+                .disabled(command.isEmpty || isExecutingCommand)
+                
                 Button(
                     action: {
                         reset()

@@ -23,7 +23,6 @@ final class ModificationViewFields: ObservableObject {
 }
 
 struct ReminderModificationView: View {
-    @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
 
     @StateObject var reminder: MutableReminder = .init()
@@ -37,55 +36,11 @@ struct ReminderModificationView: View {
     let mode: ReminderModificationMode
 
     var body: some View {
-        // swiftlint:disable:next closure_body_length
         VStack(alignment: .leading, spacing: 20) {
-            Grid(alignment: .leading) {
-                GridRow {
-                    Text("Reminder title:")
-                    TextField("Title", text: $reminder.title)
-                }
-                GridRow {
-                    Text("Reminder description:")
-                    HStack {
-                        if case let .text(description) = reminder.description {
-                            TextField(
-                                "Description",
-                                text: Binding(
-                                    get: { description },
-                                    set: { reminder.description = .text($0) }
-                                )
-                            )
-                        } else {
-                            Button("Delete description command") {
-                                reminder.description = .text("")
-                            }
-                        }
-                        Spacer()
-                        Button(
-                            action: {
-                                openWindow(id: WindowIds.descriptionCommand)
-                            },
-                            label: {
-                                Text("⌘")
-                            }
-                        )
-                    }
-                }
-                GridRow {
-                    Text("Total occurences:")
-                    StepperTextField(
-                        value: $reminder.totalOccurences,
-                        range: reminderOccurencesRange,
-                        onTextChange: { text in
-                            DispatchQueue.main.async {
-                                fields.occurrencesText = text
-                            }
-                        }
-                    )
-                    .frame(width: 55)
-                }
-            }
-
+            ReminderContentView(
+                reminder: reminder,
+                fields: fields
+            )
             ReminderScheduleOptionsView(
                 reminder: reminder,
                 preferences: preferences,
@@ -100,7 +55,7 @@ struct ReminderModificationView: View {
             )
 
             HStack {
-                let finishButton = Button(action: {
+                Button(action: {
                     let validator = ReminderValidator(
                         reminder: reminder,
                         preferences: preferences,
@@ -141,13 +96,9 @@ struct ReminderModificationView: View {
                         Text(validationResult.messageText)
                     }
                 )
-
-                if reminder.title.isEmpty {
-                    finishButton
-                        .buttonStyle(.automatic)
-                        .disabled(true)
-                } else {
-                    finishButton.buttonStyle(.borderedProminent)
+                .disabled(reminder.title.isEmpty)
+                .if(!reminder.title.isEmpty) { it in
+                    it.buttonStyle(.borderedProminent)
                 }
 
                 Button(action: {
@@ -232,10 +183,6 @@ struct ReminderModificationView: View {
 
     private var finishButtonText: String {
         mode == .create ? "Create" : "Save"
-    }
-
-    private var reminderOccurencesRange: ClosedRange<Int> {
-        ReminderConstants.minOccurences...ReminderConstants.maxOccurences
     }
 
     private func setDefaultTimes() {
