@@ -9,7 +9,7 @@ import Foundation
 
 enum ReminderDescription: Codable {
     case text(String)
-    case command(String)
+    case command(String, generatesTitle: Bool)
 }
 
 struct ReminderContent: Codable {

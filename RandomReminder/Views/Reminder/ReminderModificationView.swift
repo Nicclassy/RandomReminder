@@ -143,17 +143,7 @@ struct ReminderModificationView: View {
 
             reminder.copyFrom(reminder: reminderToEdit)
             preferences.copyFrom(reminder: reminderToEdit)
-
-            let command = if case let .command(value) = reminderToEdit.content.description {
-                value
-            } else {
-                ReminderDescriptionView.defaultCommand
-            }
-
-            controller.descriptionCommand = command
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: .editDescriptionCommand, object: nil)
-            }
+            controller.editDescriptionCommand(reminderToEdit.content.description)
         }
         .onDisappear {
             reminder.reset()
@@ -167,7 +157,7 @@ struct ReminderModificationView: View {
             viewPreferences.refreshView.toggle()
         }
         .onReceive(NotificationCenter.default.publisher(for: .descriptionCommandSet)) { _ in
-            reminder.description = .command(controller.descriptionCommand)
+            reminder.description = controller.descriptionCommand
         }
         .frame(width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight)
         .padding()

@@ -31,6 +31,7 @@ struct ReminderDescriptionView: View {
 
     @State private var command = Self.defaultCommand
     @State private var process: DescriptionProcess = .init()
+    @State private var generatesTitle = false
     @State private var isExecutingCommand = false
     @FocusState private var commandIsFocused: Bool
 
@@ -48,16 +49,18 @@ struct ReminderDescriptionView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color(NSColor.textBackgroundColor))
 
+            Toggle("First line title", isOn: $generatesTitle)
             HStack {
                 Button("Save") {
-                    ReminderModificationController.shared.setDescriptionCommand(command)
+                    let descriptionCommand: ReminderDescription = .command(command, generatesTitle: true)
+                    ReminderModificationController.shared.setDescriptionCommand(descriptionCommand)
                     dismissWindow(id: WindowIds.descriptionCommand)
                 }
                 .disabled(command.isEmpty)
                 .if(!command.isEmpty) { it in
                     it.buttonStyle(.borderedProminent)
                 }
-                
+
                 Button("Cancel") {
                     dismissWindow(id: WindowIds.descriptionCommand)
                 }
@@ -66,7 +69,7 @@ struct ReminderDescriptionView: View {
                     runCommand()
                 }
                 .disabled(command.isEmpty || isExecutingCommand)
-                
+
                 Button(
                     action: {
                         reset()
@@ -78,13 +81,20 @@ struct ReminderDescriptionView: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .editDescriptionCommand)) { _ in
-            command = ReminderModificationController.shared.descriptionCommand
+            guard case let .command(newCommand, newGeneratesTitle) =
+                ReminderModificationController.shared.descriptionCommand
+            else {
+                fatalError("Controller did not set the description command to a command")
+            }
+
+            command = newCommand
+            generatesTitle = newGeneratesTitle
         }
         .onDisappear {
             reset()
         }
         .padding(20)
-        .frame(width: 300, height: 200)
+        .frame(width: 300, height: 220)
     }
 
     @ViewBuilder

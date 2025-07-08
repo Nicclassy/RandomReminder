@@ -43,7 +43,7 @@ final class NotificationManager {
         switch reminder.content.description {
         case let .text(subtitle):
             return subtitle
-        case let .command(command):
+        case let .command(command, generatesTitle):
             var subprocess = Subprocess(command: command)
             subprocess.run()
             return subprocess.stdout

@@ -10,6 +10,7 @@ import SwiftUI
 struct ReminderContentView: View {
     @Environment(\.openWindow) private var openWindow
 
+    private let commandIcon = false
     @ObservedObject var reminder: MutableReminder
     @ObservedObject var fields: ModificationViewFields
 
@@ -41,7 +42,11 @@ struct ReminderContentView: View {
                             openWindow(id: WindowIds.descriptionCommand)
                         },
                         label: {
-                            Text("⌘")
+                            if commandIcon {
+                                Text("⌘")
+                            } else {
+                                Image(systemName: "terminal")
+                            }
                         }
                     )
                 }
