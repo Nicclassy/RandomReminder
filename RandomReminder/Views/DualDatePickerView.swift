@@ -64,9 +64,11 @@ struct DualDatePickerView: View {
     }
 
     init(
-        earliestHeading: String, latestHeading: String,
+        earliestHeading: String,
+        latestHeading: String,
         displayedComponents: DatePickerComponents,
-        earliestDate: Binding<Date>, latestDate: Binding<Date>
+        earliestDate: Binding<Date>,
+        latestDate: Binding<Date>
     ) {
         self.init(
             earliestHeading: earliestHeading,

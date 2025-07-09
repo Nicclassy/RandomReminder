@@ -10,7 +10,7 @@ import Settings
 import SwiftUI
 
 private struct ReminderPreferencesRow: View {
-    typealias PublishedTimer = Publishers.Autoconnect<Timer.TimerPublisher>
+    fileprivate typealias PublishedTimer = Publishers.Autoconnect<Timer.TimerPublisher>
 
     @State private var reminder: RandomReminder
     @State private var reminderInfo: String
@@ -214,23 +214,15 @@ struct RemindersPreferencesView: View {
                 .padding(.bottom, 5)
 
                 HStack {
-                    if editingReminders {
-                        Button(L10n.Preferences.Reminders.createNew) {}
-                            .buttonStyle(.automatic)
-                            .disabled(true)
-                    } else {
-                        let newReminderButton = Button(L10n.Preferences.Reminders.createNew) {
-                            openWindow(id: WindowIds.createReminder)
-                            controller.modificationWindowOpen = true
-                        }
-
-                        if controller.modificationWindowOpen {
-                            newReminderButton
-                                .buttonStyle(.automatic)
-                                .disabled(true)
-                        } else {
-                            newReminderButton.buttonStyle(.borderedProminent)
-                        }
+                    Button(L10n.Preferences.Reminders.createNew) {
+                        openWindow(id: WindowIds.createReminder)
+                        controller.modificationWindowOpen = true
+                    }
+                    .if(!controller.modificationWindowOpen && !editingReminders) { it in
+                        it.buttonStyle(.borderedProminent)
+                    }
+                    .if(controller.modificationWindowOpen || editingReminders) { it in
+                        it.disabled(true)
                     }
                     Spacer()
                     if editingReminders {

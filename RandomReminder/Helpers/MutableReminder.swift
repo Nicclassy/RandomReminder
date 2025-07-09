@@ -11,7 +11,7 @@ final class MutableReminder: ObservableObject {
     private static let `default` = MutableReminder(
         id: .unassigned,
         title: String(),
-        descriptionContent: .text(""),
+        description: .text(""),
         totalOccurences: 1,
         earliestDate: Date(),
         latestDate: Date().addMinutes(60),
@@ -39,7 +39,7 @@ final class MutableReminder: ObservableObject {
     init(
         id: ReminderID,
         title: String,
-        descriptionContent: ReminderDescription,
+        description: ReminderDescription,
         totalOccurences: Int,
         earliestDate: Date,
         latestDate: Date,
@@ -52,7 +52,7 @@ final class MutableReminder: ObservableObject {
     ) {
         self.id = id
         self.title = title
-        self.description = descriptionContent
+        self.description = description
         self.totalOccurences = totalOccurences
         self.earliestDate = earliestDate
         self.latestDate = latestDate
@@ -83,7 +83,7 @@ final class MutableReminder: ObservableObject {
         self.init(
             id: reminder.id,
             title: reminder.content.title,
-            descriptionContent: reminder.content.description,
+            description: reminder.content.description,
             totalOccurences: reminder.counts.totalOccurences,
             earliestDate: reminder.interval.earliest,
             latestDate: reminder.interval.latest,

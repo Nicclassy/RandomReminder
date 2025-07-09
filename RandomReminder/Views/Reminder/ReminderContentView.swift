@@ -39,6 +39,9 @@ struct ReminderContentView: View {
                     Spacer()
                     Button(
                         action: {
+                            if case .command = reminder.description {
+                                ReminderModificationController.shared.editDescriptionCommand(reminder.description)
+                            }
                             openWindow(id: WindowIds.descriptionCommand)
                         },
                         label: {
