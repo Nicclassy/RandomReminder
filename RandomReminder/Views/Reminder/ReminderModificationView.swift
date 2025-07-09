@@ -143,7 +143,11 @@ struct ReminderModificationView: View {
 
             reminder.copyFrom(reminder: reminderToEdit)
             preferences.copyFrom(reminder: reminderToEdit)
-            controller.editDescriptionCommand(reminderToEdit.content.description)
+
+            let description = reminderToEdit.content.description
+            if case .command = description {
+                controller.editDescriptionCommand(description)
+            }
         }
         .onDisappear {
             reminder.reset()

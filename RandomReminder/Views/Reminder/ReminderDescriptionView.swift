@@ -31,6 +31,7 @@ struct ReminderDescriptionView: View {
 
     @State private var command = Self.defaultCommand
     @State private var process: DescriptionProcess = .init()
+    @State private var settingsOpen = false
     @State private var generatesTitle = false
     @State private var isExecutingCommand = false
     @FocusState private var commandIsFocused: Bool
@@ -45,11 +46,10 @@ struct ReminderDescriptionView: View {
                         runCommand()
                     }
                 }
-            ScrollView { output }
+            ScrollView { commandOutput }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color(NSColor.textBackgroundColor))
 
-            Toggle("First line title", isOn: $generatesTitle)
             HStack {
                 Button("Save") {
                     let descriptionCommand: ReminderDescription = .command(command, generatesTitle: true)
@@ -72,19 +72,20 @@ struct ReminderDescriptionView: View {
 
                 Button(
                     action: {
-                        reset()
+                        settingsOpen = true
                     },
                     label: {
-                        Image(systemName: "trash")
+                        Image(systemName: "gearshape")
+                            .popover(isPresented: $settingsOpen) { settingsPopoverView }
                     }
                 )
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .editDescriptionCommand)) { _ in
-            guard case let .command(newCommand, newGeneratesTitle) =
-                ReminderModificationController.shared.descriptionCommand
-            else {
-                fatalError("Controller did not set the description command to a command")
+            let description = ReminderModificationController.shared.descriptionCommand
+            guard case let .command(newCommand, newGeneratesTitle) = description else {
+                FancyLogger.error("Expected a .command, received instead \(description)")
+                return
             }
 
             command = newCommand
@@ -94,11 +95,54 @@ struct ReminderDescriptionView: View {
             reset()
         }
         .padding(20)
-        .frame(width: 300, height: 220)
+        .frame(width: 300, height: 240)
     }
 
     @ViewBuilder
-    private var output: some View {
+    private var settingsPopoverView: some View {
+        Form {
+            Section {
+                Toggle(isOn: $generatesTitle) {
+                    Text("Command also generates notification title")
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(2)
+                    Spacer().frame(height: 5)
+                    PreferenceCaption(
+                        "The first line of the command's output will be used as the reminder's notifications' title."
+                    )
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(3)
+                }
+            }
+            
+            Group {
+                Spacer().frame(height: 10)
+                HStack {
+                    Button("Done") {
+                        settingsOpen = false
+                    }
+                    .buttonStyle(.borderedProminent)
+                    
+                    Button(
+                        action: {
+                            reset()
+                        },
+                        label: {
+                            Image(systemName: "trash")
+                        }
+                    )
+                    .disabled(isExecutingCommand)
+                }
+            }
+            .padding(.leading, 20)
+        }
+        .frame(width: 200, height: 110)
+        .padding(.horizontal, 15)
+        .padding(.vertical, 10)
+    }
+
+    @ViewBuilder
+    private var commandOutput: some View {
         if !process.hasExecuted {
             EmptyView()
         } else if case let .timeout(seconds) = process.result {
