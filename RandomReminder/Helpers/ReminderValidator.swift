@@ -49,12 +49,17 @@ struct ReminderValidator {
         } else if reminderDurationIsTooShort() {
             .error(
                 alertText: "Reminder duration is too short",
-                messageText: "A reminder that repeats every fixed period must last at least as long as that period."
+                messageText: "A reminder that repeats every fixed period must last at least as long as that period"
             )
         } else if reminderWillNeverHappen() {
             .error(
                 alertText: "Reminder will never happen",
                 messageText: "The specific days option is enabled, but no days have been selected"
+            )
+        } else if reminderHasAlreadyHappened() {
+            .error(
+                alertText: "Reminder has already happened",
+                messageText: "Reminders cannot have a latest time or date in the past"
             )
         } else if reminderWithSameTitleExists() {
             .warning(
@@ -83,6 +88,10 @@ struct ReminderValidator {
         let isEditingThisReminder = ReminderModificationController.shared.isEditingReminder(with: reminder.id)
         let reminderWithSameTitleExists = ReminderManager.shared.reminderWithSameTitleExists(as: reminder.title)
         return !isEditingThisReminder && reminderWithSameTitleExists
+    }
+
+    private func reminderHasAlreadyHappened() -> Bool {
+        Date() >= reminder.latestDate
     }
 
     private func reminderWillNeverHappen() -> Bool {

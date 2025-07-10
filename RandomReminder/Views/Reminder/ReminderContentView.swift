@@ -46,6 +46,7 @@ struct ReminderContentView: View {
                         },
                         label: {
                             if commandIcon {
+                                // Looks better than its corresponding SF Symbol
                                 Text("⌘")
                             } else {
                                 Image(systemName: "terminal")

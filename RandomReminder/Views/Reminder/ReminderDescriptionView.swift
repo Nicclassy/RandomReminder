@@ -90,6 +90,7 @@ struct ReminderDescriptionView: View {
 
             command = newCommand
             generatesTitle = newGeneratesTitle
+            FancyLogger.info("Description command edit")
         }
         .onDisappear {
             reset()
@@ -114,7 +115,7 @@ struct ReminderDescriptionView: View {
                     .lineLimit(3)
                 }
             }
-            
+
             Group {
                 Spacer().frame(height: 10)
                 HStack {
@@ -122,7 +123,7 @@ struct ReminderDescriptionView: View {
                         settingsOpen = false
                     }
                     .buttonStyle(.borderedProminent)
-                    
+
                     Button(
                         action: {
                             reset()
