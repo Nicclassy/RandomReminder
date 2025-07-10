@@ -10,7 +10,7 @@ import SwiftUI
 final class ReminderManager {
     static let shared = ReminderManager(preview: true)
 
-    private let remind = false
+    private let remind = true
     private let persistentChanges = false
 
     private var reminders: [RandomReminder]
@@ -88,16 +88,7 @@ final class ReminderManager {
                 let date = Date()
                 remindersQueue.sync {
                     for reminder in reminders where !reminder.hasPast {
-                        if !reminder.hasBegun && reminder.hasStarted(after: date) {
-                            FancyLogger.info("Starting reminder '\(reminder)'")
-                            startReminder(reminder)
-                        } else if reminder.hasBegun && reminder.hasEnded(after: date) {
-                            FancyLogger.info("Stopping reminder '\(reminder)'")
-                            stopReminder(reminder)
-                        } else if reminder.hasEnded(after: date) {
-                            FancyLogger.info("Reminder '\(reminder) will end but has not started")
-                            resetReminder(reminder)
-                        }
+                        tick(reminder, on: date)
                     }
                 }
             }
@@ -159,6 +150,7 @@ final class ReminderManager {
     func addReminder(_ reminder: RandomReminder) {
         remindersQueue.sync {
             reminders.append(reminder)
+            tick(reminder, on: .now)
         }
 
         if persistentChanges {
@@ -285,6 +277,19 @@ final class ReminderManager {
         }
     }
 
+    private func tick(_ reminder: RandomReminder, on date: Date) {
+        if !reminder.hasBegun && reminder.hasStarted(after: date) {
+            FancyLogger.info("Starting reminder '\(reminder)'")
+            startReminder(reminder)
+        } else if reminder.hasBegun && reminder.hasEnded(after: date) {
+            FancyLogger.info("Stopping reminder '\(reminder)'")
+            stopReminder(reminder)
+        } else if reminder.hasEnded(after: date) {
+            FancyLogger.info("Reminder '\(reminder) will end but has not started")
+            resetReminder(reminder)
+        }
+    }
+
     @objc
     private func onDayChanged() {
         todaysDay = .today
@@ -299,7 +304,7 @@ final class ReminderManager {
                 if reminder.hasEnded(after: date) && !reminder.hasRepeats {
                     FancyLogger.info("Reminder '\(reminder)' set to finished on state initialisation")
                     // Reminder mutations
-                    reminder.state = .finished
+                    resetReminder(reminder)
                 } else if !reminder.hasBegun && reminder.hasStarted(after: date) {
                     guard remind else {
                         reminder.state = .started

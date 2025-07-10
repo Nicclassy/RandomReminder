@@ -72,6 +72,9 @@ struct ReminderModificationView: View {
                     }
 
                     createNewReminder()
+                    if mode == .edit {
+                        NotificationCenter.default.post(name: .updateReminderPreferencesText, object: nil)
+                    }
                     dismissWindow(id: mode == .create ? WindowIds.createReminder : WindowIds.editReminder)
                 }, label: {
                     Text(finishButtonText)

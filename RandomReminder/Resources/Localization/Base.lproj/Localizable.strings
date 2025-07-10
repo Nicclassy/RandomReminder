@@ -92,6 +92,7 @@
 "preferences.reminders.rows.delete-alert" = "Are you sure you want to delete the reminder '%@'?";
 "preferences.reminders.rows.delete-caption" = "Deleted reminders cannot be recovered.";
 "preferences.reminders.rows.paused" = "Paused";
+"preferences.reminders.rows.notification-is-present" = "Active";
 "preferences.reminders.rows.resumes-on" = "Resumes on %@";
 "preferences.reminders.reminders-count" = "Reminders: %d";
 "preferences.reminders.upcoming" = "Upcoming Reminders";

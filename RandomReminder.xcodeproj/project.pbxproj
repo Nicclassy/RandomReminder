@@ -195,9 +195,9 @@
 			children = (
 				8118A12B2D6A6E7F00A9FF08 /* GeneralPreferencesView.swift */,
 				8118A12E2D6A6E7F00A9FF08 /* SchedulingPreferencesView.swift */,
-				8118A12C2D6A6E7F00A9FF08 /* PreferenceCaption.swift */,
 				8118A12D2D6A6E7F00A9FF08 /* RemindersPreferencesView.swift */,
 				8118A1292D6A6E7F00A9FF08 /* AboutPreferencesView.swift */,
+				8118A12C2D6A6E7F00A9FF08 /* PreferenceCaption.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
