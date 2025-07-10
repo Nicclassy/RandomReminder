@@ -158,6 +158,8 @@ internal enum L10n {
         internal static let deleteCaption = L10n.tr("Localizable", "preferences.reminders.rows.delete-caption", fallback: "Deleted reminders cannot be recovered.")
         /// Edit
         internal static let edit = L10n.tr("Localizable", "preferences.reminders.rows.edit", fallback: "Edit")
+        /// Active
+        internal static let notificationIsPresent = L10n.tr("Localizable", "preferences.reminders.rows.notification-is-present", fallback: "Active")
         /// Paused
         internal static let paused = L10n.tr("Localizable", "preferences.reminders.rows.paused", fallback: "Paused")
         /// Resumes on %@

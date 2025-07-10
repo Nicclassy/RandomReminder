@@ -14,6 +14,7 @@ private struct ReminderPreferencesRow: View {
 
     @State private var reminder: RandomReminder
     @State private var reminderInfo: String
+    @State private var timeInfoProvider: TimeInfoProvider
     @State private var showDeleteAlert = false
 
     @ObservedObject private var controller: ReminderModificationController = .shared
@@ -49,13 +50,13 @@ private struct ReminderPreferencesRow: View {
                     Button(L10n.Preferences.Reminders.Rows.delete, role: .destructive) {
                         if parentNumberOfRows > Int(parentRowsBeforeScroll) {
                             withAnimation(.default) {
-                                controller.refreshReminders.toggle()
+                                controller.postRefreshRemindersNotification()
                                 ReminderManager.shared.removeReminder(reminder)
                             }
                         } else {
                             // We do not want to animate the rows if the reminder is deleted
                             // when there are few rows, because this animation looks very strange
-                            controller.refreshReminders.toggle()
+                            controller.postRefreshRemindersNotification()
                             ReminderManager.shared.removeReminder(reminder)
                         }
 
@@ -69,14 +70,10 @@ private struct ReminderPreferencesRow: View {
                     .frame(height: 20)
                     .foregroundStyle(.secondary)
                     .onReceive(timer) { _ in
-                        let todaysDay = ReminderManager.shared.todaysDay
-                        reminderInfo = if SchedulingPreferences.shared.remindersArePaused {
-                            L10n.Preferences.Reminders.Rows.paused
-                        } else if !reminder.days.contains(todaysDay) && !reminder.hasPast {
-                            L10n.Preferences.Reminders.Rows.resumesOn(reminder.days.nextOccurringDay())
-                        } else {
-                            TimeInfoProvider(reminder: reminder).preferencesInfo()
-                        }
+                        updateText()
+                    }
+                    .onReceive(NotificationCenter.default.publisher(for: .updateReminderPreferencesText)) { _ in
+                        updateText()
                     }
             }
         }
@@ -91,12 +88,27 @@ private struct ReminderPreferencesRow: View {
         parentRowsBeforeScroll: UInt,
         editing: Binding<Bool>
     ) {
+        let timeInfoProvider = TimeInfoProvider(reminder: reminder)
         self.reminder = reminder
-        self.reminderInfo = TimeInfoProvider(reminder: reminder).preferencesInfo()
+        self.timeInfoProvider = timeInfoProvider
+        self.reminderInfo = timeInfoProvider.preferencesInfo()
         self.timer = timer
         self.parentNumberOfRows = parentNumberOfRows
         self.parentRowsBeforeScroll = parentRowsBeforeScroll
         self._editing = editing
+    }
+
+    private func updateText() {
+        let todaysDay = ReminderManager.shared.todaysDay
+        reminderInfo = if NotificationManager.shared.reminderNotificationIsPresent(for: reminder) {
+            L10n.Preferences.Reminders.Rows.notificationIsPresent
+        } else if SchedulingPreferences.shared.remindersArePaused {
+            L10n.Preferences.Reminders.Rows.paused
+        } else if !reminder.days.contains(todaysDay) && !reminder.hasPast {
+            L10n.Preferences.Reminders.Rows.resumesOn(reminder.days.nextOccurringDay())
+        } else {
+            timeInfoProvider.preferencesInfo()
+        }
     }
 }
 
@@ -189,7 +201,7 @@ struct RemindersPreferencesView: View {
     @ObservedObject private var controller: ReminderModificationController = .shared
     private let reminderManager: ReminderManager = .shared
 
-    @Environment(\.openWindow) var openWindow
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         Settings.Container(contentWidth: 500) {
@@ -232,7 +244,9 @@ struct RemindersPreferencesView: View {
                             Text(L10n.Preferences.Reminders.finishEditing)
                                 .frame(width: 100)
                         })
-                        .buttonStyle(.borderedProminent)
+                        .if(!controller.modificationWindowOpen) { it in
+                            it.buttonStyle(.borderedProminent)
+                        }
                         .disabled(controller.modificationWindowOpen)
                     } else {
                         Button(action: {

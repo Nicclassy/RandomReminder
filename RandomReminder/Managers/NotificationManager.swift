@@ -11,6 +11,7 @@ import UserNotifications
 final class NotificationManager {
     static let shared = NotificationManager()
 
+    private var presentReminder: RandomReminder?
     private let schedulingPreferences: SchedulingPreferences = .shared
     private let queue = DispatchQueue(label: Constants.bundleID + ".notificationQueue", qos: .utility)
     private let notificationCentre: UNUserNotificationCenter = .current()
@@ -23,8 +24,11 @@ final class NotificationManager {
             let reminder = service.reminder
             let content = UNMutableNotificationContent()
 
-            content.title = reminder.content.title
-            content.subtitle = notificationSubtitle(for: reminder)
+            let (title, subtitle) = notificationTitleAndSubtitle(for: reminder)
+            content.title = title
+            if let subtitle {
+                content.subtitle = subtitle
+            }
             content.sound = .default
             content.userInfo = ["reminderId": reminder.id.value]
 
@@ -39,14 +43,31 @@ final class NotificationManager {
         }
     }
 
-    private func notificationSubtitle(for reminder: RandomReminder) -> String {
+    func reminderNotificationIsPresent(for reminder: RandomReminder) -> Bool {
+        reminder == presentReminder
+    }
+
+    private func notificationTitleAndSubtitle(for reminder: RandomReminder) -> (title: String, subtitle: String?) {
         switch reminder.content.description {
         case let .text(subtitle):
-            return subtitle
-        case let .command(command, _):
+            return (reminder.content.title, subtitle)
+        case let .command(command, generatesTitle):
             var subprocess = Subprocess(command: command)
-            subprocess.run()
-            return subprocess.stdout
+            let result = subprocess.run()
+            if result != .success {
+                FancyLogger.error("Command '\(command)' did not succeed, instead got \(result)")
+            }
+
+            guard generatesTitle else {
+                return (reminder.content.title, subprocess.stdout)
+            }
+
+            let parts = subprocess.stdout.split(separator: "\n", maxSplits: 1).map(String.init)
+            guard let title = parts.first else {
+                return (reminder.content.title, nil)
+            }
+            let subtitle = parts.count == 1 ? nil : parts[1]
+            return (title, subtitle)
         }
     }
 
@@ -113,7 +134,7 @@ final class NotificationManager {
         // so this solution will suffice for now.
         // At least by using a Task instead of GCD based synchronisation,
         // we can use Task.sleep instead of Thread.sleep for waiting for things.
-        // This isn't a major issue, but when a sleep for 1 hour might be required
+        // This isn't a major issue, but when a (Thread.)sleep for 1 hour might be required
         // between notifications, it might be problematic
         let reminder = reminderService.reminder
         guard reminderCanOccur(reminder) else {
@@ -139,6 +160,7 @@ final class NotificationManager {
 
         // Has appeared
         await MainActor.run {
+            presentReminder = reminder
             FancyLogger.info("🟩 Notification appeared 🟩")
             reminderService.onNotificationAppear()
         }
@@ -150,6 +172,7 @@ final class NotificationManager {
 
         // Notification has disappeared
         await MainActor.run {
+            presentReminder = nil
             reminderService.onNotificationDisappear()
             FancyLogger.info("🟦 Notification disappeared 🟦")
         }
