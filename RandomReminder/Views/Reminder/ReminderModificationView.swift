@@ -85,11 +85,11 @@ struct ReminderModificationView: View {
                     isPresented: $viewPreferences.showReminderAlert,
                     actions: {
                         if case .error = validationResult {
-                            Button("OK") {}
+                            Button(L10n.Modification.ok) {}
                                 .buttonStyle(.borderedProminent)
                         } else if case .warning = validationResult {
-                            Button("Cancel", role: .cancel) {}
-                            Button("OK") {
+                            Button(L10n.Modification.cancel, role: .cancel) {}
+                            Button(L10n.Modification.ok) {
                                 createNewReminder()
                                 viewPreferences.closeView = true
                             }
@@ -107,20 +107,20 @@ struct ReminderModificationView: View {
                 Button(action: {
                     viewPreferences.showCancelAlert = true
                 }, label: {
-                    Text("Cancel")
+                    Text(L10n.Modification.ok)
                         .frame(width: 60)
                 })
                 .alert(
-                    "Are you sure you want to discard this reminder?",
+                    alertTitle,
                     isPresented: $viewPreferences.showCancelAlert,
                     actions: {
-                        Button("Cancel", role: .cancel) {}
-                        Button("Delete", role: .destructive) {
+                        Button(L10n.Modification.cancel, role: .cancel) {}
+                        Button(L10n.Modification.delete, role: .destructive) {
                             viewPreferences.closeView = true
                         }
                     },
                     message: {
-                        Text("All entered information will be lost.")
+                        Text(L10n.Modification.DiscardReminder.message)
                     }
                 )
                 .onChange(of: viewPreferences.closeView) {
@@ -140,6 +140,7 @@ struct ReminderModificationView: View {
                 setDefaultTimes()
                 return
             }
+
             guard let reminderToEdit = controller.reminder else {
                 fatalError("Reminder must be set")
             }
@@ -170,16 +171,16 @@ struct ReminderModificationView: View {
         .padding()
     }
 
-    private var cancelAlertText: String {
+    private var alertTitle: String {
         if mode == .create {
-            "Are you sure you want to discard this reminder?"
+            L10n.Modification.DiscardReminder.Create.title
         } else {
-            "Are you sure you want to stop editing this reminder?"
+            L10n.Modification.DiscardReminder.Edit.title
         }
     }
 
     private var finishButtonText: String {
-        mode == .create ? "Create" : "Save"
+        mode == .create ? L10n.Modification.create : L10n.Modification.save
     }
 
     private func setDefaultTimes() {
@@ -188,6 +189,7 @@ struct ReminderModificationView: View {
         }
         if schedulingPreferences.defaultLatestTimeEnabled {
             reminder.latestDate = .dateToday(withTime: schedulingPreferences.defaultLatestTime)
+            FancyLogger.info("Latest date: \(reminder.latestDate)")
         }
     }
 

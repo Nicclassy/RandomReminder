@@ -7,6 +7,7 @@
 */
 
 // MARK: Time
+
 "short-seconds" = "s";
 "short-minutes" = "m";
 "short-hours" = "h";
@@ -43,6 +44,7 @@
 "months" = "months";
 
 // MARK: Days
+
 "monday" = "Monday";
 "tuesday" = "Tuesday";
 "wednesday" = "Wednesday";
@@ -79,6 +81,7 @@
 "preferences.general.quick-reminder-enabled.caption" = "Show Quick Reminder in the menu bar item's menu.";
 
 // MARK: Reminder Preferences
+
 "preferences.reminders.single-occurence-left" = "1 occurence left";
 "preferences.reminders.multiple-occurences-left" = "%d occurences left";
 "preferences.reminders.ago" = "%@ ago";
@@ -100,3 +103,15 @@
 "preferences.reminders.create-new" = "Create New Reminder";
 "preferences.reminders.finish-editing" = "Finish Editing";
 "preferences.reminders.edit" = "Edit Reminders";
+
+// MARK: Reminder Modification
+
+"modification.ok" = "OK";
+"modification.cancel" = "Cancel";
+"modification.delete" = "Delete";
+"modification.create" = "Create";
+"modification.save" = "Save";
+"modification.discard-reminder.create.title" = "Are you sure you want to discard this reminder?";
+"modification.discard-reminder.edit.title" = "Are you sure you want to stop editing this reminder?";
+"modification.discard-reminder.message" = "All entered information will be lost.";
+

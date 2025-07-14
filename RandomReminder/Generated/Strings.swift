@@ -97,6 +97,30 @@ internal enum L10n {
       internal static let heading = L10n.tr("Localizable", "date-picker.latest-date.heading", fallback: "Latest date:")
     }
   }
+  internal enum Modification {
+    /// Cancel
+    internal static let cancel = L10n.tr("Localizable", "modification.cancel", fallback: "Cancel")
+    /// Create
+    internal static let create = L10n.tr("Localizable", "modification.create", fallback: "Create")
+    /// Delete
+    internal static let delete = L10n.tr("Localizable", "modification.delete", fallback: "Delete")
+    /// OK
+    internal static let ok = L10n.tr("Localizable", "modification.ok", fallback: "OK")
+    /// Save
+    internal static let save = L10n.tr("Localizable", "modification.save", fallback: "Save")
+    internal enum DiscardReminder {
+      /// All entered information will be lost.
+      internal static let message = L10n.tr("Localizable", "modification.discard-reminder.message", fallback: "All entered information will be lost.")
+      internal enum Create {
+        /// Are you sure you want to discard this reminder?
+        internal static let title = L10n.tr("Localizable", "modification.discard-reminder.create.title", fallback: "Are you sure you want to discard this reminder?")
+      }
+      internal enum Edit {
+        /// Are you sure you want to stop editing this reminder?
+        internal static let title = L10n.tr("Localizable", "modification.discard-reminder.edit.title", fallback: "Are you sure you want to stop editing this reminder?")
+      }
+    }
+  }
   internal enum Preferences {
     internal enum General {
       /// Launch at Login
