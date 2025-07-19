@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ReminderScheduleOptionsView: View {
+struct ReminderOptionsView: View {
     @ObservedObject var reminder: MutableReminder
     @ObservedObject var preferences: ReminderPreferences
     @ObservedObject var viewPreferences: ModificationViewPreferences
@@ -73,43 +73,12 @@ struct ReminderScheduleOptionsView: View {
                 }
             }
             .padding(.bottom, 20)
-
-            GridRow {
-                Text(earliestText)
-                Text(latestText)
-            }
             .frame(maxWidth: .infinity, alignment: .leading)
-
-            GridRow {
-                let picker = DualDatePicker(
-                    displayedComponents: datePickerComponents,
-                    earliestDate: $reminder.earliestDate,
-                    latestDate: $reminder.latestDate
-                )
-                picker.earliestDatePicker
-                    .disabled(preferences.alwaysRunning)
-                picker.latestDatePicker
-                    .disabled(preferences.alwaysRunning)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.bottom, 10)
         }
         .frame(width: ViewConstants.reminderWindowWidth)
-    }
-
-    private var earliestText: String {
-        preferences.timesOnly ? "Earliest time:" : "Earliest date:"
-    }
-
-    private var latestText: String {
-        preferences.timesOnly ? "Latest time:" : "Latest date:"
-    }
-
-    private var datePickerComponents: DatePickerComponents {
-        preferences.timesOnly ? .hourAndMinute : [.date, .hourAndMinute]
     }
 }
 
 #Preview {
-    ReminderScheduleOptionsView(reminder: .init(), preferences: .init(), viewPreferences: .init(), fields: .init())
+    ReminderOptionsView(reminder: .init(), preferences: .init(), viewPreferences: .init(), fields: .init())
 }

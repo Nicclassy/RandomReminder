@@ -36,17 +36,26 @@ struct ReminderModificationView: View {
     let mode: ReminderModificationMode
 
     var body: some View {
+        // swiftlint:disable:next closure_body_length
         VStack(alignment: .leading, spacing: 20) {
             ReminderContentView(
                 reminder: reminder,
                 fields: fields
             )
-            ReminderScheduleOptionsView(
-                reminder: reminder,
-                preferences: preferences,
-                viewPreferences: viewPreferences,
-                fields: fields
-            )
+            
+            VStack(alignment: .leading, spacing: 0) {
+                ReminderOptionsView(
+                    reminder: reminder,
+                    preferences: preferences,
+                    viewPreferences: viewPreferences,
+                    fields: fields
+                )
+                ReminderDateView(
+                    reminder: reminder,
+                    preferences: preferences
+                )
+            }
+            
             ReminderAudioOptionsView(
                 reminder: reminder,
                 preferences: preferences,
