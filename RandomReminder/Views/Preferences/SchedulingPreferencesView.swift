@@ -64,8 +64,13 @@ struct SchedulingPreferencesView: View {
                     }
 
                     PreferenceCaption(
-                        "If enabled, newly created reminders will have these times as their start/end times."
+                        "If enabled, reminders will have these times as their initial start/end times during the creation process."
                     )
+                }
+                .onChange(of: schedulingPreferences.defaultLatestTimeEnabled) { _, newValue in
+                    if newValue {
+                        schedulingPreferences.defaultEarliestTimeEnabled = true
+                    }
                 }
             }
 
@@ -80,7 +85,7 @@ struct SchedulingPreferencesView: View {
                                 .padding(.trailing, -5)
                             StepperTextField(
                                 value: schedulingPreferences.$notificationGapTime,
-                                range: 0...999
+                                range: 0...59
                             )
                             .multilineTextAlignment(.trailing)
                             .padding(.trailing, -10)
@@ -110,6 +115,11 @@ struct SchedulingPreferencesView: View {
             Section {
                 Toggle(isOn: schedulingPreferences.$remindersArePaused) {
                     Text("Pause all reminders")
+                }
+                .onChange(of: schedulingPreferences.remindersArePaused) {
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: .updateReminderPreferencesText, object: nil)
+                    }
                 }
             }
         }
