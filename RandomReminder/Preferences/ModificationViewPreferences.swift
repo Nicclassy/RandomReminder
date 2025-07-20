@@ -16,6 +16,7 @@ final class ModificationViewPreferences: ObservableObject {
     @Published var showTimesOnlyPopover = false
     @Published var showCancelAlert = false
     @Published var showFileImporter = false
+    @Published var showOptionsPopover = false
 
     func reset() {
         showReminderAlert = false
@@ -23,5 +24,6 @@ final class ModificationViewPreferences: ObservableObject {
         showTimesOnlyPopover = false
         showCancelAlert = false
         showFileImporter = false
+        showOptionsPopover = false
     }
 }

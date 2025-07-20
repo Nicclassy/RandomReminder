@@ -43,18 +43,17 @@ struct ReminderModificationView: View {
                 fields: fields
             )
             
-            VStack(alignment: .leading, spacing: 0) {
-                ReminderOptionsView(
-                    reminder: reminder,
-                    preferences: preferences,
-                    viewPreferences: viewPreferences,
-                    fields: fields
-                )
-                ReminderDateView(
-                    reminder: reminder,
-                    preferences: preferences
-                )
-            }
+            ReminderOptionsView(
+                reminder: reminder,
+                preferences: preferences,
+                viewPreferences: viewPreferences,
+                fields: fields
+            )
+            
+            ReminderDateView(
+                reminder: reminder,
+                preferences: preferences
+            )
             
             ReminderAudioOptionsView(
                 reminder: reminder,
