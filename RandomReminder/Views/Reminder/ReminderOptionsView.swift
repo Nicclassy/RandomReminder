@@ -34,6 +34,17 @@ struct ReminderOptionsView: View {
                         Toggle("Always running", isOn: $preferences.alwaysRunning)
                         timesOnlyToggle
                     }
+                    
+                    GridRow {
+                        Toggle("Non-random", isOn: $preferences.nonRandom)
+                            .onChange(of: preferences.nonRandom) { _, newValue in
+                                if !newValue {
+                                    preferences.occurAsap = false
+                                }
+                            }
+                        Toggle("Occur as soon as possible", isOn: $preferences.occurAsap)
+                            .disabled(!preferences.nonRandom)
+                    }
                 }
                 .frame(width: ViewConstants.reminderWindowWidth)
                 .padding()
