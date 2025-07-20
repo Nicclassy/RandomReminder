@@ -63,7 +63,7 @@ struct SchedulingPreferencesView: View {
                             .disabled(!schedulingPreferences.defaultLatestTimeEnabled)
                     }
 
-                    PreferenceCaption(
+                    CaptionText(
                         "If enabled, reminders will have these times as their initial start/end times during the creation process."
                     )
                 }
@@ -104,7 +104,7 @@ struct SchedulingPreferencesView: View {
                         }
                     }
 
-                    PreferenceCaption(
+                    CaptionText(
                         "Reminders never occur simultaneously. Control the time between one reminder's occurence and the next when multiple reminders are scheduled to occur."
                     ) // swiftlint:disable:previous line_length
                 }

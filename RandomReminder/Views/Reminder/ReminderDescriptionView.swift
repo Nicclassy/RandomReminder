@@ -24,7 +24,7 @@ private struct DescriptionProcess {
 }
 
 struct ReminderDescriptionView: View {
-    static let defaultCommand = ""
+    private static let defaultCommand = ""
     private static let codeFont: Font = .system(size: 12, design: .monospaced)
 
     @Environment(\.dismissWindow) private var dismissWindow
@@ -52,7 +52,7 @@ struct ReminderDescriptionView: View {
 
             HStack {
                 Button("Save") {
-                    let descriptionCommand: ReminderDescription = .command(command, generatesTitle: true)
+                    let descriptionCommand: ReminderDescription = .command(command, generatesTitle: generatesTitle)
                     ReminderModificationController.shared.setDescriptionCommand(descriptionCommand)
                     dismissWindow(id: WindowIds.descriptionCommand)
                 }
@@ -108,7 +108,7 @@ struct ReminderDescriptionView: View {
                         .multilineTextAlignment(.leading)
                         .lineLimit(2)
                     Spacer().frame(height: 5)
-                    PreferenceCaption(
+                    CaptionText(
                         "The first line of the command's output will be used as the reminder's notifications' title."
                     )
                     .multilineTextAlignment(.leading)
@@ -173,7 +173,7 @@ struct ReminderDescriptionView: View {
             }
 
             await MainActor.run {
-                process = if !subprocess.stderr.isEmpty {
+                process = if subprocess.hasErrors {
                     DescriptionProcess(
                         output: subprocess.stdout,
                         result: .error(subprocess.stderr)

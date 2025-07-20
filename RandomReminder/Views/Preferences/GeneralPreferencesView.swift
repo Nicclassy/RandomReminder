@@ -16,7 +16,7 @@ struct GeneralPreferencesView: View {
             Section {
                 Toggle(isOn: appPreferences.$launchAtLogin) {
                     Text(L10n.Preferences.General.launchAtLogin)
-                    PreferenceCaption(L10n.Preferences.General.LaunchAtLogin.caption)
+                    CaptionText(L10n.Preferences.General.LaunchAtLogin.caption)
                 }
                 .onChange(of: appPreferences.launchAtLogin) { _, isEnabled in
                     LaunchAtLogin.isEnabled = isEnabled
@@ -26,7 +26,7 @@ struct GeneralPreferencesView: View {
             Section {
                 Toggle(isOn: appPreferences.$quickReminderEnabled) {
                     Text(L10n.Preferences.General.quickReminderEnabled)
-                    PreferenceCaption(L10n.Preferences.General.QuickReminderEnabled.caption)
+                    CaptionText(L10n.Preferences.General.QuickReminderEnabled.caption)
                 }
                 .onChange(of: appPreferences.quickReminderEnabled) { _, isEnabled in
                     FancyLogger.info("Quick reminder was \(isEnabled ? "not" : "") enabled")
@@ -36,7 +36,7 @@ struct GeneralPreferencesView: View {
             Section {
                 Toggle(isOn: appPreferences.$showReminderCounts) {
                     Text("Show reminder counts")
-                    PreferenceCaption("Show the number of reminders in each category in the category's heading.")
+                    CaptionText("Show the number of reminders in each category in the category's heading.")
                 }
                 .onChange(of: appPreferences.showReminderCounts) { _, showReminderCount in
                     appPreferences.showReminderCounts = showReminderCount
@@ -46,7 +46,7 @@ struct GeneralPreferencesView: View {
             Section {
                 Toggle(isOn: appPreferences.$randomiseAudioPlaybackStart) {
                     Text("Randomise audio playback start")
-                    PreferenceCaption("Start reminder audio playback from a random point in reminders' files.")
+                    CaptionText("Start reminder audio playback from a random point in reminders' files.")
                 }
             }
 

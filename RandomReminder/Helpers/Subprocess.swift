@@ -37,6 +37,10 @@ struct Subprocess {
 
         return commandErrors ?? ""
     }
+    
+    var hasErrors: Bool {
+        commandErrors?.isEmpty == false
+    }
 
     init(command: String) {
         self.command = command

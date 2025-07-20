@@ -19,7 +19,7 @@
 		8118A1302D6A6E7F00A9FF08 /* AboutPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A1292D6A6E7F00A9FF08 /* AboutPreferencesView.swift */; };
 		8118A1312D6A6E7F00A9FF08 /* AppPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A12A2D6A6E7F00A9FF08 /* AppPreferences.swift */; };
 		8118A1322D6A6E7F00A9FF08 /* GeneralPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A12B2D6A6E7F00A9FF08 /* GeneralPreferencesView.swift */; };
-		8118A1332D6A6E7F00A9FF08 /* PreferenceCaption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A12C2D6A6E7F00A9FF08 /* PreferenceCaption.swift */; };
+		8118A1332D6A6E7F00A9FF08 /* CaptionText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A12C2D6A6E7F00A9FF08 /* CaptionText.swift */; };
 		8118A1342D6A6E7F00A9FF08 /* RemindersPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A12D2D6A6E7F00A9FF08 /* RemindersPreferencesView.swift */; };
 		8118A1352D6A6E7F00A9FF08 /* SchedulingPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A12E2D6A6E7F00A9FF08 /* SchedulingPreferencesView.swift */; };
 		8118A1392D6A712F00A9FF08 /* ReminderOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A1382D6A712F00A9FF08 /* ReminderOptionsView.swift */; };
@@ -100,7 +100,7 @@
 		8118A1292D6A6E7F00A9FF08 /* AboutPreferencesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutPreferencesView.swift; sourceTree = "<group>"; };
 		8118A12A2D6A6E7F00A9FF08 /* AppPreferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppPreferences.swift; sourceTree = "<group>"; };
 		8118A12B2D6A6E7F00A9FF08 /* GeneralPreferencesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralPreferencesView.swift; sourceTree = "<group>"; };
-		8118A12C2D6A6E7F00A9FF08 /* PreferenceCaption.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferenceCaption.swift; sourceTree = "<group>"; };
+		8118A12C2D6A6E7F00A9FF08 /* CaptionText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptionText.swift; sourceTree = "<group>"; };
 		8118A12D2D6A6E7F00A9FF08 /* RemindersPreferencesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemindersPreferencesView.swift; sourceTree = "<group>"; };
 		8118A12E2D6A6E7F00A9FF08 /* SchedulingPreferencesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchedulingPreferencesView.swift; sourceTree = "<group>"; };
 		8118A1382D6A712F00A9FF08 /* ReminderOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderOptionsView.swift; sourceTree = "<group>"; };
@@ -199,7 +199,6 @@
 				8118A12E2D6A6E7F00A9FF08 /* SchedulingPreferencesView.swift */,
 				8118A12D2D6A6E7F00A9FF08 /* RemindersPreferencesView.swift */,
 				8118A1292D6A6E7F00A9FF08 /* AboutPreferencesView.swift */,
-				8118A12C2D6A6E7F00A9FF08 /* PreferenceCaption.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -360,6 +359,7 @@
 				81B526052D1A4EF7008D36F0 /* DualDatePickerView.swift */,
 				8118A1102D5FA1B000A9FF08 /* StepperTextField.swift */,
 				8175426D2E1BDB9300B8FB6E /* OnboardingView.swift */,
+				8118A12C2D6A6E7F00A9FF08 /* CaptionText.swift */,
 			);
 			name = Views;
 			path = RandomReminder/Views;
@@ -618,7 +618,7 @@
 				8118A1132D5FB2FE00A9FF08 /* ContentView.swift in Sources */,
 				813F31052D2B320700EF6DD1 /* ReminderManager.swift in Sources */,
 				81C043622D8AEEC60074E60B /* NotificationManager.swift in Sources */,
-				8118A1332D6A6E7F00A9FF08 /* PreferenceCaption.swift in Sources */,
+				8118A1332D6A6E7F00A9FF08 /* CaptionText.swift in Sources */,
 				81ECAC372E03244A0065F8B8 /* Subprocess.swift in Sources */,
 				8118A13D2D6A786900A9FF08 /* ReminderDayOptionsView.swift in Sources */,
 				8175426E2E1BDB9300B8FB6E /* OnboardingView.swift in Sources */,

@@ -1,5 +1,5 @@
 //
-//  PreferenceCaption.swift
+//  CaptionText.swift
 //  RandomReminder
 //
 //  Created by Luca Napoli on 24/12/2024.
@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct PreferenceCaption: View {
+struct CaptionText: View {
     private var caption: String
 
     var body: some View {
