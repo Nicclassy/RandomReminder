@@ -21,7 +21,7 @@ It is a non-generic take on a reminders app that is spontaneous in nature and hi
 - [x] Default preferences for dates/times selected
 - [x] SwiftLint for in-editor linting
 - [x] SwiftFormat for code formatting
-- [ ] Pre-commit hooks for SwiftFormat and SwiftLint
+- [x] Pre-commit hooks for SwiftLint
 - [ ] Non UI testing, potentially via Docker
 - [ ] Xcode build testing
 - [ ] `CONTRIBUTING.md` post-release
@@ -37,4 +37,5 @@ RandomReminder is possible thanks to OSS. SwiftUI tutorials and guides for macOS
 A very special thank you goes to a particular conversation I had with someone important which resulted in this app's conception.
 
 > [!WARNING]
-> RandomReminder is incomplete in its functionality and documentation and is still being developed. Features—especially UI designs—are subject to change.
+> RandomReminder is incomplete in its functionality and documentation and is still being developed. 
+> Features—especially UI designs—are subject to change and screenshots may not accurately represent the current state of the app.
