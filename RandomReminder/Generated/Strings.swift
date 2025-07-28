@@ -127,6 +127,12 @@ internal enum L10n {
       internal static let launchAtLogin = L10n.tr("Localizable", "preferences.general.launch-at-login", fallback: "Launch at Login")
       /// Enable Quick Reminder
       internal static let quickReminderEnabled = L10n.tr("Localizable", "preferences.general.quick-reminder-enabled", fallback: "Enable Quick Reminder")
+      /// Randomise audio playback start
+      internal static let randomiseAudioPlayback = L10n.tr("Localizable", "preferences.general.randomise-audio-playback", fallback: "Randomise audio playback start")
+      /// Show reminder counts
+      internal static let showReminderCounts = L10n.tr("Localizable", "preferences.general.show-reminder-counts", fallback: "Show reminder counts")
+      /// Time Format
+      internal static let timeFormat = L10n.tr("Localizable", "preferences.general.time-format", fallback: "Time Format")
       internal enum LaunchAtLogin {
         /// Automatically start RandomReminder when you login.
         internal static let caption = L10n.tr("Localizable", "preferences.general.launch-at-login.caption", fallback: "Automatically start RandomReminder when you login.")
@@ -134,6 +140,22 @@ internal enum L10n {
       internal enum QuickReminderEnabled {
         /// Show Quick Reminder in the menu bar item's menu.
         internal static let caption = L10n.tr("Localizable", "preferences.general.quick-reminder-enabled.caption", fallback: "Show Quick Reminder in the menu bar item's menu.")
+      }
+      internal enum RandomiseAudioPlayback {
+        /// Start reminder audio playback from a random point in reminders' files.
+        internal static let caption = L10n.tr("Localizable", "preferences.general.randomise-audio-playback.caption", fallback: "Start reminder audio playback from a random point in reminders' files.")
+      }
+      internal enum ShowReminderCounts {
+        /// Show the number of reminders in each category in the category's heading.
+        internal static let caption = L10n.tr("Localizable", "preferences.general.show-reminder-counts.caption", fallback: "Show the number of reminders in each category in the category's heading.")
+      }
+      internal enum TimeFormat {
+        /// hours, minutes, seconds
+        internal static let long = L10n.tr("Localizable", "preferences.general.time-format.long", fallback: "hours, minutes, seconds")
+        /// hrs, mins, secs
+        internal static let medium = L10n.tr("Localizable", "preferences.general.time-format.medium", fallback: "hrs, mins, secs")
+        /// h, m, s
+        internal static let short = L10n.tr("Localizable", "preferences.general.time-format.short", fallback: "h, m, s")
       }
     }
     internal enum Reminders {

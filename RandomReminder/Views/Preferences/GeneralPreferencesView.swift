@@ -35,8 +35,8 @@ struct GeneralPreferencesView: View {
 
             Section {
                 Toggle(isOn: appPreferences.$showReminderCounts) {
-                    Text("Show reminder counts")
-                    CaptionText("Show the number of reminders in each category in the category's heading.")
+                    Text(L10n.Preferences.General.showReminderCounts)
+                    CaptionText(L10n.Preferences.General.ShowReminderCounts.caption)
                 }
                 .onChange(of: appPreferences.showReminderCounts) { _, showReminderCount in
                     appPreferences.showReminderCounts = showReminderCount
@@ -45,19 +45,19 @@ struct GeneralPreferencesView: View {
 
             Section {
                 Toggle(isOn: appPreferences.$randomiseAudioPlaybackStart) {
-                    Text("Randomise audio playback start")
-                    CaptionText("Start reminder audio playback from a random point in reminders' files.")
+                    Text(L10n.Preferences.General.randomiseAudioPlayback)
+                    CaptionText(L10n.Preferences.General.RandomiseAudioPlayback.caption)
                 }
             }
 
             Spacer().frame(height: 10)
 
             Section {
-                Text("Time Format").padding(.leading, 20)
+                Text(L10n.Preferences.General.timeFormat).padding(.leading, 20)
                 Picker("", selection: appPreferences.$timeFormat) {
-                    Text("hours, minutes, seconds").tag(TimeFormat.long)
-                    Text("hrs, mins, secs").tag(TimeFormat.medium)
-                    Text("h, m, s").tag(TimeFormat.short)
+                    Text(L10n.Preferences.General.TimeFormat.long).tag(TimeFormat.long)
+                    Text(L10n.Preferences.General.TimeFormat.medium).tag(TimeFormat.medium)
+                    Text(L10n.Preferences.General.TimeFormat.short).tag(TimeFormat.short)
                 }
                 .pickerStyle(RadioGroupPickerStyle())
                 .onChange(of: appPreferences.timeFormat) {
