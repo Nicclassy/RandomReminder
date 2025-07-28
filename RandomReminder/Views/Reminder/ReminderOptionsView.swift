@@ -29,12 +29,12 @@ struct ReminderOptionsView: View {
                         repeatEveryToggle
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    
+
                     GridRow {
                         Toggle("Always running", isOn: $preferences.alwaysRunning)
                         timesOnlyToggle
                     }
-                    
+
                     GridRow {
                         Toggle("Non-random", isOn: $preferences.nonRandom)
                             .onChange(of: preferences.nonRandom) { _, newValue in
@@ -51,7 +51,7 @@ struct ReminderOptionsView: View {
             }
         }
     }
-    
+
     @ViewBuilder
     private var repeatEveryToggle: some View {
         HStack(spacing: 0) {
@@ -88,7 +88,7 @@ struct ReminderOptionsView: View {
             .frame(width: 90)
         }
     }
-    
+
     @ViewBuilder
     private var timesOnlyToggle: some View {
         HStack {

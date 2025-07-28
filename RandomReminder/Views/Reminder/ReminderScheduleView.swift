@@ -1,5 +1,5 @@
 //
-//  ReminderDateView.swift
+//  ReminderScheduleView.swift
 //  RandomReminder
 //
 //  Created by Luca Napoli on 18/7/2025.
@@ -10,7 +10,7 @@ import SwiftUI
 struct ReminderDateView: View {
     @ObservedObject var reminder: MutableReminder
     @ObservedObject var preferences: ReminderPreferences
-    
+
     var body: some View {
         Grid(alignment: .leading) {
             GridRow {
@@ -34,7 +34,7 @@ struct ReminderDateView: View {
         }
         .frame(width: ViewConstants.reminderWindowWidth)
     }
-    
+
     private var earliestText: String {
         preferences.timesOnly ? "Earliest time:" : "Earliest date:"
     }

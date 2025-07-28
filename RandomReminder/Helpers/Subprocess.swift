@@ -37,7 +37,7 @@ struct Subprocess {
 
         return commandErrors ?? ""
     }
-    
+
     var hasErrors: Bool {
         commandErrors?.isEmpty == false
     }

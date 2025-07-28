@@ -10,7 +10,7 @@ import SwiftUI
 final class ReminderManager {
     static let shared = ReminderManager(preview: true)
 
-    private let remind = true
+    private let remind = false
     private let persistentChanges = false
 
     private var reminders: [RandomReminder]

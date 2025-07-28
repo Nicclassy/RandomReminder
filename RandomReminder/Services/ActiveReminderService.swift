@@ -60,7 +60,11 @@ final class ActiveReminderService {
             audioPlayer.currentTime = .random(in: 0..<audioPlayer.duration)
         }
 
+        guard audioPlayer.play() else {
+            FancyLogger.warn("Audio \(url) was not started")
+            return
+        }
+
         FancyLogger.info("Playing audio", url)
-        audioPlayer.play()
     }
 }

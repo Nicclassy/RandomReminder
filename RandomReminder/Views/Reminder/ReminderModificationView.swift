@@ -42,19 +42,19 @@ struct ReminderModificationView: View {
                 reminder: reminder,
                 fields: fields
             )
-            
+
             ReminderOptionsView(
                 reminder: reminder,
                 preferences: preferences,
                 viewPreferences: viewPreferences,
                 fields: fields
             )
-            
+
             ReminderDateView(
                 reminder: reminder,
                 preferences: preferences
             )
-            
+
             ReminderAudioOptionsView(
                 reminder: reminder,
                 preferences: preferences,

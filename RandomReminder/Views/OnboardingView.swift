@@ -55,11 +55,11 @@ struct OnboardingView: View {
         .frame(width: 400, height: 400)
     }
 
-    var primaryButtonText: String {
+    private var primaryButtonText: String {
         step == .finished ? "Finish" : "Next"
     }
 
-    var headingText: String {
+    private var headingText: String {
         switch step {
         case .welcome: "Welcome"
         case .finished: "Ready to go!"

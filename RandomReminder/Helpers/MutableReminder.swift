@@ -142,7 +142,7 @@ final class MutableReminder: ObservableObject {
         let repeatInterval = reminderPreferences.repeatingEnabled ? repeatInterval : .never
         let (earliestDate, latestDate) = reminderPreferences.nonRandom ?
             (earliestDate, earliestDate) : (earliestDate, latestDate)
-        
+
         let reminderInterval: ReminderInterval = if reminderPreferences.alwaysRunning {
             InfiniteReminderInterval()
         } else if reminderPreferences.timesOnly {

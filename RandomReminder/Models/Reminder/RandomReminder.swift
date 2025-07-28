@@ -37,7 +37,7 @@ final class RandomReminder: Codable {
     var hasAudio: Bool {
         activationEvents.audio != nil
     }
-    
+
     var eponymous: Bool {
         interval.earliest != interval.latest
     }
