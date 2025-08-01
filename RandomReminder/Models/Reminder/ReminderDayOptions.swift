@@ -85,4 +85,13 @@ struct ReminderDayOptions: OptionSet, CaseIterable, Codable {
 
         fatalError("Could not find next occuring day")
     }
+    
+    func nextOccurrence(from date: Date) -> Date {
+        Calendar.current.nextDate(
+            after: date,
+            matching: DateComponents(weekday: weekdayNumber),
+            matchingPolicy: .nextTime,
+            direction: .forward
+        )!
+    }
 }

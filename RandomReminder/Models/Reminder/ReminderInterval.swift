@@ -132,6 +132,44 @@ struct InfiniteReminderInterval: ReminderInterval {
     }
 }
 
+struct ReminderNonInterval: ReminderInterval {
+    let date: Date
+    let days: ReminderDayOptions
+    
+    var earliest: Date {
+        date
+    }
+    
+    var latest: Date {
+        shouldntBeCalled()
+    }
+    
+    var repeatInterval: RepeatInterval {
+        shouldntBeCalled()
+    }
+    
+    var repeatIntervalType: RepeatIntervalType {
+        shouldntBeCalled()
+    }
+    
+    var intervalQuantity: Int {
+        shouldntBeCalled()
+    }
+    
+    var isInfinite: Bool {
+        false
+    }
+    
+    func nextRepeat() -> Self {
+        let nextDay = days.nextOccurringDay()
+        let earliestOnDay = nextDay.nextOccurrence(from: earliest)
+        return Self(
+            date: earliestOnDay,
+            days: days
+        )
+    }
+}
+
 protocol ReminderInterval: Codable {
     var earliest: Date { get }
     var latest: Date { get }
