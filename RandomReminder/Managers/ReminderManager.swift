@@ -5,7 +5,7 @@
 //  Created by Luca Napoli on 6/1/2025.
 //
 
-import SwiftUI
+import Foundation
 
 final class ReminderManager {
     static let shared = ReminderManager(preview: true)
@@ -22,9 +22,7 @@ final class ReminderManager {
         qos: .userInitiated
     )
 
-    private let activeRemindersLock = NSLock()
     private let startedRemindersLock = NSLock()
-    private var activeReminders: [ActiveReminderService] = []
     private var startedReminders: [ReminderActivatorService] = []
 
     var todaysDay: ReminderDayOptions = .today
@@ -41,11 +39,11 @@ final class ReminderManager {
         }
     }
 
-    init(_ reminders: [RandomReminder]) {
+    private init(_ reminders: [RandomReminder]) {
         self.reminders = reminders
     }
 
-    convenience init(preview: Bool = false) {
+    private convenience init(preview: Bool = false) {
         let reminders: [RandomReminder] = if preview {
             Self.previewReminders()
         } else {
@@ -163,7 +161,7 @@ final class ReminderManager {
     func removeReminder(_ reminder: RandomReminder) {
         if remind && reminder.state == .started {
             stopReminder(reminder, permanent: true)
-            deactivateReminder(reminder)
+            ActiveReminderManager.shared.deactivateReminder(reminder)
         }
 
         if persistentChanges {
@@ -178,40 +176,15 @@ final class ReminderManager {
         }
     }
 
-    func activateReminder(_ reminder: RandomReminder) {
-        if let activeReminder = activeReminders.first(where: { $0.reminder === reminder }) {
-            NotificationManager.shared.addReminderNotification(for: activeReminder)
-            return
-        }
-
-        let activeReminder = ActiveReminderService(reminder: reminder)
-        activeRemindersLock.withLock {
-            activeReminders.append(activeReminder)
-        }
-        NotificationManager.shared.addReminderNotification(for: activeReminder)
-    }
-
-    func deactivateReminder(_ reminder: RandomReminder) {
-        activeRemindersLock.withLock {
-            guard let index = activeReminders.firstIndex(where: { $0.reminder === reminder }) else {
-                FancyLogger.warn("Reminder '\(reminder)' not found in active list")
-                return
-            }
-
-            activeReminders.remove(at: index)
-            FancyLogger.warn("Deactivated reminder '\(reminder)'")
-        }
-    }
-
     func startReminder(_ reminder: RandomReminder) {
         let reminderActivator = ReminderActivatorService(
             reminder: reminder,
             every: tickInterval,
-            onReminderActivation: { [self] in
-                activateReminder(reminder)
+            onReminderActivation: {
+                ActiveReminderManager.shared.activateReminder(reminder)
             },
-            onReminderFinished: { [self] in
-                deactivateReminder(reminder)
+            onReminderFinished: {
+                ActiveReminderManager.shared.deactivateReminder(reminder)
             }
         )
 
