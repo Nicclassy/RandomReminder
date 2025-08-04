@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import os
+import os.log
 
 let loggingEnabled: Bool = true
 let useOsLog: Bool = false
@@ -94,7 +94,7 @@ private enum FancyLoggerHelper {
     }
 
     private static func formatFunction(_ function: String) -> String {
-        String(describing: function.split(separator: "(").first!)
+        removeFunctionNameParentheses(function)
     }
 
     private static func formatLine(_ line: UInt) -> String {
