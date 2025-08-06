@@ -32,6 +32,7 @@ struct ReminderOptionsView: View {
 
                     GridRow {
                         Toggle("Always running", isOn: $preferences.alwaysRunning)
+                            .disabled(preferences.nonRandom)
                         timesOnlyToggle
                     }
 
@@ -42,6 +43,7 @@ struct ReminderOptionsView: View {
                                     preferences.occurAsap = false
                                 }
                             }
+                            .disabled(preferences.alwaysRunning)
                         Toggle("Occur as soon as possible", isOn: $preferences.occurAsap)
                             .disabled(!preferences.nonRandom)
                     }
@@ -56,7 +58,7 @@ struct ReminderOptionsView: View {
     private var repeatEveryToggle: some View {
         HStack(spacing: 0) {
             Toggle("Repeat", isOn: $preferences.repeatingEnabled)
-                .disabled(preferences.alwaysRunning)
+                .disabled(preferences.alwaysRunning || preferences.nonRandom)
 
             Picker("", selection: $reminder.repeatIntervalType) {
                 ForEach(RepeatIntervalType.allCases, id: \.self) { value in

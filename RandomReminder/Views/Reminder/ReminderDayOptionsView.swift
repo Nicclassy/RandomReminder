@@ -84,7 +84,7 @@ struct ReminderDayOptionsView: View {
                     .padding()
                 }
         }
-        .disabled(preferences.alwaysRunning)
+        .disabled(preferences.alwaysRunning || (preferences.nonRandom && !preferences.timesOnly))
     }
 }
 

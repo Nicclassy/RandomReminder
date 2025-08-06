@@ -15,7 +15,9 @@ struct ReminderDateView: View {
         Grid(alignment: .leading) {
             GridRow {
                 Text(earliestText)
-                Text(latestText)
+                if !preferences.nonRandom {
+                    Text(latestText)
+                }
             }
 
             GridRow {
@@ -26,8 +28,10 @@ struct ReminderDateView: View {
                 )
                 picker.earliestDatePicker
                     .disabled(preferences.alwaysRunning)
-                picker.latestDatePicker
-                    .disabled(preferences.alwaysRunning)
+                if !preferences.nonRandom {
+                    picker.latestDatePicker
+                        .disabled(preferences.alwaysRunning)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.bottom, 10)
@@ -36,7 +40,13 @@ struct ReminderDateView: View {
     }
 
     private var earliestText: String {
-        preferences.timesOnly ? "Earliest time:" : "Earliest date:"
+        if preferences.nonRandom {
+            preferences.timesOnly ? "Time:" : "Date:"
+        } else if preferences.timesOnly {
+            "Earliest time:"
+        } else {
+            "Earliest date:"
+        }
     }
 
     private var latestText: String {
