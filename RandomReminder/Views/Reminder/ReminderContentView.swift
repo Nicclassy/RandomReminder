@@ -12,6 +12,7 @@ struct ReminderContentView: View {
 
     private let commandIcon = false
     @ObservedObject var reminder: MutableReminder
+    @ObservedObject var preferences: ReminderPreferences
     @ObservedObject var fields: ModificationViewFields
 
     var body: some View {
@@ -57,16 +58,23 @@ struct ReminderContentView: View {
             }
             GridRow {
                 Text("Total occurences:")
-                StepperTextField(
-                    value: $reminder.totalOccurences,
-                    range: reminderOccurencesRange,
-                    onTextChange: { text in
-                        DispatchQueue.main.async {
-                            fields.occurrencesText = text
+                if preferences.nonRandom {
+                    StepperTextField(
+                        value: .constant(1)
+                    )
+                    .disabled(true)
+                } else {
+                    StepperTextField(
+                        value: $reminder.totalOccurences,
+                        range: reminderOccurencesRange,
+                        onTextChange: { text in
+                            DispatchQueue.main.async {
+                                fields.occurrencesText = text
+                            }
                         }
-                    }
-                )
-                .frame(width: 55)
+                    )
+                    .frame(width: 55)
+                }
             }
         }
     }
@@ -77,5 +85,5 @@ struct ReminderContentView: View {
 }
 
 #Preview {
-    ReminderContentView(reminder: .init(), fields: .init())
+    ReminderContentView(reminder: .init(), preferences: .init(), fields: .init())
 }

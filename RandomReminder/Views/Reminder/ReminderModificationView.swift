@@ -40,6 +40,7 @@ struct ReminderModificationView: View {
         VStack(alignment: .leading, spacing: 20) {
             ReminderContentView(
                 reminder: reminder,
+                preferences: preferences,
                 fields: fields
             )
 
@@ -115,7 +116,7 @@ struct ReminderModificationView: View {
                 Button(action: {
                     viewPreferences.showCancelAlert = true
                 }, label: {
-                    Text(L10n.Modification.ok)
+                    Text(L10n.Modification.cancel)
                         .frame(width: 60)
                 })
                 .alert(

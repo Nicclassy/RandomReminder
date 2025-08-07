@@ -58,7 +58,7 @@ struct ReminderValidator {
             )
         } else if reminderHasAlreadyHappened() {
             .error(
-                alertText: "Reminder has already happened",
+                alertText: "Reminder occurs in the past",
                 messageText: "Reminders cannot have a latest time or date in the past"
             )
         } else if reminderWithSameTitleExists() {
@@ -72,6 +72,10 @@ struct ReminderValidator {
     }
 
     private func reminderDurationIsTooShort() -> Bool {
+        guard !preferences.nonRandom else {
+            return false
+        }
+
         guard reminder.repeatIntervalType == .every && preferences.repeatingEnabled else {
             return false
         }
@@ -91,7 +95,11 @@ struct ReminderValidator {
     }
 
     private func reminderHasAlreadyHappened() -> Bool {
-        Date() >= reminder.latestDate
+        if preferences.nonRandom {
+            Date() >= reminder.earliestDate
+        } else {
+            Date() >= reminder.latestDate
+        }
     }
 
     private func reminderWillNeverHappen() -> Bool {
