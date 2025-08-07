@@ -14,6 +14,10 @@ struct ReminderTimeInterval: ReminderInterval {
     let repeatIntervalType: RepeatIntervalType
     let intervalQuantity: Int
 
+    var hasRepeats: Bool {
+        repeatInterval != .never
+    }
+
     var isInfinite: Bool {
         false
     }
@@ -69,6 +73,10 @@ struct ReminderDateInterval: ReminderInterval {
     let repeatIntervalType: RepeatIntervalType
     let intervalQuantity: Int
 
+    var hasRepeats: Bool {
+        repeatInterval != .never
+    }
+
     var isInfinite: Bool {
         false
     }
@@ -118,6 +126,10 @@ struct InfiniteReminderInterval: ReminderInterval {
         1
     }
 
+    var hasRepeats: Bool {
+        true
+    }
+
     var isInfinite: Bool {
         true
     }
@@ -135,31 +147,35 @@ struct InfiniteReminderInterval: ReminderInterval {
 struct ReminderNonInterval: ReminderInterval {
     let date: Date
     let days: ReminderDayOptions
-    
+
     var earliest: Date {
         date
     }
-    
+
     var latest: Date {
         shouldntBeCalled()
     }
-    
+
     var repeatInterval: RepeatInterval {
         shouldntBeCalled()
     }
-    
+
     var repeatIntervalType: RepeatIntervalType {
         shouldntBeCalled()
     }
-    
+
     var intervalQuantity: Int {
         shouldntBeCalled()
     }
-    
+
+    var hasRepeats: Bool {
+        !days.isEmpty
+    }
+
     var isInfinite: Bool {
         false
     }
-    
+
     func nextRepeat() -> Self {
         let nextDay = days.nextOccurringDay()
         let earliestOnDay = nextDay.nextOccurrence(from: earliest)
@@ -176,6 +192,7 @@ protocol ReminderInterval: Codable {
     var repeatInterval: RepeatInterval { get }
     var repeatIntervalType: RepeatIntervalType { get }
     var intervalQuantity: Int { get }
+    var hasRepeats: Bool { get }
     var isInfinite: Bool { get }
 
     func nextRepeat() -> Self

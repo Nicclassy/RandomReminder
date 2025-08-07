@@ -140,11 +140,21 @@ final class MutableReminder: ObservableObject {
 
     func build(preferences reminderPreferences: ReminderPreferences) -> RandomReminder {
         let repeatInterval = reminderPreferences.repeatingEnabled ? repeatInterval : .never
-        let (earliestDate, latestDate) = reminderPreferences.nonRandom ?
-            (earliestDate, earliestDate) : (earliestDate, latestDate)
+        let days: ReminderDayOptions = if reminderPreferences.nonRandom {
+            reminderPreferences.timesOnly && reminderPreferences.specificDays ? days : []
+        } else if reminderPreferences.specificDays {
+            days
+        } else {
+            .allOptions()
+        }
 
         let reminderInterval: ReminderInterval = if reminderPreferences.alwaysRunning {
             InfiniteReminderInterval()
+        } else if reminderPreferences.nonRandom {
+            ReminderNonInterval(
+                date: earliestDate,
+                days: days
+            )
         } else if reminderPreferences.timesOnly {
             ReminderTimeInterval(
                 earliestTime: TimeOnly(from: earliestDate),
@@ -167,8 +177,8 @@ final class MutableReminder: ObservableObject {
             title: title,
             description: description,
             interval: reminderInterval,
-            days: reminderPreferences.specificDays ? days : .allOptions(),
-            totalOccurences: totalOccurences,
+            days: days,
+            totalOccurences: reminderPreferences.nonRandom ? 1 : totalOccurences,
             activationEvents: reminderPreferences.useAudioFile ? activationEvents : nil
         )
     }

@@ -31,7 +31,7 @@ final class RandomReminder: Codable {
     }
 
     var hasRepeats: Bool {
-        interval.repeatInterval != .never
+        interval.hasRepeats
     }
 
     var hasAudio: Bool {
