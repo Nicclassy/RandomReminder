@@ -90,7 +90,7 @@ private enum FancyLoggerHelper {
     }
 
     private static func formatFile(_ file: String) -> String {
-        String(describing: file.split(separator: "/").last!.split(separator: ".").first!)
+        filenameFromPath(file)
     }
 
     private static func formatFunction(_ function: String) -> String {

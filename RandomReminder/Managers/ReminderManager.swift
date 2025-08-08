@@ -25,7 +25,7 @@ final class ReminderManager {
     private let startedRemindersLock = NSLock()
     private var startedReminders: [ReminderActivatorService] = []
 
-    var todaysDay: ReminderDayOptions = .today
+    private(set) var todaysDay: ReminderDayOptions = .today
 
     var reminderIds: Set<ReminderID> {
         remindersQueue.sync {
@@ -96,7 +96,8 @@ final class ReminderManager {
         timerThread.start()
     }
 
-    func onReminderChange(of reminder: RandomReminder) {
+    func modify(_ reminder: RandomReminder, changes: (RandomReminder) -> Void) {
+        changes(reminder)
         ReminderModificationController.shared.postRefreshRemindersNotification()
         if persistentChanges {
             DispatchQueue.global(qos: .utility).async {
@@ -110,7 +111,7 @@ final class ReminderManager {
             return false
         }
 
-        guard reminder.days.contains(todaysDay) else {
+        guard !reminder.eponymous || reminder.days.contains(todaysDay) else {
             return false
         }
 
@@ -177,6 +178,16 @@ final class ReminderManager {
     }
 
     func startReminder(_ reminder: RandomReminder) {
+        guard reminder.eponymous else {
+            modify(reminder) { reminder in
+                reminder.state = .started
+            }
+
+            FancyLogger.info("Activating non-random reminder \(reminder)")
+            ActiveReminderManager.shared.activateReminder(reminder)
+            return
+        }
+
         let reminderActivator = ReminderActivatorService(
             reminder: reminder,
             every: tickInterval,
@@ -195,9 +206,9 @@ final class ReminderManager {
         Task.detached(priority: .utility) { [self] in
             let sleepInterval = UInt64(tickInterval.seconds() * 1_000_000_000)
             reminderActivator.running = true
-            // Reminder mutations
-            reminder.state = .started
-            onReminderChange(of: reminder)
+            modify(reminder) { reminder in
+                reminder.state = .started
+            }
 
             while reminderActivator.running {
                 try? await Task.sleep(nanoseconds: sleepInterval)
@@ -228,15 +239,17 @@ final class ReminderManager {
     }
 
     func resetReminder(_ reminder: RandomReminder) {
-        // Reminder mutations
         FancyLogger.warn("Finished reminder activator for '\(reminder)'")
         if reminder.hasRepeats {
             FancyLogger.info("Restarted reminder '\(reminder)'")
-            reminder.advanceToNextRepeat()
-            onReminderChange(of: reminder)
+            modify(reminder) { reminder in
+                reminder.advanceToNextRepeat()
+            }
         } else {
             FancyLogger.info("Setting '\(reminder)' to past")
-            reminder.state = .finished
+            modify(reminder) { reminder in
+                reminder.state = .finished
+            }
         }
     }
 
@@ -276,7 +289,6 @@ final class ReminderManager {
             for reminder in reminders where !reminder.hasPast {
                 if reminder.hasEnded(after: date) && !reminder.hasRepeats {
                     FancyLogger.info("Reminder '\(reminder)' set to finished on state initialisation")
-                    // Reminder mutations
                     resetReminder(reminder)
                 } else if !reminder.hasBegun && reminder.hasStarted(after: date) {
                     guard remind else {

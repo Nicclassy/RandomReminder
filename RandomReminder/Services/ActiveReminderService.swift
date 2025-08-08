@@ -29,13 +29,15 @@ final class ActiveReminderService {
             audioPlayer.stop()
         }
 
-        reminder.counts.occurences += 1
-        if reminder.counts.occurences == reminder.counts.totalOccurences {
-            FancyLogger.info("Setting reminder state to finished and resetting occurences")
-            reminder.counts.occurences = 0
-            reminder.state = reminder.hasRepeats ? .upcoming : .finished
+        ReminderManager.shared.modify(reminder) { reminder in
+            reminder.counts.occurences += 1
+            if reminder.counts.occurences == reminder.counts.totalOccurences {
+                FancyLogger.info("Setting reminder state to finished and resetting occurences")
+                reminder.counts.occurences = 0
+                reminder.state = reminder.hasRepeats ? .upcoming : .finished
+            }
         }
-        ReminderManager.shared.onReminderChange(of: reminder)
+
         NotificationCenter.default.post(name: .updateReminderPreferencesText, object: nil)
     }
 
