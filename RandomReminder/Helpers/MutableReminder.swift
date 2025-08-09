@@ -152,7 +152,7 @@ final class MutableReminder: ObservableObject {
             InfiniteReminderInterval()
         } else if reminderPreferences.nonRandom {
             ReminderNonInterval(
-                date: earliestDate,
+                date: earliestDate.withoutSeconds(),
                 days: days
             )
         } else if reminderPreferences.timesOnly {

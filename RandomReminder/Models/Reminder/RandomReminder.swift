@@ -81,11 +81,11 @@ final class RandomReminder: Codable {
     }
 
     func hasEnded(after date: Date) -> Bool {
-        date > interval.latest
+        date >= interval.latest
     }
 
     func hasStarted(after date: Date) -> Bool {
-        date > interval.earliest
+        date >= interval.earliest
     }
 
     func advanceToNextRepeat() {

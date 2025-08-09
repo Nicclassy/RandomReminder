@@ -104,7 +104,7 @@ private struct ReminderPreferencesRow: View {
             L10n.Preferences.Reminders.Rows.notificationIsPresent
         } else if SchedulingPreferences.shared.remindersArePaused {
             L10n.Preferences.Reminders.Rows.paused
-        } else if !reminder.days.contains(todaysDay) && !reminder.hasPast {
+        } else if reminder.eponymous && !reminder.days.contains(todaysDay) && !reminder.hasPast {
             L10n.Preferences.Reminders.Rows.resumesOn(reminder.days.nextOccurringDay())
         } else {
             timeInfoProvider.preferencesInfo()

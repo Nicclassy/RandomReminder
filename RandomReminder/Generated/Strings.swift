@@ -175,6 +175,12 @@ internal enum L10n {
       internal static func multipleOccurencesLeft(_ p1: Int) -> String {
         return L10n.tr("Localizable", "preferences.reminders.multiple-occurences-left", p1, fallback: "%d occurences left")
       }
+      /// Occurring in %@
+      internal static func occurringIn(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "preferences.reminders.occurring-in", String(describing: p1), fallback: "Occurring in %@")
+      }
+      /// Occurring now
+      internal static let occurringNow = L10n.tr("Localizable", "preferences.reminders.occurring-now", fallback: "Occurring now")
       /// Past Reminders
       internal static let past = L10n.tr("Localizable", "preferences.reminders.past", fallback: "Past Reminders")
       /// Reminders: %d

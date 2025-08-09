@@ -10,7 +10,7 @@ import Foundation
 final class ReminderManager {
     static let shared = ReminderManager(preview: true)
 
-    private let remind = false
+    private let remind = true
     private let persistentChanges = false
 
     private var reminders: [RandomReminder]
@@ -224,6 +224,11 @@ final class ReminderManager {
     }
 
     func stopReminder(_ reminder: RandomReminder, permanent: Bool = false) {
+        guard reminder.eponymous else {
+            resetReminder(reminder)
+            return
+        }
+
         startedRemindersLock.withLock {
             guard let index = startedReminders.firstIndex(where: { $0.reminder === reminder }) else {
                 FancyLogger.warn("Reminder '\(reminder)' was not found when expected to be present")

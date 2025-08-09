@@ -38,7 +38,7 @@ struct ReminderModificationView: View {
     var body: some View {
         // swiftlint:disable:next closure_body_length
         VStack(alignment: .leading, spacing: 20) {
-            ReminderContentView(
+            ReminderContentOptionsView(
                 reminder: reminder,
                 preferences: preferences,
                 fields: fields

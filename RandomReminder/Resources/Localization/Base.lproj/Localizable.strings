@@ -96,6 +96,8 @@
 "preferences.reminders.longer-than-one-week" = ">1 week";
 "preferences.reminders.starting-now" = "Starting now";
 "preferences.reminders.starting-in" = "Starting in %@";
+"preferences.reminders.occurring-now" = "Occurring now";
+"preferences.reminders.occurring-in" = "Occurring in %@";
 
 "preferences.reminders.rows.edit" = "Edit";
 "preferences.reminders.rows.delete" = "Delete";

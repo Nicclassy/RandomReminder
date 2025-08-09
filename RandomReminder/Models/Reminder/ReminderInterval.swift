@@ -153,19 +153,19 @@ struct ReminderNonInterval: ReminderInterval {
     }
 
     var latest: Date {
-        shouldntBeCalled()
+        date
     }
 
     var repeatInterval: RepeatInterval {
-        shouldntBeCalled()
+        .never
     }
 
     var repeatIntervalType: RepeatIntervalType {
-        shouldntBeCalled()
+        .every
     }
 
     var intervalQuantity: Int {
-        shouldntBeCalled()
+        1
     }
 
     var hasRepeats: Bool {

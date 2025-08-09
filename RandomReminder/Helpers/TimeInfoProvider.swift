@@ -65,6 +65,13 @@ struct TimeInfoProvider {
         }
 
         let info = timeDifferenceInfo()
+        if !reminder.eponymous {
+            if info.isEmpty {
+                return L10n.Preferences.Reminders.occurringNow
+            }
+            return L10n.Preferences.Reminders.occurringIn(info)
+        }
+
         if info.isEmpty {
             return L10n.Preferences.Reminders.startingNow
         }
