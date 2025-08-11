@@ -31,5 +31,10 @@ struct RandomReminderApp: App {
             ReminderDescriptionView()
         }
         .windowResizability(.contentSize)
+
+        Window("Reminder Active", id: WindowIds.activeReminder) {
+            ActiveReminderView()
+        }
+        .windowResizability(.contentSize)
     }
 }

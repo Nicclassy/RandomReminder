@@ -10,7 +10,13 @@ import Foundation
 final class ActiveReminderManager {
     static let shared = ActiveReminderManager()
 
-    private let lock = NSLock()
+    private let queue = DispatchQueue(
+        label: Constants.bundleID + ".ActiveReminderManager.queue",
+        qos: .userInitiated
+    )
+
+    var activeReminder: RandomReminder!
+    var activeReminderDescription: String!
     private var activeReminders: [ActiveReminderService] = []
 
     private init() {}
@@ -22,16 +28,16 @@ final class ActiveReminderManager {
         }
 
         let activeReminder = ActiveReminderService(reminder: reminder)
-        lock.withLock {
+        queue.sync {
             activeReminders.append(activeReminder)
         }
         NotificationManager.shared.addReminderNotification(for: activeReminder)
     }
 
     func deactivateReminder(_ reminder: RandomReminder) {
-        lock.withLock {
+        queue.sync {
             guard let index = activeReminders.firstIndex(where: { $0.reminder === reminder }) else {
-                FancyLogger.warn("Reminder '\(reminder)' is not present in the active reminders list")
+                FancyLogger.warn("Reminder '\(reminder)' is not present in the active reminders list when expected")
                 return
             }
 

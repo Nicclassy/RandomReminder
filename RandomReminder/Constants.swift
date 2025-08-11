@@ -51,6 +51,7 @@ enum WindowIds {
     static let createReminder = "create-reminder"
     static let editReminder = "edit-reminder"
     static let descriptionCommand = "description-command"
+    static let activeReminder = "active-reminder"
 }
 
 enum Constants {

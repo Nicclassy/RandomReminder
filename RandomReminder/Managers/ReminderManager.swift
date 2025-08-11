@@ -17,7 +17,7 @@ final class ReminderManager {
     private var timerThread: Thread!
     private var tickInterval: ReminderTickInterval = .seconds(1)
 
-    private var remindersQueue = DispatchQueue(
+    private var queue = DispatchQueue(
         label: Constants.bundleID + ".ReminderManager.queue",
         qos: .userInitiated
     )
@@ -28,13 +28,13 @@ final class ReminderManager {
     private(set) var todaysDay: ReminderDayOptions = .today
 
     var reminderIds: Set<ReminderID> {
-        remindersQueue.sync {
+        queue.sync {
             Set(reminders.map(\.id))
         }
     }
 
     var audioFiles: [ReminderAudioFile] {
-        remindersQueue.sync {
+        queue.sync {
             reminders.compactMap(\.activationEvents.audio)
         }
     }
@@ -84,7 +84,7 @@ final class ReminderManager {
         timerThread = Thread {
             let timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
                 let date = Date()
-                remindersQueue.sync {
+                queue.sync {
                     for reminder in reminders where !reminder.hasPast {
                         tick(reminder, on: date)
                     }
@@ -119,25 +119,25 @@ final class ReminderManager {
     }
 
     func reminderExists(_ reminder: RandomReminder) -> Bool {
-        remindersQueue.sync {
+        queue.sync {
             reminders.lazy.contains(reminder)
         }
     }
 
     func upcomingReminders() -> [RandomReminder] {
-        remindersQueue.sync {
+        queue.sync {
             reminders.lazy.filter { !$0.hasPast }.sorted { $0.compare(with: $1) }
         }
     }
 
     func pastReminders() -> [RandomReminder] {
-        remindersQueue.sync {
+        queue.sync {
             reminders.lazy.filter { $0.hasPast }.sorted { $0.compare(with: $1) }
         }
     }
 
     func reminderWithSameTitleExists(as title: String) -> Bool {
-        remindersQueue.sync {
+        queue.sync {
             reminders.lazy.contains { $0.content.title == title }
         }
     }
@@ -147,7 +147,7 @@ final class ReminderManager {
     }
 
     func addReminder(_ reminder: RandomReminder) {
-        remindersQueue.sync {
+        queue.sync {
             reminders.append(reminder)
             tick(reminder, on: .now)
         }
@@ -169,7 +169,7 @@ final class ReminderManager {
             deleteReminder(reminder)
         }
 
-        remindersQueue.sync {
+        queue.sync {
             guard let index = reminders.firstIndex(of: reminder) else {
                 fatalError("Could not find reminder '\(reminder)' when it was expected to be present")
             }
@@ -289,7 +289,7 @@ final class ReminderManager {
     private func setReminderStates() {
         // Perform this processing prior to the timer so that we don't
         // start reminders that past before the app launched
-        remindersQueue.sync {
+        queue.sync {
             let date = Date()
             for reminder in reminders where !reminder.hasPast {
                 if reminder.hasEnded(after: date) && !reminder.hasRepeats {
