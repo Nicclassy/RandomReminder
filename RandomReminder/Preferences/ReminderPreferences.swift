@@ -16,6 +16,7 @@ final class ReminderPreferences: ObservableObject {
     @Published var useAudioFile: Bool
     @Published var nonRandom: Bool
     @Published var occurAsap: Bool
+    @Published var showWhenActive: Bool
 
     init(
         repeatingEnabled: Bool = false,
@@ -24,7 +25,8 @@ final class ReminderPreferences: ObservableObject {
         specificDays: Bool = false,
         useAudioFile: Bool = false,
         nonRandom: Bool = false,
-        occurAsap: Bool = false
+        occurAsap: Bool = false,
+        showWhenActive: Bool = false
     ) {
         self.repeatingEnabled = repeatingEnabled
         self.timesOnly = timesOnly
@@ -33,6 +35,7 @@ final class ReminderPreferences: ObservableObject {
         self.useAudioFile = useAudioFile
         self.nonRandom = nonRandom
         self.occurAsap = occurAsap
+        self.showWhenActive = showWhenActive
     }
 
     convenience init(from reminder: RandomReminder) {
@@ -42,7 +45,8 @@ final class ReminderPreferences: ObservableObject {
             alwaysRunning: reminder.interval.isInfinite,
             specificDays: !reminder.interval.isInfinite && !reminder.days.isEmpty,
             useAudioFile: reminder.activationEvents.audio != nil,
-            nonRandom: !reminder.eponymous
+            nonRandom: !reminder.eponymous,
+            showWhenActive: reminder.activationEvents.showWhenActive
         )
     }
 
@@ -53,6 +57,7 @@ final class ReminderPreferences: ObservableObject {
         specificDays = !alwaysRunning && !reminder.days.isEmpty
         useAudioFile = reminder.activationEvents.audio != nil
         nonRandom = !reminder.eponymous
+        showWhenActive = reminder.activationEvents.showWhenActive
     }
 
     func reset() {
@@ -62,5 +67,6 @@ final class ReminderPreferences: ObservableObject {
         specificDays = false
         useAudioFile = false
         nonRandom = false
+        showWhenActive = false
     }
 }

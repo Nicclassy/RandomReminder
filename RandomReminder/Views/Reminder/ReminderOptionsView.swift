@@ -47,6 +47,10 @@ struct ReminderOptionsView: View {
                         Toggle("Occur as soon as possible", isOn: $preferences.occurAsap)
                             .disabled(!preferences.nonRandom)
                     }
+
+                    GridRow {
+                        Toggle("Show when active", isOn: $preferences.showWhenActive)
+                    }
                 }
                 .frame(width: ViewConstants.reminderWindowWidth)
                 .padding()
@@ -108,5 +112,10 @@ struct ReminderOptionsView: View {
 }
 
 #Preview {
-    ReminderOptionsView(reminder: .init(), preferences: .init(), viewPreferences: .init(), fields: .init())
+    ReminderOptionsView(
+        reminder: .init(),
+        preferences: .init(),
+        viewPreferences: .init(),
+        fields: .init()
+    )
 }

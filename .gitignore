@@ -64,5 +64,6 @@ fastlane/test_output
 ## Other
 Preview+Extensions.swift
 ContentView.swift
+Demangle.swift
 settings.json
 .DS_Store

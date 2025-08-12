@@ -22,8 +22,10 @@ struct ReminderAudioFile: Codable, Equatable, Hashable {
 
 struct ReminderActivationEvents: Codable {
     var audio: ReminderAudioFile?
+    var showWhenActive: Bool
 
-    init(audio: ReminderAudioFile? = nil) {
+    init(audio: ReminderAudioFile? = nil, showWhenActive: Bool = false) {
         self.audio = audio
+        self.showWhenActive = showWhenActive
     }
 }

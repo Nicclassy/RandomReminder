@@ -173,13 +173,18 @@ final class MutableReminder: ObservableObject {
             )
         }
 
+        if !reminderPreferences.useAudioFile {
+            activationEvents.audio = nil
+        }
+        activationEvents.showWhenActive = reminderPreferences.showWhenActive
+
         return RandomReminder(
             title: title,
             description: description,
             interval: reminderInterval,
             days: days,
             totalOccurences: reminderPreferences.nonRandom ? 1 : totalOccurences,
-            activationEvents: reminderPreferences.useAudioFile ? activationEvents : nil
+            activationEvents: activationEvents
         )
     }
 }
