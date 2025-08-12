@@ -269,6 +269,10 @@ final class ReminderManager {
     }
 
     private func tick(_ reminder: RandomReminder, on date: Date) {
+        guard !ActiveReminderManager.shared.reminderIsActive(reminder) else {
+            return
+        }
+        
         if !reminder.hasBegun && reminder.hasStarted(after: date) {
             FancyLogger.info("Starting reminder '\(reminder)'")
             startReminder(reminder)

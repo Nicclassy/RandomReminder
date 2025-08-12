@@ -13,4 +13,6 @@ extension Notification.Name {
     static let updateReminderPreferencesText = Self("updateReminderPreferencesText")
     static let descriptionCommandSet = Self("descriptionCommandSet")
     static let editDescriptionCommand = Self("editDescriptionCommand")
+    static let openActiveReminderWindow = Self("openActiveReminderWindow")
+    static let dismissActiveReminderWindow = Self("dismissActiveReminderWindow")
 }

@@ -21,6 +21,20 @@ final class ActiveReminderManager {
 
     private init() {}
 
+    func reminderIsActive(_ reminder: RandomReminder) -> Bool {
+        reminder == Self.shared.activeReminder
+    }
+
+    func setActiveReminder(_ reminder: RandomReminder, with description: String) {
+        activeReminder = reminder
+        activeReminderDescription = description
+    }
+
+    func unsetActiveReminder() {
+        activeReminder = nil
+        activeReminderDescription = nil
+    }
+
     func activateReminder(_ reminder: RandomReminder) {
         if let activeReminder = activeReminders.first(where: { $0.reminder === reminder }) {
             NotificationManager.shared.addReminderNotification(for: activeReminder)

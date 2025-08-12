@@ -100,7 +100,7 @@ private struct ReminderPreferencesRow: View {
 
     private func updateText() {
         let todaysDay = ReminderManager.shared.todaysDay
-        reminderInfo = if NotificationManager.shared.reminderNotificationIsPresent(for: reminder) {
+        reminderInfo = if ActiveReminderManager.shared.reminderIsActive(reminder) {
             L10n.Preferences.Reminders.Rows.notificationIsPresent
         } else if SchedulingPreferences.shared.remindersArePaused {
             L10n.Preferences.Reminders.Rows.paused

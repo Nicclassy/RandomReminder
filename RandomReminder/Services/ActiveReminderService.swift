@@ -16,13 +16,13 @@ final class ActiveReminderService {
         self.reminder = reminder
     }
 
-    func onNotificationAppear() {
+    func start() {
         FancyLogger.info("Notification for reminder '\(reminder.content.title)' appeared")
         playReminderAudio()
         NotificationCenter.default.post(name: .updateReminderPreferencesText, object: nil)
     }
 
-    func onNotificationDisappear() {
+    func stop() {
         // Reminder mutations
         FancyLogger.info("Reminder '\(reminder.content.title)' disappeared")
         if let audioPlayer {
