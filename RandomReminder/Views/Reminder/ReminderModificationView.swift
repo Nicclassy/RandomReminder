@@ -23,6 +23,7 @@ final class ModificationViewFields: ObservableObject {
 }
 
 struct ReminderModificationView: View {
+    @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
 
     @StateObject var reminder: MutableReminder = .init()
@@ -175,6 +176,12 @@ struct ReminderModificationView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: .descriptionCommandSet)) { _ in
             reminder.description = controller.descriptionCommand
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .openActiveReminderWindow)) { _ in
+            openWindow(id: WindowIds.activeReminder)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .dismissActiveReminderWindow)) { _ in
+            dismissWindow(id: WindowIds.activeReminder)
         }
         .frame(width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight)
         .padding()

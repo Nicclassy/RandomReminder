@@ -11,7 +11,6 @@ import UserNotifications
 final class NotificationManager {
     static let shared = NotificationManager()
 
-    private var presentReminder: RandomReminder?
     private let schedulingPreferences: SchedulingPreferences = .shared
     private let queue = DispatchQueue(label: Constants.bundleID + ".notificationQueue", qos: .utility)
     private let notificationCentre: UNUserNotificationCenter = .current()
@@ -43,10 +42,6 @@ final class NotificationManager {
         }
     }
 
-    func reminderNotificationIsPresent(for reminder: RandomReminder) -> Bool {
-        reminder == presentReminder
-    }
-
     private func notificationTitleAndSubtitle(for reminder: RandomReminder) -> (title: String, subtitle: String?) {
         switch reminder.content.description {
         case let .text(subtitle):
@@ -66,6 +61,7 @@ final class NotificationManager {
             guard let title = parts.first else {
                 return (reminder.content.title, nil)
             }
+
             let subtitle = parts.count == 1 ? nil : parts[1]
             return (title, subtitle)
         }
@@ -160,21 +156,40 @@ final class NotificationManager {
 
         // Has appeared
         await MainActor.run {
-            presentReminder = reminder
             FancyLogger.info("🟩 Notification appeared 🟩")
-            reminderService.onNotificationAppear()
-        }
-        // Now, wait until it disappears
-
-        while await notificationIsPresent(for: reminder) {
-            try? await Task.sleep(nanoseconds: 500_000_000)
+            ActiveReminderManager.shared.setActiveReminder(reminder, with: request.content.subtitle)
+            reminderService.start()
+            if reminder.activationEvents.showWhenActive {
+                NotificationCenter.default.post(name: .openActiveReminderWindow, object: nil)
+            }
         }
 
         // Notification has disappeared
+        async let notificationDisappeared: Void = {
+            // Now, wait until it disappears
+            defer {
+                FancyLogger.info("🟦 Notification disappeared 🟦")
+            }
+            while await notificationIsPresent(for: reminder) {
+                try? await Task.sleep(nanoseconds: 500_000_000)
+            }
+        }()
+
+        async let activeReminderViewDismissed: Void = {
+            defer {
+                FancyLogger.info("Received dismiss reminder window notification")
+            }
+            guard reminder.activationEvents.showWhenActive else { return }
+            _ = await NotificationCenter.default
+                .notifications(named: .dismissActiveReminderWindow)
+                .first(where: { _ in true })
+        }()
+
+        _ = await (notificationDisappeared, activeReminderViewDismissed)
+
         await MainActor.run {
-            presentReminder = nil
-            reminderService.onNotificationDisappear()
-            FancyLogger.info("🟦 Notification disappeared 🟦")
+            ActiveReminderManager.shared.unsetActiveReminder()
+            reminderService.stop()
         }
 
         if schedulingPreferences.notificationGapEnabled {
