@@ -56,6 +56,7 @@
 		814890792E3C2E2A00E4D520 /* ActiveReminderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814890782E3C2E2A00E4D520 /* ActiveReminderManager.swift */; };
 		8148907B2E3C381100E4D520 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8148907A2E3C381100E4D520 /* Utilities.swift */; };
 		814C2BB22DBF6658001929CB /* Notification+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814C2BB12DBF6658001929CB /* Notification+Extensions.swift */; };
+		81568ECF2E4F65C100479EF2 /* UserAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81568ECE2E4F65C100479EF2 /* UserAlerts.swift */; };
 		8156EE2B2E480ECD0030B270 /* ActiveReminderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8156EE2A2E480ECD0030B270 /* ActiveReminderView.swift */; };
 		8163F5D32D1241D40052A016 /* RandomReminderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8163F5D22D1241D40052A016 /* RandomReminderApp.swift */; };
 		8163F5D72D1241D50052A016 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8163F5D62D1241D50052A016 /* Assets.xcassets */; };
@@ -140,6 +141,7 @@
 		814890782E3C2E2A00E4D520 /* ActiveReminderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveReminderManager.swift; sourceTree = "<group>"; };
 		8148907A2E3C381100E4D520 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		814C2BB12DBF6658001929CB /* Notification+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Extensions.swift"; sourceTree = "<group>"; };
+		81568ECE2E4F65C100479EF2 /* UserAlerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAlerts.swift; sourceTree = "<group>"; };
 		8156EE2A2E480ECD0030B270 /* ActiveReminderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveReminderView.swift; sourceTree = "<group>"; };
 		8163F5CF2D1241D40052A016 /* RandomReminder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RandomReminder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8163F5D22D1241D40052A016 /* RandomReminderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomReminderApp.swift; sourceTree = "<group>"; };
@@ -425,6 +427,7 @@
 				81412F912DD7A20200BD2EA3 /* ReminderValidator.swift */,
 				818895A72DDF129E005B55C0 /* EnumRawRepresentable.swift */,
 				81ECAC362E03244A0065F8B8 /* Subprocess.swift */,
+				81568ECE2E4F65C100479EF2 /* UserAlerts.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -607,6 +610,7 @@
 				8118A1352D6A6E7F00A9FF08 /* SchedulingPreferencesView.swift in Sources */,
 				8118A1312D6A6E7F00A9FF08 /* AppPreferences.swift in Sources */,
 				8148907B2E3C381100E4D520 /* Utilities.swift in Sources */,
+				81568ECF2E4F65C100479EF2 /* UserAlerts.swift in Sources */,
 				8118A11D2D6667AC00A9FF08 /* ReminderDayOptions.swift in Sources */,
 				813F30DD2D22B93E00EF6DD1 /* ColourString.swift in Sources */,
 				8118A1302D6A6E7F00A9FF08 /* AboutPreferencesView.swift in Sources */,
