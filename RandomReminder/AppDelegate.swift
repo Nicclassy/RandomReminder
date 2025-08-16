@@ -14,6 +14,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_: Notification) {
         Self.shared = self
         statusBarController = .init()
+        NotificationPermissions.shared.promptIfAlertsNotEnabled()
         ReminderManager.shared.setup()
     }
 }
