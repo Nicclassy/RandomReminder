@@ -165,8 +165,8 @@ struct ReminderDescriptionView: View {
             }
 
             let (subprocess, result) = await withCheckedContinuation { continuation in
-                DispatchQueue.global(qos: .userInitiated).async {
-                    var subprocess = Subprocess(command: command)
+                Task.detached(priority: .userInitiated) {
+                    var subprocess = await Subprocess(command: command)
                     let result = subprocess.run()
                     continuation.resume(returning: (subprocess, result))
                 }

@@ -68,24 +68,20 @@ final class NotificationManager {
     }
 
     private func notificationIsPresent(for reminder: RandomReminder) async -> Bool {
-        await withCheckedContinuation { continuation in
-            notificationCentre.getDeliveredNotifications { notifications in
-                for notification in notifications {
-                    let notificationUserInfo = notification.request.content.userInfo
-                    guard let notificationReminderId = notificationUserInfo["reminderId"] as? Int else {
-                        FancyLogger.warn("Notification does not contain the required userInfo key")
-                        continue
-                    }
+        let notifications = await notificationCentre.deliveredNotifications()
+        for notification in notifications {
+            let notificationUserInfo = notification.request.content.userInfo
+            guard let notificationReminderId = notificationUserInfo["reminderId"] as? Int else {
+                FancyLogger.warn("Notification does not contain the required userInfo key")
+                continue
+            }
 
-                    if reminder.id == notificationReminderId {
-                        continuation.resume(returning: true)
-                        return
-                    }
-                }
-
-                continuation.resume(returning: false)
+            if reminder.id == notificationReminderId {
+                return true
             }
         }
+
+        return false
     }
 
     private func reminderCanOccur(_ reminder: RandomReminder) -> Bool {
@@ -177,7 +173,7 @@ final class NotificationManager {
 
         async let activeReminderViewDismissed: Void = {
             defer {
-                FancyLogger.info("Received dismiss reminder window notification")
+                FancyLogger.info("View dismissed")
             }
             guard reminder.activationEvents.showWhenActive else { return }
             _ = await NotificationCenter.default
