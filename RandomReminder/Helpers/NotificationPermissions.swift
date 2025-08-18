@@ -16,16 +16,32 @@ private enum SettingStatus: Equatable {
 
 final class NotificationPermissions {
     static let shared = NotificationPermissions()
+
     private let notificationCenter: UNUserNotificationCenter = .current()
+    private let appPreferences: AppPreferences = .shared
 
     private init() {}
 
-    func showNotificationAlert(title: String, message: String) {
+    func showNotificationAlert(
+        title: String,
+        message: String,
+        selector: Selector? = nil
+    ) {
         let alert = NSAlert()
         alert.messageText = title
         alert.informativeText = message
         alert.addButton(withTitle: "Open Settings")
         alert.addButton(withTitle: "Cancel")
+
+        if let selector {
+            let checkbox = NSButton(
+                checkboxWithTitle: "Don't show this again",
+                target: nil,
+                action: selector
+            )
+            alert.accessoryView = checkbox
+        }
+
         let response = alert.runModal()
         if response == .alertFirstButtonReturn {
             openNotificationSettings()
@@ -35,22 +51,42 @@ final class NotificationPermissions {
     func promptIfAlertsNotEnabled() {
         Task {
             let settings = await notificationCenter.notificationSettings()
+            let authorizationStatus = authorizationStatus(settings)
+            let alertStyleStatus = alertStyleStatus(settings)
+
             var alertTitle: String?
             var alertMessage: String?
+            var selector: Selector?
 
-            if case let .error(message) = authorizationStatus(settings) {
+            if case let .error(message) = authorizationStatus {
                 alertTitle = "Notifications not enabled"
                 alertMessage = message
-            } else if case let .error(message) = alertStyleStatus(settings) {
+            } else if case let .warning(message) = alertStyleStatus, !appPreferences.allowBanners {
+                alertTitle = "Alerts are recommended"
+                alertMessage = message
+                selector = #selector(toggleAllowBanners)
+            } else if case let .error(message) = alertStyleStatus {
                 alertTitle = "Notifications will not appear"
                 alertMessage = message
             }
 
             guard let alertTitle, let alertMessage else { return }
-            await MainActor.run {
-                showNotificationAlert(title: alertTitle, message: alertMessage)
+            await MainActor.run { [selector] in
+                showNotificationAlert(
+                    title: alertTitle,
+                    message: alertMessage,
+                    selector: selector
+                )
             }
         }
+    }
+
+    func alertsEnabled() async -> Bool {
+        let settings = await notificationCenter.notificationSettings()
+        defer {
+            assert(settings.alertSetting == .enabled)
+        }
+        return alertStyleStatus(settings) == .ok && authorizationStatus(settings) == .ok
     }
 
     func openNotificationSettings() {
@@ -60,14 +96,6 @@ final class NotificationPermissions {
         }
 
         NSWorkspace.shared.open(url)
-    }
-
-    func alertsEnabled() async -> Bool {
-        let settings = await notificationCenter.notificationSettings()
-        defer {
-            assert(settings.alertSetting == .enabled)
-        }
-        return alertStyleStatus(settings) == .ok && authorizationStatus(settings) == .ok
     }
 
     private func alertStyleStatus(_ settings: UNNotificationSettings) -> SettingStatus {
@@ -104,7 +132,13 @@ final class NotificationPermissions {
                 "Enable notifications in System Settings to receive notifications for reminders."
             })
         @unknown default:
-            fatalError("Unknown authorization status")
+            fatalError("Unknown authorisation status")
         }
+    }
+
+    @objc
+    private func toggleAllowBanners() {
+        FancyLogger.info("Allow banners toggled")
+        appPreferences.allowBanners.toggle()
     }
 }
