@@ -121,6 +121,34 @@ internal enum L10n {
       }
     }
   }
+  internal enum NotificationPermissions {
+    internal enum Launch {
+      internal enum AlertStyle {
+        /// Notifications for RandomReminder are currently set to 'Banner'. Although notifications will function correctly, it is recommended to change this setting to 'Alerts'.
+        internal static let banner = L10n.tr("Localizable", "notification-permissions.launch.alert-style.banner", fallback: "Notifications for RandomReminder are currently set to 'Banner'. Although notifications will function correctly, it is recommended to change this setting to 'Alerts'.")
+        /// Notifications for RandomReminder are allowed but currently set to 'None'. RandomReminder will not be able to function properly without notifications appearing. It is recommended to change this setting to 'Alerts'.
+        internal static let `none` = L10n.tr("Localizable", "notification-permissions.launch.alert-style.none", fallback: "Notifications for RandomReminder are allowed but currently set to 'None'. RandomReminder will not be able to function properly without notifications appearing. It is recommended to change this setting to 'Alerts'.")
+      }
+      internal enum AuthorisationStatus {
+        /// Notifications are disabled for RandomReminder. Enable notifications in System Settings to receive notifications for reminders.
+        internal static let denied = L10n.tr("Localizable", "notification-permissions.launch.authorisation-status.denied", fallback: "Notifications are disabled for RandomReminder. Enable notifications in System Settings to receive notifications for reminders.")
+        /// Notifications are yet to be set for RandomReminder. Enable notifications in System Settings to receive notifications for reminders.
+        internal static let notDetermined = L10n.tr("Localizable", "notification-permissions.launch.authorisation-status.not-determined", fallback: "Notifications are yet to be set for RandomReminder. Enable notifications in System Settings to receive notifications for reminders.")
+      }
+    }
+    internal enum Notification {
+      internal enum AlertStyle {
+        /// RandomReminder attempted to deliver a notification but notifications are set to 'None'. Change this in Settings to allow future notifications.
+        internal static let `none` = L10n.tr("Localizable", "notification-permissions.notification.alert-style.none", fallback: "RandomReminder attempted to deliver a notification but notifications are set to 'None'. Change this in Settings to allow future notifications.")
+      }
+      internal enum AuthorisationStatus {
+        /// RandomReminder attempted to deliver a notification but notifications are disabled. Change this in Settings to allow future notifications.
+        internal static let denied = L10n.tr("Localizable", "notification-permissions.notification.authorisation-status.denied", fallback: "RandomReminder attempted to deliver a notification but notifications are disabled. Change this in Settings to allow future notifications.")
+        /// RandomReminder attempted to deliver a notification but notifications are not set. Change this in Settings to allow future notifications.
+        internal static let notDetermined = L10n.tr("Localizable", "notification-permissions.notification.authorisation-status.not-determined", fallback: "RandomReminder attempted to deliver a notification but notifications are not set. Change this in Settings to allow future notifications.")
+      }
+    }
+  }
   internal enum Preferences {
     internal enum General {
       /// Launch at Login

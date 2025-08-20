@@ -47,46 +47,54 @@ final class NotificationPermissions {
             openNotificationSettings()
         }
     }
-
+    
     func promptIfAlertsNotEnabled() {
         Task {
-            let settings = await notificationCenter.notificationSettings()
-            let authorizationStatus = authorizationStatus(settings)
-            let alertStyleStatus = alertStyleStatus(settings)
-
-            var alertTitle: String?
-            var alertMessage: String?
-            var selector: Selector?
-
-            if case let .error(message) = authorizationStatus {
-                alertTitle = "Notifications not enabled"
-                alertMessage = message
-            } else if case let .warning(message) = alertStyleStatus, !appPreferences.allowBanners {
-                alertTitle = "Alerts are recommended"
-                alertMessage = message
-                selector = #selector(toggleAllowBanners)
-            } else if case let .error(message) = alertStyleStatus {
-                alertTitle = "Notifications will not appear"
-                alertMessage = message
-            }
-
-            guard let alertTitle, let alertMessage else { return }
-            await MainActor.run { [selector] in
-                showNotificationAlert(
-                    title: alertTitle,
-                    message: alertMessage,
-                    selector: selector
-                )
-            }
+            await promptIfAlertsNotEnabled(launch: true)
         }
     }
 
-    func alertsEnabled() async -> Bool {
+    @discardableResult
+    func promptIfAlertsNotEnabled(launch: Bool = false) async -> Bool {
+        let settings = await notificationCenter.notificationSettings()
+        let authorizationStatus = authorizationStatus(settings, launch: launch)
+        let alertStyleStatus = alertStyleStatus(settings, launch: launch)
+
+        var alertTitle: String?
+        var alertMessage: String?
+        var selector: Selector?
+
+        if case let .error(message) = authorizationStatus {
+            alertTitle = "Notifications not enabled"
+            alertMessage = message
+        } else if case let .warning(message) = alertStyleStatus, !appPreferences.allowBanners {
+            alertTitle = "Alerts are recommended"
+            alertMessage = message
+            selector = #selector(toggleAllowBanners)
+        } else if case let .error(message) = alertStyleStatus {
+            alertTitle = "Notifications will not appear"
+            alertMessage = message
+        }
+
+        guard let alertTitle, let alertMessage else { return true }
+            
+        await MainActor.run { [selector] in
+            showNotificationAlert(
+                title: alertTitle,
+                message: alertMessage,
+                selector: selector
+            )
+        }
+        
+        return false
+    }
+
+    func alertsEnabled(launch: Bool) async -> Bool {
         let settings = await notificationCenter.notificationSettings()
         defer {
             assert(settings.alertSetting == .enabled)
         }
-        return alertStyleStatus(settings) == .ok && authorizationStatus(settings) == .ok
+        return alertStyleStatus(settings, launch: launch) == .ok && authorizationStatus(settings, launch: launch) == .ok
     }
 
     func openNotificationSettings() {
@@ -98,18 +106,15 @@ final class NotificationPermissions {
         NSWorkspace.shared.open(url)
     }
 
-    private func alertStyleStatus(_ settings: UNNotificationSettings) -> SettingStatus {
+    private func alertStyleStatus(_ settings: UNNotificationSettings, launch: Bool) -> SettingStatus {
         switch settings.alertStyle {
         case .none:
-            .error(multilineString {
-                "Notifications for RandomReminder are allowed but 'None' is currently set. "
-                "It is recommended to change this setting to 'Alerts'."
-            })
+            .error(
+                launch ? L10n.NotificationPermissions.Launch.AlertStyle.none :
+                L10n.NotificationPermissions.Notification.AlertStyle.none
+            )
         case .banner:
-            .warning(multilineString {
-                "Notifications for RandomReminder are currently set to 'Banner'. "
-                "Although notifications will function correctly, it is recommended to change this to 'Alerts'."
-            })
+            launch ? .warning(L10n.NotificationPermissions.Launch.AlertStyle.banner) : .ok
         case .alert:
             .ok
         @unknown default:
@@ -117,20 +122,20 @@ final class NotificationPermissions {
         }
     }
 
-    private func authorizationStatus(_ settings: UNNotificationSettings) -> SettingStatus {
+    private func authorizationStatus(_ settings: UNNotificationSettings, launch: Bool) -> SettingStatus {
         switch settings.authorizationStatus {
         case .authorized, .provisional:
             .ok
         case .denied:
-            .error(multilineString {
-                "Notifications are disabled for RandomReminder. "
-                "Enable notifications in System Settings to receive notifications for reminders."
-            })
+            .error(
+                launch ? L10n.NotificationPermissions.Launch.AuthorisationStatus.denied :
+                L10n.NotificationPermissions.Notification.AuthorisationStatus.denied
+            )
         case .notDetermined:
-            .error(multilineString {
-                "Notifications are yet to be set for RandomReminder. "
-                "Enable notifications in System Settings to receive notifications for reminders."
-            })
+            .error(
+                launch ? L10n.NotificationPermissions.Launch.AuthorisationStatus.notDetermined :
+                L10n.NotificationPermissions.Notification.AuthorisationStatus.notDetermined
+            )
         @unknown default:
             fatalError("Unknown authorisation status")
         }
