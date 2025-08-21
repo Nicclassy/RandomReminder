@@ -16,4 +16,21 @@ extension View {
             self
         }
     }
+
+    func centerWindowOnAppear(switchToWindow: Bool = true) -> some View {
+        onAppear {
+            DispatchQueue.main.async {
+                guard let window = NSApp.keyWindow else {
+                    FancyLogger.warn("Window was not found when expected")
+                    return
+                }
+
+                window.center()
+                if switchToWindow {
+                    NSApplication.shared.activate()
+                    window.makeKeyAndOrderFront(nil)
+                }
+            }
+        }
+    }
 }

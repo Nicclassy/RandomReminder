@@ -18,9 +18,7 @@ struct ActiveReminderView: View {
                 .fontWeight(.bold)
                 .lineLimit(lineLimit)
                 .fixedSize(horizontal: false, vertical: true)
-            ScrollView {
-                Text(description)
-            }
+            ScrollView { Text(description) }
             Button(
                 action: {
                     DispatchQueue.main.async {
@@ -35,6 +33,7 @@ struct ActiveReminderView: View {
             .buttonStyle(.borderedProminent)
         }
         .padding()
+        .centerWindowOnAppear(switchToWindow: true)
     }
 
     private var reminder: RandomReminder {
