@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ReminderOptionsView: View {
-    @ObservedObject var reminder: MutableReminder
+    @Bindable var reminder: MutableReminder
     @ObservedObject var preferences: ReminderPreferences
     @ObservedObject var viewPreferences: ModificationViewPreferences
     @ObservedObject var fields: ModificationViewFields
@@ -18,7 +18,10 @@ struct ReminderOptionsView: View {
             Button("Reminder options...") {
                 viewPreferences.showOptionsPopover.toggle()
             }
-            .popover(isPresented: $viewPreferences.showOptionsPopover) {
+            .popover(
+                isPresented: $viewPreferences.showOptionsPopover,
+                arrowEdge: .top
+            ) {
                 Grid(alignment: .leading) {
                     GridRow {
                         ReminderDayOptionsView(
@@ -38,18 +41,8 @@ struct ReminderOptionsView: View {
 
                     GridRow {
                         Toggle("Non-random", isOn: $preferences.nonRandom)
-                            .onChange(of: preferences.nonRandom) { _, newValue in
-                                if !newValue {
-                                    preferences.occurAsap = false
-                                }
-                            }
                             .disabled(preferences.alwaysRunning)
-                        Toggle("Occur as soon as possible", isOn: $preferences.occurAsap)
-                            .disabled(!preferences.nonRandom)
-                    }
-
-                    GridRow {
-                        Toggle("Show when active", isOn: $preferences.showWhenActive)
+                        Toggle("Show in window when active", isOn: $preferences.showWhenActive)
                     }
                 }
                 .frame(width: ViewConstants.reminderWindowWidth)

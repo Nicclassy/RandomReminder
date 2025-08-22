@@ -13,8 +13,8 @@ enum ReminderModificationMode {
 }
 
 final class ModificationViewFields: ObservableObject {
-    @Published var occurrencesText: String = ""
-    @Published var intervalQuantityText: String = ""
+    @Published var occurrencesText = ""
+    @Published var intervalQuantityText = ""
 
     func reset() {
         occurrencesText = ""
@@ -26,7 +26,7 @@ struct ReminderModificationView: View {
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
 
-    @StateObject var reminder: MutableReminder = .init()
+    @State var reminder: MutableReminder = .init()
     @StateObject var preferences: ReminderPreferences = .init()
     @StateObject var viewPreferences: ModificationViewPreferences = .init()
     @StateObject var fields: ModificationViewFields = .init()

@@ -272,7 +272,7 @@ final class ReminderManager {
         guard !ActiveReminderManager.shared.reminderIsActive(reminder) else {
             return
         }
-        
+
         if !reminder.hasBegun && reminder.hasStarted(after: date) {
             FancyLogger.info("Starting reminder '\(reminder)'")
             startReminder(reminder)

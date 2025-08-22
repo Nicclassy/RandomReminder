@@ -11,7 +11,7 @@ struct ReminderContentOptionsView: View {
     @Environment(\.openWindow) private var openWindow
 
     private let commandIcon = false
-    @ObservedObject var reminder: MutableReminder
+    @Bindable var reminder: MutableReminder
     @ObservedObject var preferences: ReminderPreferences
     @ObservedObject var fields: ModificationViewFields
 

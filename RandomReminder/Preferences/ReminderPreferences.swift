@@ -15,7 +15,6 @@ final class ReminderPreferences: ObservableObject {
     @Published var specificDays: Bool
     @Published var useAudioFile: Bool
     @Published var nonRandom: Bool
-    @Published var occurAsap: Bool
     @Published var showWhenActive: Bool
 
     init(
@@ -25,7 +24,6 @@ final class ReminderPreferences: ObservableObject {
         specificDays: Bool = false,
         useAudioFile: Bool = false,
         nonRandom: Bool = false,
-        occurAsap: Bool = false,
         showWhenActive: Bool = false
     ) {
         self.repeatingEnabled = repeatingEnabled
@@ -34,7 +32,6 @@ final class ReminderPreferences: ObservableObject {
         self.specificDays = specificDays
         self.useAudioFile = useAudioFile
         self.nonRandom = nonRandom
-        self.occurAsap = occurAsap
         self.showWhenActive = showWhenActive
     }
 

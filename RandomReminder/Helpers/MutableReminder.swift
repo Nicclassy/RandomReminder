@@ -7,7 +7,8 @@
 
 import Foundation
 
-final class MutableReminder: ObservableObject {
+@Observable
+final class MutableReminder {
     private static let `default` = MutableReminder(
         id: .unassigned,
         title: String(),
@@ -24,16 +25,16 @@ final class MutableReminder: ObservableObject {
     )
 
     var id: ReminderID
-    @Published var title: String
-    @Published var description: ReminderDescription
-    @Published var totalOccurences: Int
-    @Published var earliestDate: Date
-    @Published var latestDate: Date
-    @Published var days: ReminderDayOptions
-    @Published var repeatInterval: RepeatInterval
-    @Published var repeatIntervalType: RepeatIntervalType
-    @Published var intervalQuantity: Int
-    @Published var activationEvents: ReminderActivationEvents
+    var title: String
+    var description: ReminderDescription
+    var totalOccurences: Int
+    var earliestDate: Date
+    var latestDate: Date
+    var days: ReminderDayOptions
+    var repeatInterval: RepeatInterval
+    var repeatIntervalType: RepeatIntervalType
+    var intervalQuantity: Int
+    var activationEvents: ReminderActivationEvents
     var occurences: Int
 
     init(

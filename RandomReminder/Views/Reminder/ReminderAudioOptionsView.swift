@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ReminderAudioOptionsView: View {
-    @ObservedObject var reminder: MutableReminder
+    @Bindable var reminder: MutableReminder
     @ObservedObject var preferences: ReminderPreferences
     @ObservedObject var viewPreferences: ModificationViewPreferences
     @Binding var useAudioFile: Bool
