@@ -25,6 +25,7 @@ final class NotificationPermissions {
     func showNotificationAlert(
         title: String,
         message: String,
+        activateApp: Bool,
         selector: Selector? = nil
     ) {
         let alert = NSAlert()
@@ -42,20 +43,37 @@ final class NotificationPermissions {
             alert.accessoryView = checkbox
         }
 
-        let response = alert.runModal()
-        if response == .alertFirstButtonReturn {
-            openNotificationSettings()
+        guard activateApp else {
+            let response = alert.runModal()
+            if response == .alertFirstButtonReturn {
+                openNotificationSettings()
+            }
+            return
+        }
+
+        DispatchQueue.main.async { [self] in
+            NSApplication.shared.activate(ignoringOtherApps: true)
+            guard let window = NSApp.windows.first else {
+                FancyLogger.warn("Could not find window")
+                return
+            }
+
+            window.makeKeyAndOrderFront(nil)
+            let response = alert.runModal()
+            if response == .alertFirstButtonReturn {
+                openNotificationSettings()
+            }
         }
     }
-    
-    func promptIfAlertsNotEnabled() {
+
+    func promptIfAlertsNotEnabled(activateApp: Bool = true) {
         Task {
-            await promptIfAlertsNotEnabled(launch: true)
+            await promptIfAlertsNotEnabled(launch: true, activateApp: activateApp)
         }
     }
 
     @discardableResult
-    func promptIfAlertsNotEnabled(launch: Bool = false) async -> Bool {
+    func promptIfAlertsNotEnabled(launch: Bool = false, activateApp: Bool = true) async -> Bool {
         let settings = await notificationCenter.notificationSettings()
         let authorizationStatus = authorizationStatus(settings, launch: launch)
         let alertStyleStatus = alertStyleStatus(settings, launch: launch)
@@ -76,25 +94,25 @@ final class NotificationPermissions {
             alertMessage = message
         }
 
-        guard let alertTitle, let alertMessage else { return true }
-            
+        guard let alertTitle, let alertMessage else { return false }
+
         await MainActor.run { [selector] in
             showNotificationAlert(
                 title: alertTitle,
                 message: alertMessage,
+                activateApp: activateApp,
                 selector: selector
             )
         }
-        
-        return false
+
+        return true
     }
 
     func alertsEnabled(launch: Bool) async -> Bool {
         let settings = await notificationCenter.notificationSettings()
-        defer {
-            assert(settings.alertSetting == .enabled)
-        }
-        return alertStyleStatus(settings, launch: launch) == .ok && authorizationStatus(settings, launch: launch) == .ok
+        return
+            alertStyleStatus(settings, launch: launch) == .ok &&
+            authorizationStatus(settings, launch: launch) == .ok
     }
 
     func openNotificationSettings() {
@@ -111,7 +129,7 @@ final class NotificationPermissions {
         case .none:
             .error(
                 launch ? L10n.NotificationPermissions.Launch.AlertStyle.none :
-                L10n.NotificationPermissions.Notification.AlertStyle.none
+                    L10n.NotificationPermissions.Notification.AlertStyle.none
             )
         case .banner:
             launch ? .warning(L10n.NotificationPermissions.Launch.AlertStyle.banner) : .ok
@@ -129,12 +147,12 @@ final class NotificationPermissions {
         case .denied:
             .error(
                 launch ? L10n.NotificationPermissions.Launch.AuthorisationStatus.denied :
-                L10n.NotificationPermissions.Notification.AuthorisationStatus.denied
+                    L10n.NotificationPermissions.Notification.AuthorisationStatus.denied
             )
         case .notDetermined:
             .error(
                 launch ? L10n.NotificationPermissions.Launch.AuthorisationStatus.notDetermined :
-                L10n.NotificationPermissions.Notification.AuthorisationStatus.notDetermined
+                    L10n.NotificationPermissions.Notification.AuthorisationStatus.notDetermined
             )
         @unknown default:
             fatalError("Unknown authorisation status")

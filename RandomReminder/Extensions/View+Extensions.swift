@@ -17,7 +17,7 @@ extension View {
         }
     }
 
-    func centerWindowOnAppear(switchToWindow: Bool = true) -> some View {
+    func centerWindowOnAppear(activate: Bool = true) -> some View {
         onAppear {
             DispatchQueue.main.async {
                 guard let window = NSApp.keyWindow else {
@@ -26,8 +26,8 @@ extension View {
                 }
 
                 window.center()
-                if switchToWindow {
-                    NSApplication.shared.activate()
+                if activate {
+                    NSApplication.shared.activate(ignoringOtherApps: true)
                     window.makeKeyAndOrderFront(nil)
                 }
             }
