@@ -33,7 +33,7 @@ struct ActiveReminderView: View {
             .buttonStyle(.borderedProminent)
         }
         .padding()
-        .centerWindowOnAppear(switchToWindow: true)
+        .centerWindowOnAppear(activate: true)
     }
 
     private var reminder: RandomReminder {
@@ -53,11 +53,11 @@ private struct ActiveReminderViewPreview: View {
     init() {
         let reminder = MutableReminder()
         reminder.title = "Active reminder title that is very long and has many characters"
-        ActiveReminderManager.shared.activeReminderDescription = (
-            "This is a reminder description. " +
-                "It is a long description to test the capabilities of extending text.\n\n" +
-                "Let us see if the scroll view works and newlines work as desired."
-        )
+        ActiveReminderManager.shared.activeReminderDescription = multilineString {
+            "This is a reminder description. "
+            "It is a long description to test the capabilities of extending text.\n\n"
+            "Let us see if the scroll view works and newlines work as desired."
+        }
         ActiveReminderManager.shared.activeReminder = reminder.build(preferences: .init())
     }
 }

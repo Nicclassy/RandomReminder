@@ -427,10 +427,10 @@
 				81E8D2002DB9815C00F1BF97 /* ReminderSerializer.swift */,
 				81E8D2012DB9815C00F1BF97 /* TimeInfoProvider.swift */,
 				81412F912DD7A20200BD2EA3 /* ReminderValidator.swift */,
-				818895A72DDF129E005B55C0 /* EnumRawRepresentable.swift */,
 				81ECAC362E03244A0065F8B8 /* Subprocess.swift */,
-				81568ECE2E4F65C100479EF2 /* NotificationPermissions.swift */,
+				818895A72DDF129E005B55C0 /* EnumRawRepresentable.swift */,
 				814B38BB2E5098DC0024A19A /* MultilineStringBuilder.swift */,
+				81568ECE2E4F65C100479EF2 /* NotificationPermissions.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";

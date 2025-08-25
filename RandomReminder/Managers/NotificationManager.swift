@@ -25,9 +25,7 @@ final class NotificationManager {
 
             let (title, subtitle) = notificationTitleAndSubtitle(for: reminder)
             content.title = title
-            if let subtitle {
-                content.subtitle = subtitle
-            }
+            content.subtitle = subtitle ?? " "
             content.sound = .default
             content.userInfo = ["reminderId": reminder.id.value]
 
@@ -45,7 +43,7 @@ final class NotificationManager {
     private func notificationTitleAndSubtitle(for reminder: RandomReminder) -> (title: String, subtitle: String?) {
         switch reminder.content.description {
         case let .text(subtitle):
-            return (reminder.content.title, subtitle)
+            return (reminder.content.title, !subtitle.isEmpty ? subtitle : nil)
         case let .command(command, generatesTitle):
             var subprocess = Subprocess(command: command)
             let result = subprocess.run()
@@ -62,7 +60,7 @@ final class NotificationManager {
                 return (reminder.content.title, nil)
             }
 
-            let subtitle = parts.count == 1 ? nil : parts[1]
+            let subtitle = parts.count > 1 ? parts[1] : nil
             return (title, subtitle)
         }
     }
@@ -130,6 +128,11 @@ final class NotificationManager {
         // between notifications, it might be problematic
         let reminder = reminderService.reminder
         guard reminderCanOccur(reminder) else {
+            return
+        }
+
+        guard await !NotificationPermissions.shared.promptIfAlertsNotEnabled() else {
+            FancyLogger.info("There is an alert")
             return
         }
 

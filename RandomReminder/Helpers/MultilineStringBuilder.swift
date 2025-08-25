@@ -10,7 +10,7 @@ import Foundation
 @resultBuilder
 struct MultilineStringBuilder {
     static func buildBlock(_ components: String...) -> String {
-        components.joined(separator: "")
+        components.joined()
     }
 }
 
