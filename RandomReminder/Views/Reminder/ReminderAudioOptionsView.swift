@@ -13,7 +13,6 @@ struct ReminderAudioOptionsView: View {
     @ObservedObject var viewPreferences: ModificationViewPreferences
     @Binding var useAudioFile: Bool
 
-    private let reminderManager: ReminderManager = .shared
     private let alwaysShowFilePicker = false
 
     var body: some View {
@@ -21,8 +20,9 @@ struct ReminderAudioOptionsView: View {
             Toggle("Play audio when the reminder occurs", isOn: $useAudioFile)
                 .padding(.bottom, 5)
             HStack {
-                let audioFiles = reminderManager.audioFiles
-                if alwaysShowFilePicker || !audioFiles.isEmpty {
+                let audioFiles = availableAudioFiles()
+                let showPicker = showPicker(audioFiles: audioFiles)
+                if alwaysShowFilePicker || showPicker {
                     Picker("Audio file", selection: audioFileSelection(audioFiles: audioFiles)) {
                         ForEach(audioFiles, id: \.self) { audioFile in
                             Text(String(describing: audioFile.name)).tag(audioFile)
@@ -33,7 +33,7 @@ struct ReminderAudioOptionsView: View {
                     Text("OR")
                 }
 
-                Button("Choose an audio file") {
+                Button(buttonText(pickerIsShown: showPicker)) {
                     viewPreferences.showFileImporter = true
                 }.fileImporter(
                     isPresented: $viewPreferences.showFileImporter,
@@ -50,6 +50,34 @@ struct ReminderAudioOptionsView: View {
                 .disabled(!useAudioFile)
             }
         }
+    }
+
+    private func buttonText(pickerIsShown: Bool) -> String {
+        if let audioFile = reminder.activationEvents.audio {
+            pickerIsShown ? "Change audio file" : "Change audio file from \(audioFile.name)"
+        } else {
+            "Choose an audio file"
+        }
+    }
+
+    private func availableAudioFiles() -> [ReminderAudioFile] {
+        var result = ReminderManager.shared.audioFiles
+        if let audioFile = reminder.activationEvents.audio {
+            result.append(audioFile)
+        }
+        return result
+    }
+
+    private func showPicker(audioFiles: [ReminderAudioFile]) -> Bool {
+        if audioFiles.count > 1 {
+            return true
+        }
+
+        if let audioFile = audioFiles.first, audioFile != reminder.activationEvents.audio {
+            return true
+        }
+
+        return false
     }
 
     private func audioFileSelection(audioFiles: [ReminderAudioFile]) -> Binding<ReminderAudioFile> {
