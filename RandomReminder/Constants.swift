@@ -54,6 +54,13 @@ enum WindowIds {
     static let activeReminder = "active-reminder"
 }
 
+enum WindowTitles {
+    static let createReminder = "Create New Reminder"
+    static let editReminder = "Edit Reminder"
+    static let descriptionCommand = "Description Command"
+    static let activeReminder = "Reminder Active"
+}
+
 enum Constants {
     static let bundleID = "io.nicclassy.RandomReminder"
 }

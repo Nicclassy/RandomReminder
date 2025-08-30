@@ -33,7 +33,7 @@ struct ActiveReminderView: View {
             .buttonStyle(.borderedProminent)
         }
         .padding()
-        .centerWindowOnAppear(activate: true)
+        .centerWindowOnAppear(withTitle: WindowTitles.activeReminder, activate: true)
     }
 
     private var reminder: RandomReminder {

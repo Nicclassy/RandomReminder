@@ -17,11 +17,16 @@ extension View {
         }
     }
 
-    func centerWindowOnAppear(activate: Bool = true) -> some View {
+    func centerWindowOnAppear(withTitle title: String? = nil, activate: Bool = true) -> some View {
         onAppear {
             DispatchQueue.main.async {
-                guard let window = NSApp.keyWindow else {
-                    FancyLogger.warn("Window was not found when expected")
+                let window = if let title {
+                    NSApplication.shared.windows.first(where: { $0.title == title })
+                } else {
+                    NSApplication.shared.keyWindow
+                }
+                guard let window else {
+                    FancyLogger.warn("Window with title \(title ?? "(n/a)") was not found when expected")
                     return
                 }
 

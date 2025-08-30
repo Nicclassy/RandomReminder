@@ -17,22 +17,22 @@ struct RandomReminderApp: App {
         }
         .defaultLaunchBehavior(.suppressed)
 
-        Window("Create New Reminder", id: WindowIds.createReminder) {
+        Window(WindowTitles.createReminder, id: WindowIds.createReminder) {
             ReminderModificationView(mode: .create)
         }
         .windowResizability(.contentSize)
 
-        Window("Edit Reminder", id: WindowIds.editReminder) {
+        Window(WindowTitles.editReminder, id: WindowIds.editReminder) {
             ReminderModificationView(mode: .edit)
         }
         .windowResizability(.contentSize)
 
-        Window("Description Command", id: WindowIds.descriptionCommand) {
+        Window(WindowTitles.descriptionCommand, id: WindowIds.descriptionCommand) {
             ReminderDescriptionView()
         }
         .windowResizability(.contentSize)
 
-        Window("Reminder Active", id: WindowIds.activeReminder) {
+        Window(WindowTitles.activeReminder, id: WindowIds.activeReminder) {
             ActiveReminderView()
         }
         .windowResizability(.contentSize)
