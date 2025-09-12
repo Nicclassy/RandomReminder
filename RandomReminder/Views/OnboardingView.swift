@@ -10,8 +10,18 @@ import UserNotifications
 
 @Observable
 private final class OnboardingViewModel {
-    var step: OnboardingStep = .welcome
+    var step: OnboardingStep = .welcome {
+        willSet {
+            if step == .permissions {
+                notificationsChecked = true
+            }
+        }
+    }
+
     var showAlert = false
+    var notificationsChecked = false
+    var alertTitle = ""
+    var alertText = ""
 
     var primaryButtonText: String {
         step == .finished ? "Finish" : "Next"
@@ -32,6 +42,15 @@ private final class OnboardingViewModel {
     func moveStepForward() {
         step.forward()
     }
+
+    func viewCanAlert() -> Bool {
+        step == .permissions
+    }
+
+    func alertContent() async -> (String, String)? {
+        // Step is always permissions
+        await NotificationPermissions.shared.onboardingAlertContent()
+    }
 }
 
 private enum OnboardingStep: Traversable {
@@ -47,16 +66,14 @@ private struct WelcomeView: View {
         Text(multilineString {
             "Thank you for downloading RandomReminder!\n\n"
             "RandomReminder solves the classic problem of predictable, mundane reminders, "
-            "allowing you to focus more on your work."
+            "allowing you to focus more on your work "
+            "and less on when you'll be reminded to do something."
         })
     }
 }
 
 private struct PermissionsView: View {
     @Bindable var viewModel: OnboardingViewModel
-    @State private var buttonIsProminent = true
-    @State private var alertTitle = ""
-    @State private var alertText = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -72,15 +89,6 @@ private struct PermissionsView: View {
                 }
                 Spacer()
             }
-            .if(buttonIsProminent) { it in
-                it.buttonStyle(.borderedProminent)
-            }
-        }
-        .alert(
-            alertTitle,
-            isPresented: $viewModel.showAlert
-        ) {
-            Text(alertText)
         }
     }
 }
@@ -94,6 +102,8 @@ private struct FinishedView: View {
 }
 
 struct OnboardingView: View {
+    @Environment(\.dismissWindow) var dismissWindow
+
     @State private var viewModel = OnboardingViewModel()
 
     var body: some View {
@@ -126,10 +136,30 @@ struct OnboardingView: View {
                 .buttonStyle(.automatic)
                 .disabled(viewModel.step.isFirst)
                 Spacer()
-                
+
                 Button(
                     action: {
-                        viewModel.moveStepForward()
+                        guard viewModel.viewCanAlert() else {
+                            viewModel.moveStepForward()
+                            if viewModel.step.isLast {
+                                dismissWindow(id: WindowIds.onboarding)
+                            }
+                            return
+                        }
+
+                        Task {
+                            guard let (title, message) = await viewModel.alertContent() else {
+                                FancyLogger.info("View can alert but no content")
+                                viewModel.moveStepForward()
+                                return
+                            }
+
+                            await MainActor.run {
+                                viewModel.showAlert = true
+                                viewModel.alertTitle = title
+                                viewModel.alertText = message
+                            }
+                        }
                     },
                     label: {
                         Text(viewModel.primaryButtonText)
@@ -138,6 +168,20 @@ struct OnboardingView: View {
                 )
                 .buttonStyle(.borderedProminent)
             }
+            .alert(
+                viewModel.alertTitle,
+                isPresented: $viewModel.showAlert,
+                actions: {
+                    Button("Cancel") {}
+                    Button("OK") {
+                        viewModel.moveStepForward()
+                    }
+                    .buttonStyle(.borderedProminent)
+                },
+                message: {
+                    Text(viewModel.alertText)
+                }
+            )
         }
         .padding(.all, 30)
         .frame(width: 400, height: 450)
