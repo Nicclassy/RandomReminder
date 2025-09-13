@@ -102,7 +102,8 @@ private struct FinishedView: View {
 }
 
 struct OnboardingView: View {
-    @Environment(\.dismissWindow) var dismissWindow
+    let onCompletion: () -> Void
+    @Environment(\.dismissWindow) private var dismissWindow
 
     @State private var viewModel = OnboardingViewModel()
 
@@ -143,6 +144,7 @@ struct OnboardingView: View {
                             viewModel.moveStepForward()
                             if viewModel.step.isLast {
                                 dismissWindow(id: WindowIds.onboarding)
+                                onCompletion()
                             }
                             return
                         }
@@ -189,5 +191,5 @@ struct OnboardingView: View {
 }
 
 #Preview {
-    OnboardingView()
+    OnboardingView(onCompletion: {})
 }

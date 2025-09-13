@@ -10,6 +10,7 @@ import SwiftUI
 final class AppPreferences: ObservableObject {
     static let shared = AppPreferences()
 
+    @AppStorage("onboardingComplete") var onboardingComplete = false
     @AppStorage("launchAtLogin") var launchAtLogin = false
     @AppStorage("showReminderCounts") var showReminderCounts = true
     @AppStorage("quickReminderEnabled") var quickReminderEnabled = true

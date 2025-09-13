@@ -12,10 +12,11 @@ struct RandomReminderApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
-        Settings {
-            EmptyView()
+        Window(WindowTitles.onboarding, id: WindowIds.onboarding) {
+            OnboardingView(onCompletion: appDelegate.onOnboardingCompletion)
         }
-        .defaultLaunchBehavior(.suppressed)
+        .defaultLaunchBehavior(AppPreferences.shared.onboardingComplete ? .suppressed : .automatic)
+        .windowResizability(.contentSize)
 
         Window(WindowTitles.createReminder, id: WindowIds.createReminder) {
             ReminderModificationView(mode: .create)

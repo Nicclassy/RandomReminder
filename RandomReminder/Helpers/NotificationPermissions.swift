@@ -72,6 +72,21 @@ final class NotificationPermissions {
         }
     }
 
+    func onboardingAlertContent() async -> (String, String)? {
+        let settings = await notificationCenter.notificationSettings()
+        let authorizationStatus = authorizationStatus(settings, launch: true)
+        let alertStyleStatus = alertStyleStatus(settings, launch: true)
+        return if case let .error(message) = authorizationStatus {
+            ("Notifications not enabled", message)
+        } else if case let .warning(message) = alertStyleStatus {
+            ("Alerts are recommended", message)
+        } else if case let .error(message) = alertStyleStatus {
+            ("Notifications will not appear", message)
+        } else {
+            nil
+        }
+    }
+
     @discardableResult
     func promptIfAlertsNotEnabled(launch: Bool = false, activateApp: Bool = true) async -> Bool {
         let settings = await notificationCenter.notificationSettings()
@@ -116,7 +131,7 @@ final class NotificationPermissions {
     }
 
     func openNotificationSettings() {
-        guard let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") else {
+        guard let url = URL(string: "x-apple.systempreferences:com.apple.Notifications-Settings.extension") else {
             FancyLogger.error("Could not find url")
             return
         }
