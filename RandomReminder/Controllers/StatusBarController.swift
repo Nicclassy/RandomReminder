@@ -14,10 +14,10 @@ final class StatusBarController {
     lazy var preferencesViewController = PreferencesViewController()
 
     init() {
-        setupView()
+        setup()
     }
 
-    private func setupView() {
+    private func setup() {
         if let button = statusItem.button {
             button.image = NSImage(systemSymbolName: "questionmark.circle", accessibilityDescription: "Menu Bar Icon")
             button.target = self
@@ -57,6 +57,14 @@ final class StatusBarController {
 
     @objc
     private func openPreferences() {
+        guard AppPreferences.shared.onboardingComplete else {
+            showAlert(
+                title: "Onboarding incomplete",
+                message: "You must complete the onboarding process prior to using the application.",
+                buttonText: "OK"
+            )
+            return
+        }
         preferencesViewController.show()
     }
 
