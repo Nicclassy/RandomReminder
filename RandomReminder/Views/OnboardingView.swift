@@ -125,17 +125,18 @@ struct OnboardingView: View {
             Spacer()
 
             HStack {
-                Button(
-                    action: {
-                        viewModel.moveStepBackward()
-                    },
-                    label: {
-                        Text("Back")
-                            .frame(width: 70)
-                    }
-                )
-                .buttonStyle(.automatic)
-                .disabled(viewModel.step.isFirst)
+                if !viewModel.step.isFirst {
+                    Button(
+                        action: {
+                            viewModel.moveStepBackward()
+                        },
+                        label: {
+                            Text("Back")
+                                .frame(width: 70)
+                        }
+                    )
+                    .buttonStyle(.automatic)
+                }
                 Spacer()
 
                 Button(
@@ -174,11 +175,10 @@ struct OnboardingView: View {
                 viewModel.alertTitle,
                 isPresented: $viewModel.showAlert,
                 actions: {
-                    Button("Cancel") {}
-                    Button("OK") {
+                    Button("Cancel", role: .cancel) {}
+                    Button("OK", role: .destructive) {
                         viewModel.moveStepForward()
                     }
-                    .buttonStyle(.borderedProminent)
                 },
                 message: {
                     Text(viewModel.alertText)

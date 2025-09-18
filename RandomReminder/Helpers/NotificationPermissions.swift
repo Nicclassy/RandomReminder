@@ -73,15 +73,16 @@ final class NotificationPermissions {
     }
 
     func onboardingAlertContent() async -> (String, String)? {
+        let extraText = "\n\nAre you sure you want to continue?"
         let settings = await notificationCenter.notificationSettings()
         let authorizationStatus = authorizationStatus(settings, launch: true)
         let alertStyleStatus = alertStyleStatus(settings, launch: true)
         return if case let .error(message) = authorizationStatus {
-            ("Notifications not enabled", message)
+            ("Notifications not enabled", message + extraText)
         } else if case let .warning(message) = alertStyleStatus {
-            ("Alerts are recommended", message)
+            ("Alerts are recommended", message + extraText)
         } else if case let .error(message) = alertStyleStatus {
-            ("Notifications will not appear", message)
+            ("Notifications will not appear", message + extraText)
         } else {
             nil
         }
