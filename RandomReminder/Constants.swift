@@ -44,7 +44,8 @@ enum ViewConstants {
     static let reminderRowHeight: CGFloat = 57.5
 
     static let reminderWindowWidth: CGFloat = 550
-    static let reminderWindowHeight: CGFloat = 350
+    static let reminderWindowHeight: CGFloat = 200
+    static let modificationButtonSize: CGFloat = 60
 }
 
 enum WindowIds {

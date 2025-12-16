@@ -14,39 +14,27 @@ struct ReminderOptionsView: View {
     @ObservedObject var fields: ModificationViewFields
 
     var body: some View {
-        Group {
-            Button("Reminder options...") {
-                viewPreferences.showOptionsPopover.toggle()
+        Grid(alignment: .leading) {
+            GridRow {
+                ReminderDayOptionsView(
+                    reminder: reminder,
+                    preferences: preferences,
+                    viewPreferences: viewPreferences
+                )
+                repeatEveryToggle
             }
-            .popover(
-                isPresented: $viewPreferences.showOptionsPopover,
-                arrowEdge: .top
-            ) {
-                Grid(alignment: .leading) {
-                    GridRow {
-                        ReminderDayOptionsView(
-                            reminder: reminder,
-                            preferences: preferences,
-                            viewPreferences: viewPreferences
-                        )
-                        repeatEveryToggle
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
 
-                    GridRow {
-                        Toggle("Always running", isOn: $preferences.alwaysRunning)
-                            .disabled(preferences.nonRandom)
-                        timesOnlyToggle
-                    }
+            GridRow {
+                Toggle("Always running", isOn: $preferences.alwaysRunning)
+                    .disabled(preferences.nonRandom)
+                timesOnlyToggle
+            }
 
-                    GridRow {
-                        Toggle("Non-random", isOn: $preferences.nonRandom)
-                            .disabled(preferences.alwaysRunning)
-                        Toggle("Show in window when active", isOn: $preferences.showWhenActive)
-                    }
-                }
-                .frame(width: ViewConstants.reminderWindowWidth)
-                .padding()
+            GridRow {
+                Toggle("Non-random", isOn: $preferences.nonRandom)
+                    .disabled(preferences.alwaysRunning)
+                Toggle("Show in window when active", isOn: $preferences.showWhenActive)
             }
         }
     }
@@ -111,4 +99,5 @@ struct ReminderOptionsView: View {
         viewPreferences: .init(),
         fields: .init()
     )
+    .padding()
 }

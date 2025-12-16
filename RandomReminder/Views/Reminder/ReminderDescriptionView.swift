@@ -38,7 +38,7 @@ struct ReminderDescriptionView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Enter the Bash command to be executed when this reminder occurs:")
+            Text("Enter a Bash command to generate a description for this reminder:")
             TextField("", text: $command).font(Self.codeFont)
                 .focused($commandIsFocused)
                 .onSubmit {

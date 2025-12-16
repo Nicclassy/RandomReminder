@@ -16,7 +16,7 @@ struct ReminderAudioOptionsView: View {
     private let alwaysShowFilePicker = false
 
     var body: some View {
-        VStack(alignment: .leading) {
+        HStack(spacing: 10) {
             Toggle("Play audio when the reminder occurs", isOn: $useAudioFile)
                 .padding(.bottom, 5)
             HStack {
@@ -35,7 +35,8 @@ struct ReminderAudioOptionsView: View {
 
                 Button(buttonText(pickerIsShown: showPicker)) {
                     viewPreferences.showFileImporter = true
-                }.fileImporter(
+                }
+                .fileImporter(
                     isPresented: $viewPreferences.showFileImporter,
                     allowedContentTypes: [.audio],
                     allowsMultipleSelection: false
