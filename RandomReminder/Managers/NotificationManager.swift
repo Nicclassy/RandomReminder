@@ -163,7 +163,6 @@ final class NotificationManager {
             }
         }
 
-        // Notification has disappeared
         async let notificationDisappeared: Void = {
             // Now, wait until it disappears
             defer {
@@ -186,6 +185,7 @@ final class NotificationManager {
 
         _ = await (notificationDisappeared, activeReminderViewDismissed)
 
+        // Notification has disappeared
         await MainActor.run {
             ActiveReminderManager.shared.unsetActiveReminder()
             reminderService.stop()

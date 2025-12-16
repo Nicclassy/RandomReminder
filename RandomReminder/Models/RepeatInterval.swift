@@ -50,7 +50,7 @@ enum RepeatInterval: Codable, Equatable, Hashable, CaseIterable {
 }
 
 extension RepeatInterval {
-    static var gapIntervals: [RepeatInterval] {
+    static var gapIntervals: [Self] {
         [.second, .minute, .hour, .day]
     }
 }

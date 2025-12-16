@@ -95,11 +95,7 @@ struct ReminderValidator {
     }
 
     private func reminderHasAlreadyHappened() -> Bool {
-        if preferences.nonRandom {
-            Date() >= reminder.earliestDate
-        } else {
-            Date() >= reminder.latestDate
-        }
+        Date() >= reminder.latestDate
     }
 
     private func reminderWillNeverHappen() -> Bool {

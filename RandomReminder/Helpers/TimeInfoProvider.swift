@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum TimeFormat: CaseIterable, EnumRawRepresentable {
+enum TimeFormat: Codable, EnumRawRepresentable {
     case short
     case medium
     case long

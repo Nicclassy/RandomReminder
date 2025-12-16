@@ -9,7 +9,7 @@ import LaunchAtLogin
 import SwiftUI
 
 struct GeneralPreferencesView: View {
-    @ObservedObject var appPreferences: AppPreferences = .shared
+    @ObservedObject private var appPreferences: AppPreferences = .shared
 
     var body: some View {
         Form {
@@ -59,7 +59,7 @@ struct GeneralPreferencesView: View {
                     Text(L10n.Preferences.General.TimeFormat.medium).tag(TimeFormat.medium)
                     Text(L10n.Preferences.General.TimeFormat.short).tag(TimeFormat.short)
                 }
-                .pickerStyle(RadioGroupPickerStyle())
+                .pickerStyle(.radioGroup)
                 .onChange(of: appPreferences.timeFormat) {
                     FancyLogger.info("Posting refresh modification window notification")
                     ReminderModificationController.shared.postRefreshModificationWindowNotification()

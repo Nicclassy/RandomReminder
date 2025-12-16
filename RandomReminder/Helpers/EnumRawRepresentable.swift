@@ -7,9 +7,9 @@
 
 import Foundation
 
-protocol EnumRawRepresentable: Codable, RawRepresentable {}
+protocol EnumRawRepresentable: CaseIterable, RawRepresentable {}
 
-extension EnumRawRepresentable where Self: CaseIterable {
+extension EnumRawRepresentable where Self: Codable {
     var rawValue: String {
         String(describing: self)
     }
