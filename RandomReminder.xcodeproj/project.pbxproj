@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		810B20C62DA25EE9005041A4 /* ReminderModificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 810B20C52DA25EE9005041A4 /* ReminderModificationController.swift */; };
+		81102BE42EF141820033A87B /* CommandController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81102BE32EF141820033A87B /* CommandController.swift */; };
 		8118A10F2D5E90FD00A9FF08 /* ReminderModificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A10E2D5E90FD00A9FF08 /* ReminderModificationView.swift */; };
 		8118A1112D5FA1B000A9FF08 /* StepperTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A1102D5FA1B000A9FF08 /* StepperTextField.swift */; };
 		8118A1132D5FB2FE00A9FF08 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8118A1122D5FB2FE00A9FF08 /* ContentView.swift */; };
@@ -96,6 +97,7 @@
 
 /* Begin PBXFileReference section */
 		810B20C52DA25EE9005041A4 /* ReminderModificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderModificationController.swift; sourceTree = "<group>"; };
+		81102BE32EF141820033A87B /* CommandController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandController.swift; sourceTree = "<group>"; };
 		8118A10E2D5E90FD00A9FF08 /* ReminderModificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderModificationView.swift; sourceTree = "<group>"; };
 		8118A1102D5FA1B000A9FF08 /* StepperTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperTextField.swift; sourceTree = "<group>"; };
 		8118A1122D5FB2FE00A9FF08 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -362,6 +364,7 @@
 				8163F6112D13A90E0052A016 /* StatusBarController.swift */,
 				813F30EC2D261FD300EF6DD1 /* PreferencesViewController.swift */,
 				810B20C52DA25EE9005041A4 /* ReminderModificationController.swift */,
+				81102BE32EF141820033A87B /* CommandController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -608,6 +611,7 @@
 				81E8D2052DB9815C00F1BF97 /* ReminderSerializer.swift in Sources */,
 				813F310F2D2EA0E800EF6DD1 /* AnyReminderInterval.swift in Sources */,
 				81DB8EB72DA4FCC600E50650 /* Locked.swift in Sources */,
+				81102BE42EF141820033A87B /* CommandController.swift in Sources */,
 				8163F6132D13A90E0052A016 /* StatusBarController.swift in Sources */,
 				81265B262DCDD510005C95F2 /* NumericTextField.swift in Sources */,
 				8118A13F2D6A790E00A9FF08 /* ReminderAudioOptionsView.swift in Sources */,

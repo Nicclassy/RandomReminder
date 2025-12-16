@@ -21,39 +21,50 @@ struct ReminderContentOptionsView: View {
                 Text("Reminder title:")
                 TextField("Title", text: $reminder.title)
             }
-            GridRow {
+            GridRow(alignment: .top) {
                 Text("Reminder description:")
-                HStack {
-                    if case let .text(description) = reminder.description {
-                        TextField(
-                            "Description",
+                if case let .text(description) = reminder.description {
+                    ZStack(alignment: .topLeading) {
+                        TextEditor(
                             text: Binding(
                                 get: { description },
                                 set: { reminder.description = .text($0) }
                             )
                         )
-                    } else {
-                        Button("Delete description command") {
-                            reminder.description = .text("")
+                        .font(.system(size: NSFont.systemFontSize))
+                        .frame(width: 380, height: 40)
+                        .overlay(
+                            Rectangle()
+                                .fill(.windowBackground)
+                                .frame(width: 15),
+                            alignment: .trailing
+                        )
+
+                        HStack {
+                            Spacer()
+                            Button(
+                                action: {
+                                    if case .command = reminder.description {
+                                        ReminderModificationController.shared
+                                            .editDescriptionCommand(reminder.description)
+                                    }
+                                    openWindow(id: WindowIds.descriptionCommand)
+                                },
+                                label: {
+                                    if commandIcon {
+                                        Text("⌘")
+                                    } else {
+                                        Image(systemName: "terminal")
+                                    }
+                                }
+                            )
+                            .fixedSize()
                         }
                     }
-                    Spacer()
-                    Button(
-                        action: {
-                            if case .command = reminder.description {
-                                ReminderModificationController.shared.editDescriptionCommand(reminder.description)
-                            }
-                            openWindow(id: WindowIds.descriptionCommand)
-                        },
-                        label: {
-                            if commandIcon {
-                                // Looks better than its corresponding SF Symbol
-                                Text("⌘")
-                            } else {
-                                Image(systemName: "terminal")
-                            }
-                        }
-                    )
+                } else {
+                    Button("Delete description command") {
+                        reminder.description = .text("")
+                    }
                 }
             }
             GridRow {
