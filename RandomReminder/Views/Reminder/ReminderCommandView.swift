@@ -1,5 +1,5 @@
 //
-//  ReminderDescriptionView.swift
+//  ReminderCommandView.swift
 //  RandomReminder
 //
 //  Created by Luca Napoli on 15/6/2025.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-private struct DescriptionProcess {
+private struct ReminderCommandProcess {
     let output: String
     let result: SubprocessResult
     let hasExecuted: Bool
@@ -23,22 +23,25 @@ private struct DescriptionProcess {
     }
 }
 
-struct ReminderDescriptionView: View {
+struct ReminderCommandView: View {
     private static let defaultCommand = ""
     private static let codeFont: Font = .system(size: 12, design: .monospaced)
+    private let controller: CommandController = .shared
 
     @Environment(\.dismissWindow) private var dismissWindow
 
     @State private var command = Self.defaultCommand
-    @State private var process: DescriptionProcess = .init()
+    @State private var commandType: ReminderCommand = .descriptionCommand
+    @State private var process: ReminderCommandProcess = .init()
     @State private var settingsOpen = false
     @State private var generatesTitle = false
+    @State private var isFirstCommandRun = true
     @State private var isExecutingCommand = false
     @FocusState private var commandIsFocused: Bool
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Enter a Bash command to generate a description for this reminder:")
+            Text(title)
             TextField("", text: $command).font(Self.codeFont)
                 .focused($commandIsFocused)
                 .onSubmit {
@@ -52,9 +55,13 @@ struct ReminderDescriptionView: View {
 
             HStack {
                 Button("Save") {
-                    let descriptionCommand: ReminderDescription = .command(command, generatesTitle: generatesTitle)
-                    ReminderModificationController.shared.setDescriptionCommand(descriptionCommand)
-                    dismissWindow(id: WindowIds.descriptionCommand)
+                    if commandType == .descriptionCommand {
+                        let description: ReminderDescription = .command(command, generatesTitle: generatesTitle)
+                        controller.set(value: description, for: .descriptionCommand)
+                    } else {
+                        // TODO
+                    }
+                    dismissWindow(id: WindowIds.reminderCommand)
                 }
                 .disabled(command.isEmpty)
                 .if(!command.isEmpty) { it in
@@ -62,7 +69,7 @@ struct ReminderDescriptionView: View {
                 }
 
                 Button("Cancel") {
-                    dismissWindow(id: WindowIds.descriptionCommand)
+                    dismissWindow(id: WindowIds.reminderCommand)
                 }
                 Spacer()
                 Button("Run") {
@@ -70,19 +77,21 @@ struct ReminderDescriptionView: View {
                 }
                 .disabled(command.isEmpty || isExecutingCommand)
 
-                Button(
-                    action: {
-                        settingsOpen = true
-                    },
-                    label: {
-                        Image(systemName: "gearshape")
-                            .popover(isPresented: $settingsOpen) { settingsPopoverView }
-                    }
-                )
+                if commandType == .descriptionCommand {
+                    Button(
+                        action: {
+                            settingsOpen = true
+                        },
+                        label: {
+                            Image(systemName: "gearshape")
+                                .popover(isPresented: $settingsOpen) { settingsPopoverView }
+                        }
+                    )
+                }
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: .editDescriptionCommand)) { _ in
-            let description = ReminderModificationController.shared.descriptionCommand
+        .onReceive(.descriptionCommand) { _ in
+            let description: ReminderDescription = controller.value(for: .descriptionCommand)
             guard case let .command(newCommand, newGeneratesTitle) = description else {
                 FancyLogger.error("Expected a .command, received instead \(description)")
                 return
@@ -91,6 +100,12 @@ struct ReminderDescriptionView: View {
             command = newCommand
             generatesTitle = newGeneratesTitle
             FancyLogger.info("Description command edit")
+        }
+        .onReceive(.activationCommand) { _ in
+            command = controller.value(for: .activationCommand)
+        }
+        .onAppear {
+            commandType = CommandController.shared.commandType
         }
         .onDisappear {
             reset()
@@ -158,6 +173,14 @@ struct ReminderDescriptionView: View {
         }
     }
 
+    private var title: String {
+        if commandType == .descriptionCommand {
+            "Enter a Bash command to generate a description for this reminder:"
+        } else {
+            "Enter a Bash command to run when the reminder appears:"
+        }
+    }
+
     private func runCommand() {
         Task {
             await MainActor.run {
@@ -174,12 +197,12 @@ struct ReminderDescriptionView: View {
 
             await MainActor.run {
                 process = if subprocess.hasErrors {
-                    DescriptionProcess(
+                    ReminderCommandProcess(
                         output: subprocess.stdout,
                         result: .error(subprocess.stderr)
                     )
                 } else {
-                    DescriptionProcess(
+                    ReminderCommandProcess(
                         output: subprocess.stdout,
                         result: result
                     )
@@ -197,5 +220,5 @@ struct ReminderDescriptionView: View {
 }
 
 #Preview {
-    ReminderDescriptionView()
+    ReminderCommandView()
 }
