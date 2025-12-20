@@ -39,6 +39,8 @@ enum ReminderConstants {
 
 enum ViewConstants {
     static let preferencesSpacing: CGFloat = 20
+    static let optionsSpacing: CGFloat = 20
+    static let horizontalSpacing: CGFloat = 10
     static let upcomingRemindersBeforeScroll: UInt = 3
     static let pastRemindersBeforeScroll: UInt = 2
     static let reminderRowHeight: CGFloat = 57.5
@@ -51,15 +53,19 @@ enum ViewConstants {
 enum WindowIds {
     static let createReminder = "create-reminder"
     static let editReminder = "edit-reminder"
-    static let descriptionCommand = "description-command"
+    static let reminderCommand = "reminder-command"
     static let activeReminder = "active-reminder"
     static let onboarding = "onboarding"
 }
 
 enum WindowTitles {
     static let createReminder = "Create New Reminder"
+    static let createFirstStep = "Reminder Content"
+    static let createFinalStep = "Reminder Settings"
     static let editReminder = "Edit Reminder"
     static let descriptionCommand = "Description Command"
+    static let activationCommand = "Activation Command"
+    static let reminderCommand = "Reminder Command"
     static let activeReminder = "Reminder Active"
     static let onboarding = "RandomReminder"
 }

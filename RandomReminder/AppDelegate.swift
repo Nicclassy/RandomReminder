@@ -12,11 +12,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private(set) var statusBarController: StatusBarController!
 
     func applicationDidFinishLaunching(_: Notification) {
+        AppPreferences.shared.onboardingComplete = true
         Self.shared = self
         statusBarController = .init()
         ReminderManager.shared.setup()
         if AppPreferences.shared.onboardingComplete {
             NotificationPermissions.shared.promptIfAlertsNotEnabled()
+        }
+    }
+
+    func applicationDidBecomeActive(_: Notification) {
+        if let window = NSApp.windows.first {
+            window.makeKeyAndOrderFront(nil)
         }
     }
 
