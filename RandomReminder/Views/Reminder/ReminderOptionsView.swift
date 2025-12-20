@@ -9,9 +9,9 @@ import SwiftUI
 
 struct ReminderOptionsView: View {
     @Bindable var reminder: MutableReminder
-    @ObservedObject var preferences: ReminderPreferences
-    @ObservedObject var viewPreferences: ModificationViewPreferences
-    @ObservedObject var fields: ModificationViewFields
+    @Bindable var preferences: ReminderPreferences
+    @Bindable var viewPreferences: ModificationViewPreferences
+    @Bindable var fields: ModificationViewFields
 
     var body: some View {
         Grid(alignment: .leading) {

@@ -26,10 +26,10 @@ private struct ReminderCommandProcess {
 struct ReminderCommandView: View {
     private static let defaultCommand = ""
     private static let codeFont: Font = .system(size: 12, design: .monospaced)
-    private let controller: CommandController = .shared
 
     @Environment(\.dismissWindow) private var dismissWindow
 
+    private let controller: CommandController = .shared
     @State private var command = Self.defaultCommand
     @State private var commandType: ReminderCommand = .descriptionCommand
     @State private var process: ReminderCommandProcess = .init()
@@ -59,7 +59,8 @@ struct ReminderCommandView: View {
                         let description: ReminderDescription = .command(command, generatesTitle: generatesTitle)
                         controller.set(value: description, for: .descriptionCommand)
                     } else {
-                        // TODO
+                        let activationCommand: ActivationCommand = .init(value: command, isEnabled: true)
+                        controller.set(value: activationCommand, for: .activationCommand)
                     }
                     dismissWindow(id: WindowIds.reminderCommand)
                 }
@@ -102,7 +103,9 @@ struct ReminderCommandView: View {
             FancyLogger.info("Description command edit")
         }
         .onReceive(.activationCommand) { _ in
-            command = controller.value(for: .activationCommand)
+            let activationCommand: ActivationCommand = controller.value(for: .activationCommand)
+            command = activationCommand.value
+            generatesTitle = false
         }
         .onAppear {
             commandType = CommandController.shared.commandType

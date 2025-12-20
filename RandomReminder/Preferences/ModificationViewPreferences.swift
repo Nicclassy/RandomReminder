@@ -7,16 +7,17 @@
 
 import Foundation
 
-final class ModificationViewPreferences: ObservableObject {
-    @Published var viewAppeared = false
-    @Published var closeView = false
-    @Published var refreshView = false
-    @Published var showReminderAlert = false
-    @Published var showSpecificDaysPopover = false
-    @Published var showTimesOnlyPopover = false
-    @Published var showCancelAlert = false
-    @Published var showFileImporter = false
-    @Published var showOptionsPopover = false
+@Observable
+final class ModificationViewPreferences {
+    var viewAppeared = false
+    var closeView = false
+    var refreshView = false
+    var showReminderAlert = false
+    var showSpecificDaysPopover = false
+    var showTimesOnlyPopover = false
+    var showCancelAlert = false
+    var showFileImporter = false
+    var showOptionsPopover = false
 
     func reset() {
         showReminderAlert = false

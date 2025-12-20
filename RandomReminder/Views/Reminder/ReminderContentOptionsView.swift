@@ -12,8 +12,8 @@ struct ReminderContentOptionsView: View {
 
     private let commandIcon = false
     @Bindable var reminder: MutableReminder
-    @ObservedObject var preferences: ReminderPreferences
-    @ObservedObject var fields: ModificationViewFields
+    @Bindable var preferences: ReminderPreferences
+    @Bindable var fields: ModificationViewFields
 
     var body: some View {
         Grid(alignment: .leading) {
@@ -45,10 +45,14 @@ struct ReminderContentOptionsView: View {
                             Button(
                                 action: {
                                     if case .command = reminder.description {
-                                        ReminderModificationController.shared
-                                            .editDescriptionCommand(reminder.description)
+                                        CommandController.shared.set(
+                                            value: reminder.description,
+                                            for: .descriptionCommand
+                                        )
                                     }
-                                    openWindow(id: WindowIds.descriptionCommand)
+
+                                    CommandController.shared.commandType = .descriptionCommand
+                                    openWindow(id: WindowIds.reminderCommand)
                                 },
                                 label: {
                                     if commandIcon {
@@ -70,10 +74,8 @@ struct ReminderContentOptionsView: View {
             GridRow {
                 Text("Total occurences:")
                 if preferences.nonRandom {
-                    StepperTextField(
-                        value: .constant(1)
-                    )
-                    .disabled(true)
+                    StepperTextField(value: .constant(1))
+                        .disabled(true)
                 } else {
                     StepperTextField(
                         value: $reminder.totalOccurences,

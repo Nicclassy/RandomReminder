@@ -17,9 +17,10 @@ enum ReminderModificationMode {
     case edit
 }
 
-final class ModificationViewFields: ObservableObject {
-    @Published var occurrencesText = ""
-    @Published var intervalQuantityText = ""
+@Observable
+final class ModificationViewFields {
+    var occurrencesText = ""
+    var intervalQuantityText = ""
 
     func reset() {
         occurrencesText = ""
@@ -32,9 +33,9 @@ private struct ReminderContentView: View {
     @Environment(\.dismissWindow) private var dismissWindow
 
     @Binding var reminder: MutableReminder
-    @ObservedObject var preferences: ReminderPreferences
-    @ObservedObject var viewPreferences: ModificationViewPreferences
-    @ObservedObject var fields: ModificationViewFields
+    @Bindable var preferences: ReminderPreferences
+    @Bindable var viewPreferences: ModificationViewPreferences
+    @Bindable var fields: ModificationViewFields
 
     private let commandController: CommandController = .shared
     let mode: ReminderModificationMode
@@ -58,15 +59,15 @@ private struct ReminderContentView: View {
 
             HStack(spacing: ViewConstants.horizontalSpacing) {
                 Toggle(
-                    "Run a command when the reminder appears",
-                    isOn: $reminder.activationEvents.command.isEnabled
+                    "Run a command when the reminder occurs",
+                    isOn: $preferences.activationCommandEnabled
                 )
-                Button(reminder.activationEvents.command.value.isEmpty ? "Choose command" : "Edit command") {
-                    commandController.set(value: reminder.activationEvents.command.value, for: .activationCommand)
+                Button(reminder.activationEvents.command.value.isEmpty ? "Enter command" : "Edit command") {
+                    commandController.set(value: reminder.activationEvents.command, for: .activationCommand)
                     commandController.commandType = .activationCommand
                     openWindow(id: WindowIds.reminderCommand)
                 }
-                .disabled(!reminder.activationEvents.command.isEnabled)
+                .disabled(!preferences.activationCommandEnabled)
             }
 
             Spacer()
@@ -112,16 +113,6 @@ private struct ReminderContentView: View {
                 Text(L10n.Modification.DiscardReminder.message)
             }
         )
-        .onChange(of: viewPreferences.closeView) {
-            // For some reason, dismissing the window after the alert has closed
-            // or in this closure does not work.
-            // Therefore, it is necessary to close the window itself instead
-            if viewPreferences.closeView {
-                NSApp.keyWindow?.close()
-                dismissWindow(id: WindowIds.reminderCommand)
-                viewPreferences.closeView = false
-            }
-        }
     }
 
     private var alertTitle: String {
@@ -139,9 +130,9 @@ private struct ReminderCreateView: View {
 
     @Binding var reminder: MutableReminder
     @Binding var validationResult: ValidationResult
-    @ObservedObject var preferences: ReminderPreferences
-    @ObservedObject var viewPreferences: ModificationViewPreferences
-    @ObservedObject var fields: ModificationViewFields
+    @Bindable var preferences: ReminderPreferences
+    @Bindable var viewPreferences: ModificationViewPreferences
+    @Bindable var fields: ModificationViewFields
     private let schedulingPreferences: SchedulingPreferences = .shared
 
     let mode: ReminderModificationMode
@@ -151,7 +142,7 @@ private struct ReminderCreateView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: ViewConstants.horizontalSpacing) {
                 ReminderDateView(
                     reminder: reminder,
                     preferences: preferences
@@ -221,11 +212,11 @@ struct ReminderModificationView: View {
     @Environment(\.dismissWindow) private var dismissWindow
 
     @State var reminder: MutableReminder = .init()
+    @State var preferences: ReminderPreferences = .init()
+    @State var viewPreferences: ModificationViewPreferences = .init()
+    @State var fields: ModificationViewFields = .init()
     @State private var validationResult: ValidationResult = .unset
     @State private var step: ReminderModificationStep = .content
-    @StateObject var preferences: ReminderPreferences = .init()
-    @StateObject var viewPreferences: ModificationViewPreferences = .init()
-    @StateObject var fields: ModificationViewFields = .init()
     @ObservedObject private var controller: ReminderModificationController = .shared
 
     private let schedulingPreferences: SchedulingPreferences = .shared
@@ -260,11 +251,24 @@ struct ReminderModificationView: View {
                 dismissWindow(id: WindowIds.reminderCommand)
                 controller.modificationWindowOpen = false
             }
+            .onChange(of: viewPreferences.closeView) {
+                // For some reason, dismissing the window after the alert has closed
+                // or in this closure does not work.
+                // Therefore, it is necessary to close the window itself instead
+                if viewPreferences.closeView {
+                    NSApp.keyWindow?.close()
+                    dismissWindow(id: WindowIds.reminderCommand)
+                    viewPreferences.closeView = false
+                }
+            }
             .onReceive(NotificationCenter.default.publisher(for: .refreshModificationWindow)) { _ in
                 viewPreferences.refreshView.toggle()
             }
             .onReceive(.descriptionCommand) { _ in
                 reminder.description = commandController.value(for: .descriptionCommand)
+            }
+            .onReceive(.activationCommand) { _ in
+                reminder.activationEvents.command = commandController.value(for: .activationCommand)
             }
             .onReceive(NotificationCenter.default.publisher(for: .openActiveReminderWindow)) { _ in
                 openWindow(id: WindowIds.activeReminder)
@@ -272,7 +276,7 @@ struct ReminderModificationView: View {
             .onReceive(NotificationCenter.default.publisher(for: .dismissActiveReminderWindow)) { _ in
                 dismissWindow(id: WindowIds.activeReminder)
             }
-            .navigationTitle(step == .content ? "Reminder content" : "Reminder settings")
+            .navigationTitle(step == .content ? WindowTitles.createFinalStep : WindowTitles.createFinalStep)
             .frame(width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight)
             .padding()
     }

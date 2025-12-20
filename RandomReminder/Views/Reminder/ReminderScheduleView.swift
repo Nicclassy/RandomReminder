@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ReminderDateView: View {
     @Bindable var reminder: MutableReminder
-    @ObservedObject var preferences: ReminderPreferences
+    @Bindable var preferences: ReminderPreferences
 
     var body: some View {
         Grid(alignment: .leading) {

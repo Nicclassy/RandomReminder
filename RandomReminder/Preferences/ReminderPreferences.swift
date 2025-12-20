@@ -8,14 +8,16 @@
 import Foundation
 import SwiftUI
 
-final class ReminderPreferences: ObservableObject {
-    @Published var repeatingEnabled: Bool
-    @Published var timesOnly: Bool
-    @Published var alwaysRunning: Bool
-    @Published var specificDays: Bool
-    @Published var useAudioFile: Bool
-    @Published var nonRandom: Bool
-    @Published var showWhenActive: Bool
+@Observable
+final class ReminderPreferences {
+    var repeatingEnabled: Bool
+    var timesOnly: Bool
+    var alwaysRunning: Bool
+    var specificDays: Bool
+    var useAudioFile: Bool
+    var activationCommandEnabled: Bool
+    var nonRandom: Bool
+    var showWhenActive: Bool
 
     init(
         repeatingEnabled: Bool = false,
@@ -23,6 +25,7 @@ final class ReminderPreferences: ObservableObject {
         alwaysRunning: Bool = false,
         specificDays: Bool = false,
         useAudioFile: Bool = false,
+        activationCommandEnabled: Bool = false,
         nonRandom: Bool = false,
         showWhenActive: Bool = false
     ) {
@@ -31,6 +34,7 @@ final class ReminderPreferences: ObservableObject {
         self.alwaysRunning = alwaysRunning
         self.specificDays = specificDays
         self.useAudioFile = useAudioFile
+        self.activationCommandEnabled = activationCommandEnabled
         self.nonRandom = nonRandom
         self.showWhenActive = showWhenActive
     }
@@ -42,6 +46,7 @@ final class ReminderPreferences: ObservableObject {
             alwaysRunning: reminder.interval.isInfinite,
             specificDays: !reminder.interval.isInfinite && !reminder.days.isEmpty,
             useAudioFile: reminder.activationEvents.audio != nil,
+            activationCommandEnabled: reminder.activationEvents.command.isEnabled,
             nonRandom: !reminder.eponymous,
             showWhenActive: reminder.activationEvents.showWhenActive
         )
@@ -53,6 +58,7 @@ final class ReminderPreferences: ObservableObject {
         alwaysRunning = reminder.interval.isInfinite
         specificDays = !alwaysRunning && !reminder.days.isEmpty
         useAudioFile = reminder.activationEvents.audio != nil
+        activationCommandEnabled = reminder.activationEvents.command.isEnabled
         nonRandom = !reminder.eponymous
         showWhenActive = reminder.activationEvents.showWhenActive
     }
@@ -63,6 +69,7 @@ final class ReminderPreferences: ObservableObject {
         alwaysRunning = false
         specificDays = false
         useAudioFile = false
+        activationCommandEnabled = false
         nonRandom = false
         showWhenActive = false
     }

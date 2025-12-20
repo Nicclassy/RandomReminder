@@ -9,8 +9,8 @@ import SwiftUI
 
 struct ReminderDayOptionsView: View {
     @Bindable var reminder: MutableReminder
-    @ObservedObject var preferences: ReminderPreferences
-    @ObservedObject var viewPreferences: ModificationViewPreferences
+    @Bindable var preferences: ReminderPreferences
+    @Bindable var viewPreferences: ModificationViewPreferences
 
     var body: some View {
         VStack(alignment: .leading) {

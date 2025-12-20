@@ -9,14 +9,14 @@ import SwiftUI
 
 struct ReminderAudioOptionsView: View {
     @Bindable var reminder: MutableReminder
-    @ObservedObject var preferences: ReminderPreferences
-    @ObservedObject var viewPreferences: ModificationViewPreferences
+    @Bindable var preferences: ReminderPreferences
+    @Bindable var viewPreferences: ModificationViewPreferences
     @Binding var useAudioFile: Bool
 
     private let alwaysShowFilePicker = false
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: ViewConstants.horizontalSpacing) {
             Toggle("Play audio when the reminder occurs", isOn: $useAudioFile)
                 .padding(.bottom, 5)
             HStack {
