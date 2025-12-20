@@ -7,6 +7,13 @@
 
 import Foundation
 
+struct ActivationCommand: Codable {
+    static let `default`: Self = .init(value: "", isEnabled: false)
+
+    var value: String
+    var isEnabled: Bool
+}
+
 struct ReminderAudioFile: Codable, Equatable, Hashable {
     let name: String
     let url: URL
@@ -22,10 +29,16 @@ struct ReminderAudioFile: Codable, Equatable, Hashable {
 
 struct ReminderActivationEvents: Codable {
     var audio: ReminderAudioFile?
+    var command: ActivationCommand
     var showWhenActive: Bool
 
-    init(audio: ReminderAudioFile? = nil, showWhenActive: Bool = false) {
+    init(
+        audio: ReminderAudioFile? = nil,
+        command: ActivationCommand = .default,
+        showWhenActive: Bool = false
+    ) {
         self.audio = audio
+        self.command = command
         self.showWhenActive = showWhenActive
     }
 }

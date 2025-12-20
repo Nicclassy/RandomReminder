@@ -178,6 +178,7 @@ final class MutableReminder {
             activationEvents.audio = nil
         }
         activationEvents.showWhenActive = reminderPreferences.showWhenActive
+        activationEvents.command.isEnabled = reminderPreferences.activationCommandEnabled
 
         return RandomReminder(
             title: title,

@@ -20,15 +20,16 @@ final class CommandController {
             let notificationName = Notification.Name(String(describing: command))
             mapping[command] = notificationName
         }
+
         return mapping
     }()
 
-    private var valuesByCommand: [ReminderCommand: Any] = [:]
+    private var valuesByCommand: [ReminderCommand: Any] = [.activationCommand: ActivationCommand.default]
     var commandType: ReminderCommand = .descriptionCommand
 
     func value<Value>(for command: ReminderCommand) -> Value {
         guard let commandValue = valuesByCommand[command] as? Value else {
-            fatalError("Command \(command) does not have a stored value")
+            fatalError("Command \(command) does not have a stored value for type \(Value.self)")
         }
 
         return commandValue
