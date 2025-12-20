@@ -15,7 +15,7 @@ enum SubprocessResult: Equatable {
 
 struct Subprocess {
     private static let defaultExecutableURL = URL(fileURLWithPath: "/bin/bash")
-    private static let timeoutSeconds: TimeInterval = 1
+    private static let defaultTimeoutSeconds: TimeInterval = 1
 
     private let command: String
     private var commandOutput: String?
@@ -47,7 +47,7 @@ struct Subprocess {
     }
 
     private static func withThrowingTimeout(
-        seconds: TimeInterval = timeoutSeconds,
+        seconds: TimeInterval,
         operation: @escaping () throws -> Void
     ) -> SubprocessResult {
         let semaphore = DispatchSemaphore(value: 0)
@@ -67,7 +67,7 @@ struct Subprocess {
     }
 
     @discardableResult
-    mutating func run() -> SubprocessResult {
+    mutating func run(timeout: TimeInterval? = nil) -> SubprocessResult {
         let process = Process()
         process.arguments = ["-c", command]
         process.executableURL = Self.defaultExecutableURL
@@ -84,7 +84,7 @@ struct Subprocess {
             errorPipe.fileHandleForReading.closeFile()
         }
 
-        let result = Self.withThrowingTimeout {
+        let result = Self.withThrowingTimeout(seconds: timeout ?? Self.defaultTimeoutSeconds) {
             try process.run()
             process.waitUntilExit()
         }

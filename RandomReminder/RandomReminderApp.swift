@@ -28,8 +28,8 @@ struct RandomReminderApp: App {
         }
         .windowResizability(.contentSize)
 
-        Window(WindowTitles.descriptionCommand, id: WindowIds.descriptionCommand) {
-            ReminderDescriptionView()
+        Window(WindowTitles.reminderCommand, id: WindowIds.reminderCommand) {
+            ReminderCommandView()
         }
         .windowResizability(.contentSize)
 
