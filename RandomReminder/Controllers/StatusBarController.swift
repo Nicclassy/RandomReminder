@@ -21,7 +21,6 @@ final class StatusBarController {
         if let button = statusItem.button {
             button.image = NSImage(systemSymbolName: "questionmark.circle", accessibilityDescription: "Menu Bar Icon")
             button.target = self
-            button.action = #selector(onStatusBarClick)
         }
 
         statusItem.menu = buildMenu()
@@ -51,11 +50,6 @@ final class StatusBarController {
     }
 
     @objc
-    private func onStatusBarClick() {
-        FancyLogger.info("Status bar item clicked")
-    }
-
-    @objc
     private func openPreferences() {
         guard AppPreferences.shared.onboardingComplete else {
             showAlert(
@@ -65,6 +59,7 @@ final class StatusBarController {
             )
             return
         }
+
         preferencesViewController.show()
     }
 

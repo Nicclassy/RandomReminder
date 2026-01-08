@@ -12,6 +12,7 @@ final class AppPreferences: ObservableObject {
 
     @AppStorage("onboardingComplete") var onboardingComplete = false
     @AppStorage("launchAtLogin") var launchAtLogin = false
+    @AppStorage("singleModificationView") var singleModificationView = true
     @AppStorage("showReminderCounts") var showReminderCounts = true
     @AppStorage("quickReminderEnabled") var quickReminderEnabled = true
     @AppStorage("quickReminderStarted") var quickReminderStarted = false

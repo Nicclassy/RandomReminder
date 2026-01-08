@@ -16,7 +16,6 @@ func kebaber(_ input: String) -> String {
                     if !result.isEmpty {
                         result.append("-")
                     }
-                    result.append(letter.lowercased())
                 } else {
                     result.append(letter)
                 }
@@ -27,7 +26,7 @@ func kebaber(_ input: String) -> String {
 
 final class IdentifierQualnameRegistry {
     typealias AnIdentifierType = any StaticIdentifier.Type
-    
+
     static let shared = {
         let registry = IdentifierQualnameRegistry()
         registry.registerTypes(
@@ -36,7 +35,7 @@ final class IdentifierQualnameRegistry {
         )
         return registry
     }()
-    
+
     private init() {}
 
     private var typesByName: [String: [AnIdentifierType]] = [:]

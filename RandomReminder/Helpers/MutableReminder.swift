@@ -13,7 +13,7 @@ final class MutableReminder {
     private static let defaultIntervalAmount = 60
     private static let offsetTimeUnit: TimeUnit = .minute
     private static let startOffsetFromNow = 5
-    
+
     private static let `default` = MutableReminder(
         id: .unassigned,
         title: String(),
@@ -28,11 +28,11 @@ final class MutableReminder {
         activationEvents: ReminderActivationEvents(),
         occurences: 0
     )
-    
+
     private static var defaultEarliestDate: Date {
         Date().addingInterval(offsetTimeUnit, quantity: startOffsetFromNow)
     }
-    
+
     private static var defaultLatestDate: Date {
         defaultEarliestDate.addingInterval(defaultIntervalTimeUnit, quantity: defaultIntervalAmount)
     }
@@ -119,7 +119,7 @@ final class MutableReminder {
     func reset() {
         copyFrom(reminder: .default)
     }
-    
+
     func resetDates() {
         earliestDate = Self.defaultEarliestDate
         latestDate = Self.defaultLatestDate

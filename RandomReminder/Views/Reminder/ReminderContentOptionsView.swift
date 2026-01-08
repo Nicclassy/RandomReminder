@@ -33,12 +33,11 @@ struct ReminderContentOptionsView: View {
                         )
                         .font(.system(size: NSFont.systemFontSize))
                         .frame(width: 380, height: 40)
-                        .overlay(
+                        .overlay(alignment: .trailing) {
                             Rectangle()
                                 .fill(.windowBackground)
-                                .frame(width: 15),
-                            alignment: .trailing
-                        )
+                                .frame(width: 15)
+                        }
 
                         HStack {
                             Spacer()
