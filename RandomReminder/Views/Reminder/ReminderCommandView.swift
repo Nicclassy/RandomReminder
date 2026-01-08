@@ -25,6 +25,7 @@ private struct ReminderCommandProcess {
 
 struct ReminderCommandView: View {
     private static let defaultCommand = ""
+    private static let primer = true
     private static let codeFont: Font = .system(size: 12, design: .monospaced)
 
     @Environment(\.dismissWindow) private var dismissWindow
@@ -49,8 +50,7 @@ struct ReminderCommandView: View {
                         runCommand()
                     }
                 }
-            ScrollView { commandOutput }
-                .frame(maxWidth: .infinity, alignment: .leading)
+            ScrollView { commandOutput.frame(maxWidth: .infinity, alignment: .leading) }
                 .background(Color(NSColor.textBackgroundColor))
 
             HStack {
@@ -112,6 +112,11 @@ struct ReminderCommandView: View {
         }
         .onDisappear {
             reset()
+        }
+        .task {
+            guard Self.primer && !isFirstCommandRun else { return }
+            var subprocess = Subprocess(command: "echo > /dev/null")
+            subprocess.run(timeout: 5.0)
         }
         .padding(20)
         .frame(width: 300, height: 240)
@@ -189,6 +194,7 @@ struct ReminderCommandView: View {
             await MainActor.run {
                 isExecutingCommand = true
             }
+                
 
             let (subprocess, result) = await withCheckedContinuation { continuation in
                 Task.detached(priority: .userInitiated) {
@@ -212,6 +218,9 @@ struct ReminderCommandView: View {
                 }
 
                 isExecutingCommand = false
+                if !isFirstCommandRun {
+                    isFirstCommandRun = true
+                }
             }
         }
     }
