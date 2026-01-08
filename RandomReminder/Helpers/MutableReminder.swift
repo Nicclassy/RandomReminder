@@ -9,13 +9,18 @@ import Foundation
 
 @Observable
 final class MutableReminder {
+    private static let defaultIntervalTimeUnit: TimeUnit = .minute
+    private static let defaultIntervalAmount = 60
+    private static let offsetTimeUnit: TimeUnit = .minute
+    private static let startOffsetFromNow = 5
+    
     private static let `default` = MutableReminder(
         id: .unassigned,
         title: String(),
-        description: .text(""),
+        description: .emptyText,
         totalOccurences: 1,
-        earliestDate: Date(),
-        latestDate: Date().addMinutes(60),
+        earliestDate: defaultEarliestDate,
+        latestDate: defaultLatestDate,
         days: [],
         repeatInterval: .minute,
         repeatIntervalType: .every,
@@ -23,6 +28,14 @@ final class MutableReminder {
         activationEvents: ReminderActivationEvents(),
         occurences: 0
     )
+    
+    private static var defaultEarliestDate: Date {
+        Date().addingInterval(offsetTimeUnit, quantity: startOffsetFromNow)
+    }
+    
+    private static var defaultLatestDate: Date {
+        defaultEarliestDate.addingInterval(defaultIntervalTimeUnit, quantity: defaultIntervalAmount)
+    }
 
     var id: ReminderID
     var title: String
@@ -105,6 +118,11 @@ final class MutableReminder {
 
     func reset() {
         copyFrom(reminder: .default)
+    }
+    
+    func resetDates() {
+        earliestDate = Self.defaultEarliestDate
+        latestDate = Self.defaultLatestDate
     }
 
     func copyFrom(reminder: MutableReminder) {
