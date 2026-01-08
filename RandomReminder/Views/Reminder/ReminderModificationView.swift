@@ -28,69 +28,11 @@ final class ModificationViewFields {
     }
 }
 
-private struct ReminderContentView: View {
-    @Environment(\.openWindow) private var openWindow
-    @Environment(\.dismissWindow) private var dismissWindow
-
-    @Binding var reminder: MutableReminder
-    @Bindable var preferences: ReminderPreferences
+private struct CancelButton: View {
     @Bindable var viewPreferences: ModificationViewPreferences
-    @Bindable var fields: ModificationViewFields
-
-    private let commandController: CommandController = .shared
     let mode: ReminderModificationMode
-    let onNextButtonClicked: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading) {
-            ReminderContentOptionsView(
-                reminder: reminder,
-                preferences: preferences,
-                fields: fields
-            )
-
-            Spacer().frame(height: ViewConstants.optionsSpacing)
-            ReminderAudioOptionsView(
-                reminder: reminder,
-                preferences: preferences,
-                viewPreferences: viewPreferences,
-                useAudioFile: $preferences.useAudioFile
-            )
-
-            HStack(spacing: ViewConstants.horizontalSpacing) {
-                Toggle(
-                    "Run a command when the reminder occurs",
-                    isOn: $preferences.activationCommandEnabled
-                )
-                Button(reminder.activationEvents.command.value.isEmpty ? "Enter command" : "Edit command") {
-                    commandController.set(value: reminder.activationEvents.command, for: .activationCommand)
-                    commandController.commandType = .activationCommand
-                    openWindow(id: WindowIds.reminderCommand)
-                }
-                .disabled(!preferences.activationCommandEnabled)
-            }
-
-            Spacer()
-            HStack {
-                cancelButton
-                Spacer()
-                Button(
-                    action: onNextButtonClicked,
-                    label: {
-                        Text("Next")
-                            .frame(width: ViewConstants.modificationButtonSize)
-                    }
-                )
-                .disabled(reminder.title.isEmpty)
-                .if(!reminder.title.isEmpty) { it in
-                    it.buttonStyle(.borderedProminent)
-                }
-            }
-        }
-    }
-
-    @ViewBuilder
-    var cancelButton: some View {
         Button(
             action: {
                 viewPreferences.showCancelAlert = true
@@ -124,6 +66,76 @@ private struct ReminderContentView: View {
     }
 }
 
+private struct ReminderContentView: View {
+    @Environment(\.openWindow) private var openWindow
+    @Environment(\.dismissWindow) private var dismissWindow
+
+    @Binding var reminder: MutableReminder
+    @Bindable var preferences: ReminderPreferences
+    @Bindable var viewPreferences: ModificationViewPreferences
+    @Bindable var fields: ModificationViewFields
+
+    private let commandController: CommandController = .shared
+    let mode: ReminderModificationMode
+    let showNavigationButtons: Bool
+    var onNextButtonClicked: () -> Void = {}
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            ReminderContentOptionsView(
+                reminder: reminder,
+                preferences: preferences,
+                fields: fields
+            )
+
+            Spacer().frame(height: ViewConstants.optionsSpacing)
+            ReminderAudioOptionsView(
+                reminder: reminder,
+                preferences: preferences,
+                viewPreferences: viewPreferences,
+                useAudioFile: $preferences.useAudioFile
+            )
+
+            HStack(spacing: ViewConstants.horizontalSpacing) {
+                Toggle(
+                    "Run a command when the reminder occurs",
+                    isOn: $preferences.activationCommandEnabled
+                )
+                Button(reminder.activationEvents.command.value.isEmpty ? "Enter command" : "Edit command") {
+                    commandController.set(value: reminder.activationEvents.command, for: .activationCommand)
+                    commandController.commandType = .activationCommand
+                    openWindow(id: WindowIds.reminderCommand)
+                }
+                .disabled(!preferences.activationCommandEnabled)
+            }
+
+            if showNavigationButtons {
+                Spacer()
+                HStack {
+                    CancelButton(
+                        viewPreferences: viewPreferences,
+                        mode: mode
+                    )
+                    Spacer()
+                    Button(
+                        action: onNextButtonClicked,
+                        label: {
+                            Text("Next")
+                                .frame(width: ViewConstants.modificationButtonSize)
+                        }
+                    )
+                    .disabled(reminder.title.isEmpty)
+                    .if(!reminder.title.isEmpty) { it in
+                        it.buttonStyle(.borderedProminent)
+                    }
+                }
+            } else {
+                Spacer().frame(height: ViewConstants.optionsSpacing)
+            }
+        }
+    }
+}
+
 private struct ReminderCreateView: View {
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
@@ -136,6 +148,7 @@ private struct ReminderCreateView: View {
     private let schedulingPreferences: SchedulingPreferences = .shared
 
     let mode: ReminderModificationMode
+    let buttonIsCancel: Bool
     let createNewReminder: () -> Void
     let onCreateButtonClicked: () -> Void
     let onBackButtonClicked: () -> Void
@@ -158,13 +171,20 @@ private struct ReminderCreateView: View {
 
             Spacer()
             HStack {
-                Button(
-                    action: onBackButtonClicked,
-                    label: {
-                        Text("Back")
-                            .frame(width: ViewConstants.modificationButtonSize)
-                    }
-                )
+                if buttonIsCancel {
+                    CancelButton(
+                        viewPreferences: viewPreferences,
+                        mode: mode
+                    )
+                } else {
+                    Button(
+                        action: onBackButtonClicked,
+                        label: {
+                            Text("Back")
+                                .frame(width: ViewConstants.modificationButtonSize)
+                        }
+                    )
+                }
                 Spacer()
                 createButton
             }
@@ -180,7 +200,10 @@ private struct ReminderCreateView: View {
                     .frame(width: ViewConstants.modificationButtonSize)
             }
         )
-        .buttonStyle(.borderedProminent)
+        .disabled(createButtonIsDisabled)
+        .if(!createButtonIsDisabled) { it in
+            it.buttonStyle(.borderedProminent)
+        }
         .alert(
             validationResult.alertText,
             isPresented: $viewPreferences.showReminderAlert,
@@ -202,6 +225,10 @@ private struct ReminderCreateView: View {
         )
     }
 
+    private var createButtonIsDisabled: Bool {
+        reminder.title.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty
+    }
+
     private var finishButtonText: String {
         mode == .create ? L10n.Modification.create : L10n.Modification.save
     }
@@ -217,17 +244,19 @@ struct ReminderModificationView: View {
     @State var fields: ModificationViewFields = .init()
     @State private var validationResult: ValidationResult = .unset
     @State private var step: ReminderModificationStep = .content
+    @State private var singleCreationView = false
     @ObservedObject private var controller: ReminderModificationController = .shared
 
     private let schedulingPreferences: SchedulingPreferences = .shared
     private let commandController: CommandController = .shared
-
     let mode: ReminderModificationMode
 
     var body: some View {
         activeView
             .onAppear {
+                singleCreationView = AppPreferences.shared.singleModificationView
                 guard mode == .edit else {
+                    reminder.resetDates()
                     setDefaultTimes()
                     return
                 }
@@ -276,38 +305,71 @@ struct ReminderModificationView: View {
             .onReceive(NotificationCenter.default.publisher(for: .dismissActiveReminderWindow)) { _ in
                 dismissWindow(id: WindowIds.activeReminder)
             }
-            .navigationTitle(step == .content ? WindowTitles.createFinalStep : WindowTitles.createFinalStep)
-            .frame(width: ViewConstants.reminderWindowWidth, height: ViewConstants.reminderWindowHeight)
+            .navigationTitle(windowTitle)
+            .frame(width: ViewConstants.reminderWindowWidth, height: windowHeight)
             .padding()
+    }
+
+    private var contentView: ReminderContentView {
+        ReminderContentView(
+            reminder: $reminder,
+            preferences: preferences,
+            viewPreferences: viewPreferences,
+            fields: fields,
+            mode: mode,
+            showNavigationButtons: !singleCreationView,
+            onNextButtonClicked: {
+                step.forward()
+            }
+        )
+    }
+
+    private var createView: ReminderCreateView {
+        ReminderCreateView(
+            reminder: $reminder,
+            validationResult: $validationResult,
+            preferences: preferences,
+            viewPreferences: viewPreferences,
+            fields: fields,
+            mode: mode,
+            buttonIsCancel: singleCreationView,
+            createNewReminder: createNewReminder,
+            onCreateButtonClicked: create,
+            onBackButtonClicked: {
+                step.backward()
+            }
+        )
     }
 
     @ViewBuilder
     private var activeView: some View {
-        if step == .content {
-            ReminderContentView(
-                reminder: $reminder,
-                preferences: preferences,
-                viewPreferences: viewPreferences,
-                fields: fields,
-                mode: mode,
-                onNextButtonClicked: {
-                    step.forward()
-                }
-            )
+        if singleCreationView {
+            VStack {
+                contentView
+                createView
+            }
         } else {
-            ReminderCreateView(
-                reminder: $reminder,
-                validationResult: $validationResult,
-                preferences: preferences,
-                viewPreferences: viewPreferences,
-                fields: fields,
-                mode: mode,
-                createNewReminder: createNewReminder,
-                onCreateButtonClicked: create,
-                onBackButtonClicked: {
-                    step.backward()
-                }
-            )
+            if step == .content {
+                contentView
+            } else {
+                createView
+            }
+        }
+    }
+
+    private var windowHeight: CGFloat {
+        if singleCreationView {
+            ViewConstants.reminderWindowHeight * 2
+        } else {
+            ViewConstants.reminderWindowHeight
+        }
+    }
+
+    private var windowTitle: String {
+        if singleCreationView {
+            WindowTitles.createReminder
+        } else {
+            step == .content ? WindowTitles.createFirstStep : WindowTitles.createFinalStep
         }
     }
 
