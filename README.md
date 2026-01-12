@@ -29,7 +29,10 @@ It is a non-generic take on a reminders app that is spontaneous in nature and hi
 - [x] SwiftGen for strongly typed localisations
 - [ ] English (American), English (Australian) and Italian localisations
 - [ ] App and menu bar icons
-- [ ] A interactive, high fidelity Figma prototype
+- [x] An interactive, high-fidelity Figma prototype
+
+## Figma
+To access the high-fidelity Figma prototype for RandomReminder, please see [this link](https://www.figma.com/design/66yH3R8HsAtsmsWXe8Nh3Z/RandomReminder--High-fidelity-prototype-?node-id=3365-2284&t=6OmdY2Re7DXH2m5t-1).
 
 ## Acknowledgements
 RandomReminder is possible thanks to OSS. SwiftUI tutorials and guides for macOS development are very limited compared to resources for iOS development, thus RandomReminder is only possible because of the people who willingly and voluntarily share open-source macOS software from which I can learn how to use SwiftUI. More proper acknowledgements will be added later.
