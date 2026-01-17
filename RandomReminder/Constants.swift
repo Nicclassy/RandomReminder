@@ -39,15 +39,18 @@ enum ReminderConstants {
 
 enum ViewConstants {
     static let preferencesSpacing: CGFloat = 20
-    static let optionsSpacing: CGFloat = 20
+    static let optionsSectionSpacing: CGFloat = 20
+    static let optionSpacing: CGFloat = 10
     static let horizontalSpacing: CGFloat = 10
     static let upcomingRemindersBeforeScroll: UInt = 3
     static let pastRemindersBeforeScroll: UInt = 2
     static let reminderRowHeight: CGFloat = 57.5
+    static let reminderRowCornerRadius: CGFloat = 10
 
     static let reminderWindowWidth: CGFloat = 550
     static let reminderWindowHeight: CGFloat = 200
     static let modificationButtonSize: CGFloat = 60
+    static let horizontalButtonSpace: CGFloat = 15
 }
 
 enum WindowIds {

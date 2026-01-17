@@ -194,7 +194,6 @@ struct ReminderCommandView: View {
             await MainActor.run {
                 isExecutingCommand = true
             }
-                
 
             let (subprocess, result) = await withCheckedContinuation { continuation in
                 Task.detached(priority: .userInitiated) {

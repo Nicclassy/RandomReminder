@@ -14,7 +14,7 @@ struct ReminderOptionsView: View {
     @Bindable var fields: ModificationViewFields
 
     var body: some View {
-        Grid(alignment: .leading) {
+        Grid(alignment: .leading, verticalSpacing: ViewConstants.optionSpacing) {
             GridRow {
                 ReminderDayOptionsView(
                     reminder: reminder,
