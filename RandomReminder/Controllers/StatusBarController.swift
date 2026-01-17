@@ -49,8 +49,7 @@ final class StatusBarController {
         return menu
     }
 
-    @objc
-    private func openPreferences() {
+    @objc func openPreferences() {
         guard AppPreferences.shared.onboardingComplete else {
             showAlert(
                 title: "Onboarding incomplete",
@@ -63,8 +62,7 @@ final class StatusBarController {
         preferencesViewController.show()
     }
 
-    @objc
-    private func quit() {
+    @objc private func quit() {
         NSApp.terminate(self)
     }
 }

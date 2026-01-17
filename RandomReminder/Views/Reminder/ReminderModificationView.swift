@@ -77,7 +77,7 @@ private struct ReminderContentView: View {
 
     private let commandController: CommandController = .shared
     let mode: ReminderModificationMode
-    let showNavigationButtons: Bool
+    let singleModificationView: Bool
     var onNextButtonClicked: () -> Void = {}
 
     var body: some View {
@@ -88,28 +88,23 @@ private struct ReminderContentView: View {
                 fields: fields
             )
 
-            Spacer().frame(height: ViewConstants.optionsSpacing)
-            ReminderAudioOptionsView(
-                reminder: reminder,
-                preferences: preferences,
-                viewPreferences: viewPreferences,
-                useAudioFile: $preferences.useAudioFile
-            )
-
-            HStack(spacing: ViewConstants.horizontalSpacing) {
-                Toggle(
-                    "Run a command when the reminder occurs",
-                    isOn: $preferences.activationCommandEnabled
+            Spacer().frame(height: ViewConstants.optionsSectionSpacing)
+            if !singleModificationView {
+                ReminderAudioOptionsView(
+                    reminder: reminder,
+                    preferences: preferences,
+                    viewPreferences: viewPreferences,
+                    useAudioFile: $preferences.useAudioFile
                 )
-                Button(reminder.activationEvents.command.value.isEmpty ? "Enter command" : "Edit command") {
-                    commandController.set(value: reminder.activationEvents.command, for: .activationCommand)
-                    commandController.commandType = .activationCommand
-                    openWindow(id: WindowIds.reminderCommand)
-                }
-                .disabled(!preferences.activationCommandEnabled)
+                ReminderCommandOptionsView(
+                    reminder: reminder,
+                    preferences: preferences,
+                    viewPreferences: viewPreferences,
+                    fields: fields
+                )
             }
 
-            if showNavigationButtons {
+            if !singleModificationView {
                 Spacer()
                 HStack {
                     CancelButton(
@@ -129,8 +124,6 @@ private struct ReminderContentView: View {
                         it.buttonStyle(.borderedProminent)
                     }
                 }
-            } else {
-                Spacer().frame(height: ViewConstants.optionsSpacing)
             }
         }
     }
@@ -148,14 +141,14 @@ private struct ReminderCreateView: View {
     private let schedulingPreferences: SchedulingPreferences = .shared
 
     let mode: ReminderModificationMode
-    let buttonIsCancel: Bool
+    let singleModificationView: Bool
     let createNewReminder: () -> Void
     let onCreateButtonClicked: () -> Void
     let onBackButtonClicked: () -> Void
 
     var body: some View {
         VStack(alignment: .leading) {
-            VStack(alignment: .leading, spacing: ViewConstants.horizontalSpacing) {
+            VStack(alignment: .leading, spacing: ViewConstants.optionsSectionSpacing) {
                 ReminderDateView(
                     reminder: reminder,
                     preferences: preferences
@@ -167,11 +160,30 @@ private struct ReminderCreateView: View {
                     viewPreferences: viewPreferences,
                     fields: fields
                 )
+
+                if singleModificationView {
+                    VStack(alignment: .leading, spacing: ViewConstants.optionSpacing) {
+                        ReminderAudioOptionsView(
+                            reminder: reminder,
+                            preferences: preferences,
+                            viewPreferences: viewPreferences,
+                            useAudioFile: $preferences.useAudioFile
+                        )
+
+                        ReminderCommandOptionsView(
+                            reminder: reminder,
+                            preferences: preferences,
+                            viewPreferences: viewPreferences,
+                            fields: fields
+                        )
+                    }
+                }
             }
 
             Spacer()
-            HStack {
-                if buttonIsCancel {
+            HStack(spacing: ViewConstants.horizontalButtonSpace) {
+                if singleModificationView {
+                    createButton
                     CancelButton(
                         viewPreferences: viewPreferences,
                         mode: mode
@@ -184,9 +196,9 @@ private struct ReminderCreateView: View {
                                 .frame(width: ViewConstants.modificationButtonSize)
                         }
                     )
+                    Spacer()
+                    createButton
                 }
-                Spacer()
-                createButton
             }
         }
     }
@@ -244,7 +256,7 @@ struct ReminderModificationView: View {
     @State var fields: ModificationViewFields = .init()
     @State private var validationResult: ValidationResult = .unset
     @State private var step: ReminderModificationStep = .content
-    @State private var singleCreationView = false
+    @State private var singleView = false
     @ObservedObject private var controller: ReminderModificationController = .shared
 
     private let schedulingPreferences: SchedulingPreferences = .shared
@@ -254,7 +266,7 @@ struct ReminderModificationView: View {
     var body: some View {
         activeView
             .onAppear {
-                singleCreationView = AppPreferences.shared.singleModificationView
+                singleView = true // AppPreferences.shared.singleModificationView
                 guard mode == .edit else {
                     reminder.resetDates()
                     setDefaultTimes()
@@ -317,7 +329,7 @@ struct ReminderModificationView: View {
             viewPreferences: viewPreferences,
             fields: fields,
             mode: mode,
-            showNavigationButtons: !singleCreationView,
+            singleModificationView: singleView,
             onNextButtonClicked: {
                 step.forward()
             }
@@ -332,7 +344,7 @@ struct ReminderModificationView: View {
             viewPreferences: viewPreferences,
             fields: fields,
             mode: mode,
-            buttonIsCancel: singleCreationView,
+            singleModificationView: singleView,
             createNewReminder: createNewReminder,
             onCreateButtonClicked: create,
             onBackButtonClicked: {
@@ -343,7 +355,7 @@ struct ReminderModificationView: View {
 
     @ViewBuilder
     private var activeView: some View {
-        if singleCreationView {
+        if singleView {
             VStack {
                 contentView
                 createView
@@ -358,7 +370,7 @@ struct ReminderModificationView: View {
     }
 
     private var windowHeight: CGFloat {
-        if singleCreationView {
+        if singleView {
             ViewConstants.reminderWindowHeight * 2
         } else {
             ViewConstants.reminderWindowHeight
@@ -366,7 +378,7 @@ struct ReminderModificationView: View {
     }
 
     private var windowTitle: String {
-        if singleCreationView {
+        if singleView {
             WindowTitles.createReminder
         } else {
             step == .content ? WindowTitles.createFirstStep : WindowTitles.createFinalStep
