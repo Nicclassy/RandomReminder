@@ -102,7 +102,7 @@ private struct FinishedView: View {
 }
 
 struct OnboardingView: View {
-    let onCompletion: () -> Void
+    @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
 
     @State private var viewModel = OnboardingViewModel()
@@ -145,7 +145,7 @@ struct OnboardingView: View {
                             viewModel.moveStepForward()
                             if viewModel.step.isLast {
                                 dismissWindow(id: WindowIds.onboarding)
-                                onCompletion()
+                                OnboardingManager.shared.onCompletion()
                             }
                             return
                         }
@@ -185,11 +185,14 @@ struct OnboardingView: View {
                 }
             )
         }
+        .onReceive(NotificationCenter.default.publisher(for: .openOnboardingWindow)) { _ in
+            openWindow(id: WindowIds.onboarding)
+        }
         .padding(.all, 30)
         .frame(width: 400, height: 450)
     }
 }
 
 #Preview {
-    OnboardingView(onCompletion: {})
+    OnboardingView()
 }

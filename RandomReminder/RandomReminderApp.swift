@@ -11,11 +11,18 @@ import SwiftUI
 struct RandomReminderApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
+    init() {
+        OnboardingManager.shared.forceOnboarding()
+    }
+
     var body: some Scene {
         Window(WindowTitles.onboarding, id: WindowIds.onboarding) {
-            OnboardingView(onCompletion: appDelegate.onOnboardingCompletion)
+            if OnboardingManager.shared.shouldShowOnboarding {
+                OnboardingView()
+            }
         }
-        .defaultLaunchBehavior(AppPreferences.shared.onboardingComplete ? .suppressed : .automatic)
+        .defaultPosition(.center)
+        .defaultLaunchBehavior(.presented)
         .windowResizability(.contentSize)
 
         Window(WindowTitles.createReminder, id: WindowIds.createReminder) {
