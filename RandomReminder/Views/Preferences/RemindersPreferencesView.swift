@@ -120,6 +120,7 @@ private struct ReminderPreferencesRows: View {
 
     private let heading: String
     private let rowsBeforeScroll: UInt
+    private let showsNoRemindersMessage: Bool
 
     var body: some View {
         Group {
@@ -138,19 +139,44 @@ private struct ReminderPreferencesRows: View {
                             .frame(height: frameHeight(for: reminders.count))
                     }
                 }
+            } else if showNoReminderMessage {
+                rowsHeading(remindersCount: reminders.count)
+                Group {
+                    Text(multilineString {
+                        "You currently have no upcoming reminders. "
+                        "Get started by clicking the 'Create New Reminder' button below."
+                    })
+                    .opacity(0.7)
+                    .padding()
+                    .background {
+                        RoundedRectangle(cornerRadius: ViewConstants.reminderRowCornerRadius)
+                            .fill(.quinary)
+                            .opacity(0.5)
+                    }
+                    .overlay {
+                        RoundedRectangle(cornerRadius: ViewConstants.reminderRowCornerRadius)
+                            .stroke(.quaternary, lineWidth: 1)
+                    }
+                }
             }
         }
+    }
+
+    var showNoReminderMessage: Bool {
+        showsNoRemindersMessage && ReminderManager.shared.noCreatedReminders
     }
 
     init(
         heading: String,
         rowsBeforeScoll: UInt,
         editingReminders: Binding<Bool>,
-        remindersProvider: @autoclosure @escaping () -> [RandomReminder]
+        remindersProvider: @autoclosure @escaping () -> [RandomReminder],
+        showsNoRemindersMessage: Bool
     ) {
         self.heading = heading
         self.rowsBeforeScroll = rowsBeforeScoll
         self.remindersProvider = remindersProvider
+        self.showsNoRemindersMessage = showsNoRemindersMessage
         self._editingReminders = editingReminders
     }
 
@@ -189,7 +215,7 @@ private struct ReminderPreferencesRows: View {
             }
         }
         .background(
-            RoundedRectangle(cornerRadius: 10)
+            RoundedRectangle(cornerRadius: ViewConstants.reminderRowCornerRadius)
                 .fill(.quaternary)
                 .stroke(.quaternary, lineWidth: 1)
         )
@@ -211,7 +237,8 @@ struct RemindersPreferencesView: View {
                         heading: L10n.Preferences.Reminders.upcoming,
                         rowsBeforeScoll: ViewConstants.upcomingRemindersBeforeScroll,
                         editingReminders: $editingReminders,
-                        remindersProvider: reminderManager.upcomingReminders()
+                        remindersProvider: reminderManager.upcomingReminders(),
+                        showsNoRemindersMessage: true
                     )
                     .padding(.bottom, 10)
 
@@ -219,13 +246,14 @@ struct RemindersPreferencesView: View {
                         heading: L10n.Preferences.Reminders.past,
                         rowsBeforeScoll: ViewConstants.pastRemindersBeforeScroll,
                         editingReminders: $editingReminders,
-                        remindersProvider: reminderManager.pastReminders()
+                        remindersProvider: reminderManager.pastReminders(),
+                        showsNoRemindersMessage: false
                     )
                     .padding(.bottom, 10)
                 }
                 .padding(.bottom, 5)
 
-                HStack {
+                HStack(spacing: ViewConstants.horizontalButtonSpace) {
                     Button(L10n.Preferences.Reminders.createNew) {
                         openWindow(id: WindowIds.createReminder)
                         controller.modificationWindowOpen = true
@@ -236,7 +264,7 @@ struct RemindersPreferencesView: View {
                     .if(controller.modificationWindowOpen || editingReminders) { it in
                         it.disabled(true)
                     }
-                    Spacer()
+
                     if editingReminders {
                         Button(action: {
                             editingReminders.toggle()
@@ -255,7 +283,7 @@ struct RemindersPreferencesView: View {
                             Text(L10n.Preferences.Reminders.edit)
                                 .frame(width: 100)
                         })
-                        .disabled(controller.modificationWindowOpen)
+                        .disabled(controller.modificationWindowOpen || ReminderManager.shared.noCreatedReminders)
                     }
                 }
             }

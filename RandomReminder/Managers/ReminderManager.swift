@@ -39,6 +39,10 @@ final class ReminderManager {
         }
     }
 
+    var noCreatedReminders: Bool {
+        reminders.isEmpty
+    }
+
     private init(_ reminders: [RandomReminder]) {
         self.reminders = reminders
     }
