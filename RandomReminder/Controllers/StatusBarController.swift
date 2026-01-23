@@ -10,8 +10,8 @@ import Settings
 import SwiftUI
 
 final class StatusBarController {
-    lazy var statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-    lazy var preferencesViewController = PreferencesViewController()
+    private(set) lazy var statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+    private(set) lazy var preferencesViewController = PreferencesViewController()
 
     init() {
         setup()
@@ -37,6 +37,15 @@ final class StatusBarController {
         )
         preferencesMenuItem.target = self
         menu.addItem(preferencesMenuItem)
+
+        let pauseRemindersItem = NSMenuItem(
+            title: "Pause all reminders",
+            action: #selector(pauseAllReminders),
+            keyEquivalent: ""
+        )
+        pauseRemindersItem.target = self
+        pauseRemindersItem.state = SchedulingPreferences.shared.remindersArePaused ? .on : .off
+        menu.addItem(pauseRemindersItem)
         menu.addItem(.separator())
 
         let quitMenuItem = NSMenuItem(
@@ -60,6 +69,11 @@ final class StatusBarController {
         }
 
         preferencesViewController.show()
+    }
+
+    @objc func pauseAllReminders() {
+        SchedulingPreferences.shared.remindersArePaused.toggle()
+        ReminderModificationController.shared.refreshReminders()
     }
 
     @objc private func quit() {

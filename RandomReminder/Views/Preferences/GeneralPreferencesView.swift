@@ -24,16 +24,6 @@ struct GeneralPreferencesView: View {
             }
 
             Section {
-                Toggle(isOn: appPreferences.$quickReminderEnabled) {
-                    Text(L10n.Preferences.General.quickReminderEnabled)
-                    CaptionText(L10n.Preferences.General.QuickReminderEnabled.caption)
-                }
-                .onChange(of: appPreferences.quickReminderEnabled) { _, isEnabled in
-                    FancyLogger.info("Quick reminder was \(isEnabled ? "not" : "") enabled")
-                }
-            }
-
-            Section {
                 Toggle(isOn: appPreferences.$showReminderCounts) {
                     Text(L10n.Preferences.General.showReminderCounts)
                     CaptionText(L10n.Preferences.General.ShowReminderCounts.caption)
@@ -50,6 +40,16 @@ struct GeneralPreferencesView: View {
                 }
             }
 
+            Section {
+                Toggle(isOn: appPreferences.$singleModificationView) {
+                    Text("Reminder modification is one screen")
+                    CaptionText(multilineString {
+                        "If disabled, reminder modification will "
+                        "be split into two different screens"
+                    })
+                }
+            }
+
             Spacer().frame(height: 10)
 
             Section {
@@ -61,8 +61,7 @@ struct GeneralPreferencesView: View {
                 }
                 .pickerStyle(.radioGroup)
                 .onChange(of: appPreferences.timeFormat) {
-                    FancyLogger.info("Posting refresh modification window notification")
-                    ReminderModificationController.shared.postRefreshModificationWindowNotification()
+                    ReminderModificationController.shared.refreshModificationWindow()
                 }
             }
         }
