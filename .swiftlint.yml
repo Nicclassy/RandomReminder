@@ -100,6 +100,8 @@ attributes:
   attributes_with_arguments_always_on_line_above: false
   always_on_line_above:
     - "@ViewBuilder"
+  always_on_same_line:
+    - "@objc"
 enum_case_associated_values_count:
   warning: 3
   error: 4

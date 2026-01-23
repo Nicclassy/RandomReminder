@@ -22,4 +22,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             window.makeKeyAndOrderFront(nil)
         }
     }
+
+    func openReminderPreferences() {
+        statusBarController.preferencesViewController.show()
+        ReminderModificationController.shared.refreshReminders()
+    }
 }

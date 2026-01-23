@@ -30,7 +30,7 @@ private final class OnboardingViewModel {
     var headingText: String {
         switch step {
         case .welcome: "Welcome"
-        case .permissions: "Notification Permissions"
+        case .permissions: "Notifications"
         case .finished: "Ready to go!"
         }
     }
@@ -76,18 +76,14 @@ private struct PermissionsView: View {
     @Bindable var viewModel: OnboardingViewModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 15) {
             Text(multilineString {
                 "RandomReminder requires enabling notification permissions "
                 "to work properly. You are strongly recommended to enable 'Alerts', "
                 "otherwise the app will not function optimally."
             })
-            HStack {
-                Spacer()
-                Button("Open notification permissions") {
-                    NotificationPermissions.shared.openNotificationSettings()
-                }
-                Spacer()
+            Button("Open notification preferences") {
+                NotificationPermissions.shared.openNotificationSettings()
             }
         }
     }
@@ -108,9 +104,9 @@ struct OnboardingView: View {
     @State private var viewModel = OnboardingViewModel()
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             Text(viewModel.headingText)
-                .font(.title)
+                .font(.title2)
                 .fontWeight(.semibold)
 
             Group {
@@ -141,28 +137,7 @@ struct OnboardingView: View {
 
                 Button(
                     action: {
-                        guard viewModel.viewCanAlert() else {
-                            viewModel.moveStepForward()
-                            if viewModel.step.isLast {
-                                dismissWindow(id: WindowIds.onboarding)
-                                OnboardingManager.shared.onCompletion()
-                            }
-                            return
-                        }
-
-                        Task {
-                            guard let (title, message) = await viewModel.alertContent() else {
-                                FancyLogger.info("View can alert but no content")
-                                viewModel.moveStepForward()
-                                return
-                            }
-
-                            await MainActor.run {
-                                viewModel.showAlert = true
-                                viewModel.alertTitle = title
-                                viewModel.alertText = message
-                            }
-                        }
+                        nextOnboardingStep()
                     },
                     label: {
                         Text(viewModel.primaryButtonText)
@@ -185,11 +160,37 @@ struct OnboardingView: View {
                 }
             )
         }
+        .onReturnPressed(nextOnboardingStep)
         .onReceive(NotificationCenter.default.publisher(for: .openOnboardingWindow)) { _ in
             openWindow(id: WindowIds.onboarding)
         }
         .padding(.all, 30)
         .frame(width: 400, height: 450)
+    }
+    
+    private func nextOnboardingStep() {
+        guard viewModel.viewCanAlert() else {
+            viewModel.moveStepForward()
+            if viewModel.step.isLast {
+                dismissWindow(id: WindowIds.onboarding)
+                OnboardingManager.shared.onCompletion()
+                AppDelegate.shared.openReminderPreferences()
+            }
+            return
+        }
+
+        Task {
+            guard let (title, message) = await viewModel.alertContent() else {
+                viewModel.moveStepForward()
+                return
+            }
+
+            await MainActor.run {
+                viewModel.showAlert = true
+                viewModel.alertTitle = title
+                viewModel.alertText = message
+            }
+        }
     }
 }
 
