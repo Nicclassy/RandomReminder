@@ -14,7 +14,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_: Notification) {
         Self.shared = self
         statusBarController = .init()
-        ReminderManager.shared.setup()
+        ReminderManager.setup()
     }
 
     func applicationDidBecomeActive(_: Notification) {

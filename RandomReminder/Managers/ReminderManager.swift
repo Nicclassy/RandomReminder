@@ -8,10 +8,32 @@
 import Foundation
 
 final class ReminderManager {
-    static let shared = ReminderManager(preview: true)
+    struct Options {
+        var persistentChanges = false
+        var remind = true
+        var preview = false
+    }
+    
+    private static var instance: ReminderManager?
+    private static var isSetup = false
+    
+    static var shared: ReminderManager {
+        get {
+            if let instance {
+                instance
+            } else {
+                fatalError("ReminderManager instance is not set")
+            }
+        }
+        set {
+            guard !isSetup else {
+                fatalError("ReminderManager has already been setup")
+            }
+            instance = newValue
+        }
+    }
 
-    private let remind = true
-    private let persistentChanges = false
+    private let options: Options
 
     private var reminders: [RandomReminder]
     private var timerThread: Thread!
@@ -43,14 +65,18 @@ final class ReminderManager {
         reminders.isEmpty
     }
 
-    private init(_ reminders: [RandomReminder]) {
+    private init(
+        _ reminders: [RandomReminder],
+        options: Options
+    ) {
         self.reminders = reminders
+        self.options = options
     }
 
-    private convenience init(preview: Bool = false) {
-        let reminders: [RandomReminder] = if preview {
+    private convenience init(options: Options) {
+        let reminders: [RandomReminder] = if options.preview {
             Self.previewReminders()
-        } else {
+        } else if options.persistentChanges {
             Self.reminderFileNames().compactMap { filename in
                 guard let reminder: RandomReminder = ReminderSerializer.load(filename: filename) else {
                     FancyLogger.warn("Cannot load file \(filename)")
@@ -58,9 +84,11 @@ final class ReminderManager {
                 }
                 return reminder
             }
+        } else {
+            []
         }
 
-        self.init(reminders)
+        self.init(reminders, options: options)
     }
 
     private static func reminderFileNames() -> [String] {
@@ -70,11 +98,21 @@ final class ReminderManager {
 
         return filenames.filter { StoredReminders.filenamePattern.contains(captureNamed: $0) }
     }
+    
+    static func setup(options: Options = .init()) {
+        guard !Self.isSetup else {
+            fatalError("ReminderManager has already been setup")
+        }
+        
+        shared = ReminderManager(options: options)
+        shared.setup()
+    }
 
-    func setup() {
-        // All credits go to
-        // https://hackernoon.com/how-to-use-runloop-in-ios-applications
-        // for correct timer implementation
+    private func setup() {
+        defer {
+            Self.isSetup = true
+        }
+        
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(onDayChanged),
@@ -82,9 +120,10 @@ final class ReminderManager {
             object: nil
         )
         setReminderStates()
-
-        guard remind else { return }
-
+        
+        // All credits go to
+        // https://hackernoon.com/how-to-use-runloop-in-ios-applications
+        // for correct timer implementation
         timerThread = Thread {
             let timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
                 let date = Date()
@@ -102,8 +141,8 @@ final class ReminderManager {
 
     func modify(_ reminder: RandomReminder, changes: (RandomReminder) -> Void) {
         changes(reminder)
-        ReminderModificationController.shared.postRefreshRemindersNotification()
-        if persistentChanges {
+        ReminderModificationController.shared.refreshReminders()
+        if options.persistentChanges {
             DispatchQueue.global(qos: .utility).async {
                 ReminderSerializer.save(reminder, filename: reminder.filename())
             }
@@ -156,7 +195,7 @@ final class ReminderManager {
             tick(reminder, on: .now)
         }
 
-        if persistentChanges {
+        if options.persistentChanges {
             DispatchQueue.global(qos: .utility).async {
                 ReminderSerializer.save(reminder, filename: reminder.filename())
             }
@@ -164,12 +203,12 @@ final class ReminderManager {
     }
 
     func removeReminder(_ reminder: RandomReminder) {
-        if remind && reminder.state == .started {
+        if options.remind && reminder.state == .started {
             stopReminder(reminder, permanent: true)
             ActiveReminderManager.shared.deactivateReminder(reminder)
         }
 
-        if persistentChanges {
+        if options.persistentChanges {
             deleteReminder(reminder)
         }
 
@@ -304,7 +343,7 @@ final class ReminderManager {
                     FancyLogger.info("Reminder '\(reminder)' set to finished on state initialisation")
                     resetReminder(reminder)
                 } else if !reminder.hasBegun && reminder.hasStarted(after: date) {
-                    guard remind else {
+                    guard options.remind else {
                         reminder.state = .started
                         continue
                     }
