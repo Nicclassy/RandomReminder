@@ -50,13 +50,13 @@ private struct ReminderPreferencesRow: View {
                     Button(L10n.Preferences.Reminders.Rows.delete, role: .destructive) {
                         if parentNumberOfRows > Int(parentRowsBeforeScroll) {
                             withAnimation(.default) {
-                                controller.postRefreshRemindersNotification()
+                                controller.refreshReminders()
                                 ReminderManager.shared.removeReminder(reminder)
                             }
                         } else {
                             // We do not want to animate the rows if the reminder is deleted
                             // when there are few rows, because this animation looks very strange
-                            controller.postRefreshRemindersNotification()
+                            controller.refreshReminders()
                             ReminderManager.shared.removeReminder(reminder)
                         }
 
@@ -297,7 +297,7 @@ struct RemindersPreferencesView: View {
         .onReceive(NotificationCenter.default.publisher(for: .refreshReminders)) { _ in
             FancyLogger.info("Refresh reminders notification received")
             withAnimation {
-                controller.refreshReminders.toggle()
+                controller.refreshToggle.toggle()
             }
         }
     }

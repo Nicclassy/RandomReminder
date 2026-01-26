@@ -429,7 +429,7 @@ struct ReminderModificationView: View {
         }
 
         ReminderManager.shared.addReminder(newReminder)
-        controller.postRefreshRemindersNotification()
+        controller.refreshReminders()
         FancyLogger.info("Created new reminder/edited reminder \(String(reflecting: reminder))")
     }
 }

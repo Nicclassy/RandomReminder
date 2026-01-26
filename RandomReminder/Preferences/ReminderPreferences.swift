@@ -5,7 +5,6 @@
 //  Created by Luca Napoli on 22/2/2025.
 //
 
-import Foundation
 import SwiftUI
 
 @Observable
