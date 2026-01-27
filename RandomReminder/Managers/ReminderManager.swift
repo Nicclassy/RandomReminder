@@ -13,10 +13,10 @@ final class ReminderManager {
         var remind = true
         var preview = false
     }
-    
+
     private static var instance: ReminderManager?
     private static var isSetup = false
-    
+
     static var shared: ReminderManager {
         get {
             if let instance {
@@ -34,6 +34,7 @@ final class ReminderManager {
     }
 
     private let options: Options
+    private let activatorFactory: ReminderActivatorFactory
 
     private var reminders: [RandomReminder]
     private var timerThread: Thread!
@@ -65,12 +66,10 @@ final class ReminderManager {
         reminders.isEmpty
     }
 
-    private init(
-        _ reminders: [RandomReminder],
-        options: Options
-    ) {
+    private init(_ reminders: [RandomReminder], options: Options) {
         self.reminders = reminders
         self.options = options
+        self.activatorFactory = ReminderActivatorFactory(tickInterval: tickInterval)
     }
 
     private convenience init(options: Options) {
@@ -98,12 +97,12 @@ final class ReminderManager {
 
         return filenames.filter { StoredReminders.filenamePattern.contains(captureNamed: $0) }
     }
-    
+
     static func setup(options: Options = .init()) {
-        guard !Self.isSetup else {
+        guard !isSetup else {
             fatalError("ReminderManager has already been setup")
         }
-        
+
         shared = ReminderManager(options: options)
         shared.setup()
     }
@@ -112,7 +111,7 @@ final class ReminderManager {
         defer {
             Self.isSetup = true
         }
-        
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(onDayChanged),
@@ -120,7 +119,7 @@ final class ReminderManager {
             object: nil
         )
         setReminderStates()
-        
+
         // All credits go to
         // https://hackernoon.com/how-to-use-runloop-in-ios-applications
         // for correct timer implementation
@@ -231,17 +230,7 @@ final class ReminderManager {
             return
         }
 
-        let reminderActivator = ReminderActivatorService(
-            reminder: reminder,
-            every: tickInterval,
-            onReminderActivation: {
-                ActiveReminderManager.shared.activateReminder(reminder)
-            },
-            onReminderFinished: {
-                ActiveReminderManager.shared.deactivateReminder(reminder)
-            }
-        )
-
+        var reminderActivator = activatorFactory.createActivator(for: reminder)
         startedRemindersLock.withLock {
             startedReminders.append(reminderActivator)
         }
@@ -278,7 +267,7 @@ final class ReminderManager {
                 return
             }
 
-            let reminderActivator = startedReminders.remove(at: index)
+            var reminderActivator = startedReminders.remove(at: index)
             reminderActivator.running = false
             if permanent {
                 reminderActivator.terminated = true
@@ -328,11 +317,6 @@ final class ReminderManager {
         }
     }
 
-    @objc
-    private func onDayChanged() {
-        todaysDay = .today
-    }
-
     private func setReminderStates() {
         // Perform this processing prior to the timer so that we don't
         // start reminders that past before the app launched
@@ -353,5 +337,9 @@ final class ReminderManager {
                 }
             }
         }
+    }
+
+    @objc private func onDayChanged() {
+        todaysDay = .today
     }
 }
