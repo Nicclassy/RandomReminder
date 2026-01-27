@@ -117,9 +117,7 @@ struct SchedulingPreferencesView: View {
                     Text("Pause all reminders")
                 }
                 .onChange(of: schedulingPreferences.remindersArePaused) {
-                    DispatchQueue.main.async {
-                        NotificationCenter.default.post(name: .updateReminderPreferencesText, object: nil)
-                    }
+                    ReminderModificationController.shared.updateReminderText()
                 }
             }
         }

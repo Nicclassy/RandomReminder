@@ -26,6 +26,12 @@ final class ReminderModificationController: ObservableObject {
         }
     }
 
+    func updateReminderText() {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .updateReminderPreferencesText, object: nil)
+        }
+    }
+
     func isEditingReminder(with id: ReminderID) -> Bool {
         reminder?.id == id
     }
