@@ -272,6 +272,10 @@ final class ReminderManager {
             if permanent {
                 reminderActivator.terminated = true
             }
+            
+            modify(reminder) { reminder in
+                reminder.activationState = .noActivations
+            }
         }
     }
 
@@ -281,11 +285,13 @@ final class ReminderManager {
             FancyLogger.info("Restarted reminder '\(reminder)'")
             modify(reminder) { reminder in
                 reminder.advanceToNextRepeat()
+                reminder.activationState = .noActivations
             }
         } else {
             FancyLogger.info("Setting '\(reminder)' to past")
             modify(reminder) { reminder in
                 reminder.state = .finished
+                reminder.activationState = .noActivations
             }
         }
     }
@@ -328,7 +334,9 @@ final class ReminderManager {
                     resetReminder(reminder)
                 } else if !reminder.hasBegun && reminder.hasStarted(after: date) {
                     guard options.remind else {
-                        reminder.state = .started
+                        modify(reminder) { reminder in
+                            reminder.state = .started
+                        }
                         continue
                     }
                     assert(reminder.counts.occurences == 0, "Reminder '\(reminder)' should not have occurrences")

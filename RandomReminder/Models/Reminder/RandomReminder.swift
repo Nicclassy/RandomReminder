@@ -12,6 +12,7 @@ final class RandomReminder: Codable {
     let content: ReminderContent
     let days: ReminderDayOptions
     let activationEvents: ReminderActivationEvents
+    var activationState: ReminderActivationState
     var reminderInterval: AnyReminderInterval
     var counts: ReminderCounts
     var state: ReminderState
@@ -49,6 +50,7 @@ final class RandomReminder: Codable {
         days: ReminderDayOptions,
         counts: ReminderCounts,
         state: ReminderState,
+        activationState: ReminderActivationState,
         activationEvents: ReminderActivationEvents
     ) {
         self.id = id
@@ -57,6 +59,7 @@ final class RandomReminder: Codable {
         self.days = days
         self.counts = counts
         self.state = state
+        self.activationState = activationState
         self.activationEvents = activationEvents
     }
 
@@ -67,7 +70,8 @@ final class RandomReminder: Codable {
         interval: ReminderInterval,
         days: ReminderDayOptions? = nil,
         totalOccurences: Int,
-        activationEvents: ReminderActivationEvents? = nil
+        activationEvents: ReminderActivationEvents? = nil,
+        activationState: ReminderActivationState? = nil
     ) {
         self.init(
             id: id,
@@ -76,6 +80,7 @@ final class RandomReminder: Codable {
             days: days ?? .allOptions(),
             counts: ReminderCounts(totalOccurences: totalOccurences),
             state: .upcoming,
+            activationState: activationState ?? .noActivations,
             activationEvents: activationEvents ?? ReminderActivationEvents()
         )
     }
@@ -99,8 +104,8 @@ final class RandomReminder: Codable {
         state = .upcoming
     }
 
-    func durationInSeconds() -> Float {
-        Float(interval.earliest.distance(to: interval.latest))
+    func durationInSeconds() -> TimeInterval {
+        interval.earliest.distance(to: interval.latest)
     }
 }
 

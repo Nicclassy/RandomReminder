@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -58,6 +58,10 @@
 		8145FB352F17B934007ADB3D /* ReminderCommandOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8145FB342F17B934007ADB3D /* ReminderCommandOptionsView.swift */; };
 		814890792E3C2E2A00E4D520 /* ActiveReminderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814890782E3C2E2A00E4D520 /* ActiveReminderManager.swift */; };
 		8148907B2E3C381100E4D520 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8148907A2E3C381100E4D520 /* Utilities.swift */; };
+		814A77992F28939A00DCAD94 /* TickedActivatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814A77982F28939A00DCAD94 /* TickedActivatorService.swift */; };
+		814A779B2F2896A200DCAD94 /* ReminderActivationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814A779A2F2896A200DCAD94 /* ReminderActivationState.swift */; };
+		814A779D2F2898C400DCAD94 /* ScheduledActivatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814A779C2F2898C400DCAD94 /* ScheduledActivatorService.swift */; };
+		814A779F2F28C92300DCAD94 /* ReminderActivatorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814A779E2F28C92300DCAD94 /* ReminderActivatorFactory.swift */; };
 		814B38BC2E5098DC0024A19A /* MultilineStringBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814B38BB2E5098DC0024A19A /* MultilineStringBuilder.swift */; };
 		814C2BB22DBF6658001929CB /* Notification+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814C2BB12DBF6658001929CB /* Notification+Extensions.swift */; };
 		81568ECF2E4F65C100479EF2 /* NotificationPermissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81568ECE2E4F65C100479EF2 /* NotificationPermissions.swift */; };
@@ -99,6 +103,23 @@
 		81E8D2052DB9815C00F1BF97 /* ReminderSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81E8D2002DB9815C00F1BF97 /* ReminderSerializer.swift */; };
 		81ECAC372E03244A0065F8B8 /* Subprocess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ECAC362E03244A0065F8B8 /* Subprocess.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		81B6CF0B2F22E88A00432B2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8163F5C72D1241D40052A016 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8163F5CE2D1241D40052A016;
+			remoteInfo = RandomReminder;
+		};
+		81D27B9B2F244E3800290DB3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8163F5C72D1241D40052A016 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8163F5CE2D1241D40052A016;
+			remoteInfo = RandomReminder;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		810B20C52DA25EE9005041A4 /* ReminderModificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderModificationController.swift; sourceTree = "<group>"; };
@@ -151,6 +172,10 @@
 		8145FB342F17B934007ADB3D /* ReminderCommandOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderCommandOptionsView.swift; sourceTree = "<group>"; };
 		814890782E3C2E2A00E4D520 /* ActiveReminderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveReminderManager.swift; sourceTree = "<group>"; };
 		8148907A2E3C381100E4D520 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		814A77982F28939A00DCAD94 /* TickedActivatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TickedActivatorService.swift; sourceTree = "<group>"; };
+		814A779A2F2896A200DCAD94 /* ReminderActivationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderActivationState.swift; sourceTree = "<group>"; };
+		814A779C2F2898C400DCAD94 /* ScheduledActivatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledActivatorService.swift; sourceTree = "<group>"; };
+		814A779E2F28C92300DCAD94 /* ReminderActivatorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderActivatorFactory.swift; sourceTree = "<group>"; };
 		814B38BB2E5098DC0024A19A /* MultilineStringBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultilineStringBuilder.swift; sourceTree = "<group>"; };
 		814C2BB12DBF6658001929CB /* Notification+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Extensions.swift"; sourceTree = "<group>"; };
 		81568ECE2E4F65C100479EF2 /* NotificationPermissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissions.swift; sourceTree = "<group>"; };
@@ -182,9 +207,11 @@
 		81B5260F2D20068F008D36F0 /* RandomReminder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomReminder.swift; sourceTree = "<group>"; };
 		81B526142D20A522008D36F0 /* FancyLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FancyLogger.swift; sourceTree = "<group>"; };
 		81B526192D213905008D36F0 /* Settings+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Settings+Extensions.swift"; sourceTree = "<group>"; };
+		81B6CF052F22E88A00432B2B /* RandomReminderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RandomReminderUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		81BB7B172D954399004C69D6 /* SchedulingPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulingPreferences.swift; sourceTree = "<group>"; };
 		81C043612D8AEEC60074E60B /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		81C373172D8F288900A98A59 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		81D27B972F244E3800290DB3 /* RandomReminderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RandomReminderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		81DB8EB62DA4FCC600E50650 /* Locked.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locked.swift; sourceTree = "<group>"; };
 		81E312242F11CA4C00197585 /* OnboardingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingManager.swift; sourceTree = "<group>"; };
 		81E8D1FF2DB9815C00F1BF97 /* MutableReminder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutableReminder.swift; sourceTree = "<group>"; };
@@ -192,6 +219,28 @@
 		81E8D2012DB9815C00F1BF97 /* TimeInfoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInfoProvider.swift; sourceTree = "<group>"; };
 		81ECAC362E03244A0065F8B8 /* Subprocess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subprocess.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		81D27BA02F244E3C00290DB3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				RandomReminderOptions.swift,
+			);
+			target = 81B6CF042F22E88A00432B2B /* RandomReminderUITests */;
+		};
+		81D27BA12F244E3C00290DB3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				RandomReminderOptions.swift,
+			);
+			target = 81D27B962F244E3800290DB3 /* RandomReminderTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		81B6CF062F22E88A00432B2B /* RandomReminderUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = RandomReminderUITests; sourceTree = "<group>"; };
+		81D27B982F244E3800290DB3 /* RandomReminderTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (81D27BA02F244E3C00290DB3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 81D27BA12F244E3C00290DB3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = RandomReminderTests; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		8163F5CC2D1241D40052A016 /* Frameworks */ = {
@@ -201,6 +250,20 @@
 				813F31232D3BB34B00EF6DD1 /* Collections in Frameworks */,
 				8163F60A2D139C230052A016 /* LaunchAtLogin in Frameworks */,
 				81B5261D2D213B23008D36F0 /* Settings in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81B6CF022F22E88A00432B2B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81D27B942F244E3800290DB3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,6 +355,9 @@
 			isa = PBXGroup;
 			children = (
 				81B525FB2D19277B008D36F0 /* ReminderActivatorService.swift */,
+				814A77982F28939A00DCAD94 /* TickedActivatorService.swift */,
+				814A779C2F2898C400DCAD94 /* ScheduledActivatorService.swift */,
+				814A779E2F28C92300DCAD94 /* ReminderActivatorFactory.swift */,
 				819BDD462D8C059C005059AD /* ActiveReminderService.swift */,
 			);
 			path = Services;
@@ -310,6 +376,7 @@
 				813F31142D2EA99C00EF6DD1 /* ReminderCounts.swift */,
 				813F31242D3BB42800EF6DD1 /* ReminderID.swift */,
 				8118A11C2D6667AC00A9FF08 /* ReminderDayOptions.swift */,
+				814A779A2F2896A200DCAD94 /* ReminderActivationState.swift */,
 			);
 			path = Reminder;
 			sourceTree = "<group>";
@@ -325,6 +392,8 @@
 				812D23E62DAD9B4400675783 /* .swiftformat */,
 				818DEF402DAE6D18005F5AEA /* .swift-version */,
 				813F30E52D25FE0B00EF6DD1 /* swiftgen.yml */,
+				81B6CF062F22E88A00432B2B /* RandomReminderUITests */,
+				81D27B982F244E3800290DB3 /* RandomReminderTests */,
 				8163F5D02D1241D40052A016 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -333,6 +402,8 @@
 			isa = PBXGroup;
 			children = (
 				8163F5CF2D1241D40052A016 /* RandomReminder.app */,
+				81B6CF052F22E88A00432B2B /* RandomReminderUITests.xctest */,
+				81D27B972F244E3800290DB3 /* RandomReminderTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -493,6 +564,52 @@
 			productReference = 8163F5CF2D1241D40052A016 /* RandomReminder.app */;
 			productType = "com.apple.product-type.application";
 		};
+		81B6CF042F22E88A00432B2B /* RandomReminderUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81B6CF0D2F22E88A00432B2B /* Build configuration list for PBXNativeTarget "RandomReminderUITests" */;
+			buildPhases = (
+				81B6CF012F22E88A00432B2B /* Sources */,
+				81B6CF022F22E88A00432B2B /* Frameworks */,
+				81B6CF032F22E88A00432B2B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				81B6CF0C2F22E88A00432B2B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				81B6CF062F22E88A00432B2B /* RandomReminderUITests */,
+			);
+			name = RandomReminderUITests;
+			packageProductDependencies = (
+			);
+			productName = RandomReminderUITests;
+			productReference = 81B6CF052F22E88A00432B2B /* RandomReminderUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		81D27B962F244E3800290DB3 /* RandomReminderTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81D27B9F2F244E3800290DB3 /* Build configuration list for PBXNativeTarget "RandomReminderTests" */;
+			buildPhases = (
+				81D27B932F244E3800290DB3 /* Sources */,
+				81D27B942F244E3800290DB3 /* Frameworks */,
+				81D27B952F244E3800290DB3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				81D27B9C2F244E3800290DB3 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				81D27B982F244E3800290DB3 /* RandomReminderTests */,
+			);
+			name = RandomReminderTests;
+			packageProductDependencies = (
+			);
+			productName = RandomReminderTests;
+			productReference = 81D27B972F244E3800290DB3 /* RandomReminderTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -500,11 +617,19 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1540;
+				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					8163F5CE2D1241D40052A016 = {
 						CreatedOnToolsVersion = 15.4;
+					};
+					81B6CF042F22E88A00432B2B = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 8163F5CE2D1241D40052A016;
+					};
+					81D27B962F244E3800290DB3 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 8163F5CE2D1241D40052A016;
 					};
 				};
 			};
@@ -529,6 +654,8 @@
 			projectRoot = "";
 			targets = (
 				8163F5CE2D1241D40052A016 /* RandomReminder */,
+				81B6CF042F22E88A00432B2B /* RandomReminderUITests */,
+				81D27B962F244E3800290DB3 /* RandomReminderTests */,
 			);
 		};
 /* End PBXProject section */
@@ -548,6 +675,20 @@
 				813F30E62D25FE0B00EF6DD1 /* swiftgen.yml in Resources */,
 				813D09552E089DCA0065FDCB /* .pre-commit-config.yaml in Resources */,
 				8118A11A2D63E42A00A9FF08 /* LICENSE in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81B6CF032F22E88A00432B2B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81D27B952F244E3800290DB3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -637,6 +778,7 @@
 				81DB8EB72DA4FCC600E50650 /* Locked.swift in Sources */,
 				81102BE42EF141820033A87B /* CommandController.swift in Sources */,
 				8163F6132D13A90E0052A016 /* StatusBarController.swift in Sources */,
+				814A779F2F28C92300DCAD94 /* ReminderActivatorFactory.swift in Sources */,
 				81265B262DCDD510005C95F2 /* NumericTextField.swift in Sources */,
 				8118A13F2D6A790E00A9FF08 /* ReminderAudioOptionsView.swift in Sources */,
 				81412F922DD7A20200BD2EA3 /* ReminderValidator.swift in Sources */,
@@ -652,9 +794,11 @@
 				813F30DD2D22B93E00EF6DD1 /* ColourString.swift in Sources */,
 				8118A1302D6A6E7F00A9FF08 /* AboutPreferencesView.swift in Sources */,
 				819BDD472D8C059C005059AD /* ActiveReminderService.swift in Sources */,
+				814A779B2F2896A200DCAD94 /* ReminderActivationState.swift in Sources */,
 				81733B532E45715D008F96EA /* Demangle.swift in Sources */,
 				8118A1262D68C62100A9FF08 /* ReminderActivationEvents.swift in Sources */,
 				8118A1112D5FA1B000A9FF08 /* StepperTextField.swift in Sources */,
+				814A779D2F2898C400DCAD94 /* ScheduledActivatorService.swift in Sources */,
 				814B38BC2E5098DC0024A19A /* MultilineStringBuilder.swift in Sources */,
 				81412F942DD7C12300BD2EA3 /* ModificationViewPreferences.swift in Sources */,
 				812F8F642DFF2D2A008232A6 /* ReminderCommandView.swift in Sources */,
@@ -673,6 +817,7 @@
 				8118A1452D6DD51A00A9FF08 /* Collection+Extensions.swift in Sources */,
 				8118A1412D6CE2C500A9FF08 /* Sequence+Extensions.swift in Sources */,
 				81BB7B182D954399004C69D6 /* SchedulingPreferences.swift in Sources */,
+				814A77992F28939A00DCAD94 /* TickedActivatorService.swift in Sources */,
 				8118A1132D5FB2FE00A9FF08 /* ContentView.swift in Sources */,
 				813F31052D2B320700EF6DD1 /* ReminderManager.swift in Sources */,
 				81C043622D8AEEC60074E60B /* NotificationManager.swift in Sources */,
@@ -700,9 +845,33 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		81B6CF012F22E88A00432B2B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		81D27B932F244E3800290DB3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		81B6CF0C2F22E88A00432B2B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8163F5CE2D1241D40052A016 /* RandomReminder */;
+			targetProxy = 81B6CF0B2F22E88A00432B2B /* PBXContainerItemProxy */;
+		};
+		81D27B9C2F244E3800290DB3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8163F5CE2D1241D40052A016 /* RandomReminder */;
+			targetProxy = 81D27B9B2F244E3800290DB3 /* PBXContainerItemProxy */;
+		};
 		81F921D02D92BF530064ED2E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			productRef = 81F921CF2D92BF530064ED2E /* SwiftLintBuildToolPlugin */;
@@ -903,6 +1072,76 @@
 			};
 			name = Release;
 		};
+		81B6CF0E2F22E88A00432B2B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 79965ZZ2B4;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.nicclassy.RandomReminderUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = RandomReminder;
+			};
+			name = Debug;
+		};
+		81B6CF0F2F22E88A00432B2B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 79965ZZ2B4;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.nicclassy.RandomReminderUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = RandomReminder;
+			};
+			name = Release;
+		};
+		81D27B9D2F244E3800290DB3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 79965ZZ2B4;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.nicclassy.RandomReminderTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RandomReminder.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RandomReminder";
+			};
+			name = Debug;
+		};
+		81D27B9E2F244E3800290DB3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 79965ZZ2B4;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.nicclassy.RandomReminderTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RandomReminder.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RandomReminder";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -920,6 +1159,24 @@
 			buildConfigurations = (
 				8163F5F52D1241D50052A016 /* Debug */,
 				8163F5F62D1241D50052A016 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		81B6CF0D2F22E88A00432B2B /* Build configuration list for PBXNativeTarget "RandomReminderUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81B6CF0E2F22E88A00432B2B /* Debug */,
+				81B6CF0F2F22E88A00432B2B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		81D27B9F2F244E3800290DB3 /* Build configuration list for PBXNativeTarget "RandomReminderTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81D27B9D2F244E3800290DB3 /* Debug */,
+				81D27B9E2F244E3800290DB3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
