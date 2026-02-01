@@ -160,14 +160,13 @@ struct OnboardingView: View {
                 }
             )
         }
-        .onReturnPressed(nextOnboardingStep)
         .onReceive(NotificationCenter.default.publisher(for: .openOnboardingWindow)) { _ in
             openWindow(id: WindowIds.onboarding)
         }
         .padding(.all, 30)
         .frame(width: 400, height: 450)
     }
-    
+
     private func nextOnboardingStep() {
         guard viewModel.viewCanAlert() else {
             viewModel.moveStepForward()

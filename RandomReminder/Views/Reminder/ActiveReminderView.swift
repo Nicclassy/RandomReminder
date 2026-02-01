@@ -31,7 +31,9 @@ struct ActiveReminderView: View {
                 }
             )
             .buttonStyle(.borderedProminent)
+            .frame(width: 120)
         }
+        .frame(width: ViewConstants.mediumWindowWidth, height: ViewConstants.mediumWindowHeight)
         .padding()
         .centerWindowOnAppear(withTitle: WindowTitles.activeReminder, activate: true)
     }

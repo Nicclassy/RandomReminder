@@ -64,7 +64,10 @@ struct SchedulingPreferencesView: View {
                     }
 
                     CaptionText(
-                        "If enabled, reminders will have these times as their initial start/end times during the creation process."
+                        multilineString {
+                            "If enabled, reminders will have these times as their initial start/end times "
+                            "during the creation process."
+                        }
                     )
                 }
                 .onChange(of: schedulingPreferences.defaultLatestTimeEnabled) { _, newValue in

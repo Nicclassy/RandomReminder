@@ -11,10 +11,6 @@ import SwiftUI
 struct RandomReminderApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-    init() {
-        OnboardingManager.shared.forceOnboarding()
-    }
-
     var body: some Scene {
         Window(WindowTitles.onboarding, id: WindowIds.onboarding) {
             if OnboardingManager.shared.shouldShowOnboarding {
@@ -44,5 +40,9 @@ struct RandomReminderApp: App {
             ActiveReminderView()
         }
         .windowResizability(.contentSize)
+    }
+
+    init() {
+        OnboardingManager.shared.forceOnboarding()
     }
 }

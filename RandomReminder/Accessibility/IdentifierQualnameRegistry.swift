@@ -36,9 +36,9 @@ final class IdentifierQualnameRegistry {
         return registry
     }()
 
-    private init() {}
-
     private var typesByName: [String: [AnIdentifierType]] = [:]
+
+    private init() {}
 
     func registerTypes(_ types: any StaticIdentifier.Type...) {
         var predecessors: [AnIdentifierType] = []

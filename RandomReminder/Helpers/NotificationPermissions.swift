@@ -175,8 +175,7 @@ final class NotificationPermissions {
         }
     }
 
-    @objc
-    private func toggleAllowBanners() {
+    @objc private func toggleAllowBanners() {
         FancyLogger.info("Allow banners toggled")
         appPreferences.allowBanners.toggle()
     }

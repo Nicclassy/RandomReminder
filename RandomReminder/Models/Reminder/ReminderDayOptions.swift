@@ -28,7 +28,6 @@ struct ReminderDayOptions: OptionSet, CaseIterable, Codable {
 
     var rawValue: Int
 
-    /// Weekday names will be localised
     var name: String {
         switch self {
         case .monday: L10n.monday

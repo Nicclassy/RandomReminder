@@ -184,8 +184,8 @@ final class MutableReminder {
             )
         } else {
             ReminderDateInterval(
-                earliest: earliestDate,
-                latest: latestDate,
+                earliest: earliestDate.withoutSeconds(),
+                latest: latestDate.withoutSeconds(),
                 repeatInterval: repeatInterval,
                 repeatIntervalType: repeatIntervalType,
                 intervalQuantity: intervalQuantity

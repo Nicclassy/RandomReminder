@@ -7,7 +7,7 @@
 
 import Foundation
 
-// swiftlint:disable:next nesting
+// swiftlint:disable nesting
 enum A11y {
     enum Reminder: StaticIdentifier {
         enum ModificationView: StaticIdentifier {

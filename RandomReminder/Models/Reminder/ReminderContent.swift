@@ -8,10 +8,10 @@
 import Foundation
 
 enum ReminderDescription: Codable {
-    static let emptyText: Self = .text("")
-
     case text(String)
     case command(String, generatesTitle: Bool)
+
+    static let emptyText: Self = .text("")
 }
 
 struct ReminderContent: Codable {
