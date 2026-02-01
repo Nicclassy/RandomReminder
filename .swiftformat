@@ -8,7 +8,7 @@
 --guardelse auto
 --emptybraces no-space
 --enumnamespaces always
---extensionacl on-declarations
+--extensionacl on-extension
 --generictypes
 --asynccapturing
 --patternlet hoist

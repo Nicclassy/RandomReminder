@@ -25,6 +25,7 @@ opt_in_rules:
   - empty_count
   - empty_string
   - explicit_init
+  - extension_access_modifier
   - fallthrough
   - fatal_error_message
   - file_name_no_space
@@ -45,7 +46,6 @@ opt_in_rules:
   - multiline_function_chains
   - multiline_literal_brackets
   - multiline_parameters_brackets
-  - no_extension_access_modifier
   - number_separator
   - operator_usage_whitespace
   - optional_enum_case_matching
