@@ -11,15 +11,14 @@ struct ReminderID: Codable {
     let value: Int
     let creationDate: Date
 
-    init(_ value: Int) {
+    init(_ value: Int, creationDate: Date = .now) {
         self.value = value
-        self.creationDate = .now
+        self.creationDate = creationDate
     }
 }
 
 extension ReminderID {
     static let unassigned: ReminderID = -1
-    static let quickReminder: ReminderID = 0
     static let first: ReminderID = 1
 }
 

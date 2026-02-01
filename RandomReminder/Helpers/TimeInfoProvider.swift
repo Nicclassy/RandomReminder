@@ -55,31 +55,39 @@ struct TimeInfoProvider {
 
     func preferencesInfo() -> String {
         if reminder.hasPast {
-            return L10n.Preferences.Reminders.ago(timeDifferenceInfo())
-        }
-        if reminder.hasBegun {
-            if reminder.counts.occurencesLeft == 1 {
-                return L10n.Preferences.Reminders.singleOccurenceLeft
+            return if case let .finalActivation(date) = reminder.activationState {
+                L10n.Preferences.Reminders.ago(timeDifferenceInfo(from: date))
+            } else {
+                L10n.Preferences.Reminders.ago(timeDifferenceInfo())
             }
-            return L10n.Preferences.Reminders.multipleOccurencesLeft(reminder.counts.occurencesLeft)
+        }
+
+        if reminder.hasBegun {
+            return if reminder.counts.occurencesLeft == 1 {
+                L10n.Preferences.Reminders.singleOccurenceLeft
+            } else {
+                L10n.Preferences.Reminders.multipleOccurencesLeft(reminder.counts.occurencesLeft)
+            }
         }
 
         let info = timeDifferenceInfo()
         if !reminder.eponymous {
-            if info.isEmpty {
-                return L10n.Preferences.Reminders.occurringNow
+            return if info.isEmpty {
+                L10n.Preferences.Reminders.occurringNow
+            } else {
+                L10n.Preferences.Reminders.occurringIn(info)
             }
-            return L10n.Preferences.Reminders.occurringIn(info)
         }
 
-        if info.isEmpty {
-            return L10n.Preferences.Reminders.startingNow
+        return if info.isEmpty {
+            L10n.Preferences.Reminders.startingNow
+        } else {
+            L10n.Preferences.Reminders.startingIn(info)
         }
-        return L10n.Preferences.Reminders.startingIn(info)
     }
 
-    func timeDifferenceInfo() -> String {
-        Self.timeDifferenceInfo(from: reminder.interval.earliest)
+    func timeDifferenceInfo(from date: Date? = nil) -> String {
+        Self.timeDifferenceInfo(from: date ?? reminder.interval.earliest)
     }
 }
 

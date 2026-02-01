@@ -372,11 +372,11 @@
 				813F30FC2D2929FF00EF6DD1 /* ReminderTickInterval.swift */,
 				813F310C2D2E9E0600EF6DD1 /* ReminderState.swift */,
 				8118A1252D68C62100A9FF08 /* ReminderActivationEvents.swift */,
+				814A779A2F2896A200DCAD94 /* ReminderActivationState.swift */,
 				813F31122D2EA7AF00EF6DD1 /* ReminderContent.swift */,
 				813F31142D2EA99C00EF6DD1 /* ReminderCounts.swift */,
 				813F31242D3BB42800EF6DD1 /* ReminderID.swift */,
 				8118A11C2D6667AC00A9FF08 /* ReminderDayOptions.swift */,
-				814A779A2F2896A200DCAD94 /* ReminderActivationState.swift */,
 			);
 			path = Reminder;
 			sourceTree = "<group>";
