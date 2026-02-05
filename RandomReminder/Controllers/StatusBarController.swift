@@ -10,14 +10,12 @@ import Settings
 import SwiftUI
 
 final class StatusBarController {
+    static let shared: StatusBarController = .init()
+
     private(set) lazy var statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private(set) lazy var preferencesViewController = PreferencesViewController()
 
-    init() {
-        setup()
-    }
-
-    private func setup() {
+    func setup() {
         if let button = statusItem.button {
             button.image = NSImage(systemSymbolName: "questionmark.circle", accessibilityDescription: "Menu Bar Icon")
             button.target = self
@@ -32,7 +30,7 @@ final class StatusBarController {
 
         let preferencesMenuItem = NSMenuItem(
             title: L10n.StatusBar.preferences,
-            action: #selector(openPreferences),
+            action: #selector(openReminderPreferences),
             keyEquivalent: ","
         )
         preferencesMenuItem.target = self
@@ -58,7 +56,7 @@ final class StatusBarController {
         return menu
     }
 
-    @objc func openPreferences() {
+    @objc func openReminderPreferences() {
         guard AppPreferences.shared.onboardingComplete else {
             showAlert(
                 title: "Onboarding incomplete",
@@ -69,6 +67,7 @@ final class StatusBarController {
         }
 
         preferencesViewController.show()
+        ReminderModificationController.shared.refreshReminders()
     }
 
     @objc func pauseAllReminders() {
