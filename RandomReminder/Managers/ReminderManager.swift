@@ -15,20 +15,18 @@ final class ReminderManager {
     }
 
     private static var instance: ReminderManager?
-    private static var isSetup = false
 
-    static var shared: ReminderManager {
+    private(set) static var shared: ReminderManager {
         get {
             if let instance {
                 instance
+            } else if isPreview {
+                setup()
             } else {
                 fatalError("ReminderManager instance is not set")
             }
         }
         set {
-            guard !isSetup else {
-                fatalError("ReminderManager has already been setup")
-            }
             instance = newValue
         }
     }
@@ -98,20 +96,14 @@ final class ReminderManager {
         return filenames.filter { StoredReminders.filenamePattern.contains(captureNamed: $0) }
     }
 
-    static func setup(options: Options = .init()) {
-        guard !isSetup else {
-            fatalError("ReminderManager has already been setup")
-        }
-
+    @discardableResult
+    static func setup(options: Options = .init()) -> ReminderManager {
         shared = ReminderManager(options: options)
         shared.setup()
+        return shared
     }
 
     private func setup() {
-        defer {
-            Self.isSetup = true
-        }
-
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(onDayChanged),
@@ -272,7 +264,7 @@ final class ReminderManager {
             if permanent {
                 reminderActivator.terminated = true
             }
-            
+
             modify(reminder) { reminder in
                 reminder.activationState = .noActivations
             }

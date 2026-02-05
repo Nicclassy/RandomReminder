@@ -8,6 +8,12 @@
 import AppKit
 import Foundation
 
+#if DEBUG
+    let isPreview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+#else
+    let isPreview = false
+#endif
+
 func withTimeoutDefaultAsync<T>(
     seconds: TimeInterval,
     operation: @escaping () async -> T
