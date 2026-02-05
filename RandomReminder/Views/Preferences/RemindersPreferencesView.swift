@@ -14,7 +14,7 @@ private struct ReminderPreferencesRow: View {
 
     @State private var reminder: RandomReminder
     @State private var reminderInfo: String
-    @State private var timeInfoProvider: TimeInfoProvider
+    @State private var reminderInfoProvider: ReminderInfoProvider
     @State private var showDeleteAlert = false
 
     @ObservedObject private var controller: ReminderModificationController = .shared
@@ -88,10 +88,10 @@ private struct ReminderPreferencesRow: View {
         parentRowsBeforeScroll: UInt,
         editing: Binding<Bool>
     ) {
-        let timeInfoProvider = TimeInfoProvider(reminder: reminder)
+        let reminderInfoProvider = ReminderInfoProvider(reminder: reminder)
         self.reminder = reminder
-        self.timeInfoProvider = timeInfoProvider
-        self.reminderInfo = timeInfoProvider.preferencesInfo()
+        self.reminderInfoProvider = reminderInfoProvider
+        self.reminderInfo = reminderInfoProvider.preferencesInfo()
         self.timer = timer
         self.parentNumberOfRows = parentNumberOfRows
         self.parentRowsBeforeScroll = parentRowsBeforeScroll
@@ -107,7 +107,7 @@ private struct ReminderPreferencesRow: View {
         } else if reminder.eponymous && !reminder.days.contains(todaysDay) && !reminder.hasPast {
             L10n.Preferences.Reminders.Rows.resumesOn(reminder.days.nextOccurringDay())
         } else {
-            timeInfoProvider.preferencesInfo()
+            reminderInfoProvider.preferencesInfo()
         }
     }
 }
@@ -146,8 +146,10 @@ private struct ReminderPreferencesRows: View {
                         "You currently have no upcoming reminders. "
                         "Get started by clicking the 'Create New Reminder' button below."
                     })
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 12)
                     .opacity(0.7)
-                    .padding()
+                    .frame(maxWidth: .infinity)
                     .background {
                         RoundedRectangle(cornerRadius: ViewConstants.reminderRowCornerRadius)
                             .fill(.quinary)
@@ -255,6 +257,7 @@ struct RemindersPreferencesView: View {
 
                 HStack(spacing: ViewConstants.horizontalButtonSpace) {
                     Button(L10n.Preferences.Reminders.createNew) {
+                        controller.singleModificationView = AppPreferences.shared.singleModificationView
                         openWindow(id: WindowIds.createReminder)
                         controller.modificationWindowOpen = true
                     }
@@ -267,6 +270,7 @@ struct RemindersPreferencesView: View {
 
                     if editingReminders {
                         Button(action: {
+                            controller.updateReminderText()
                             editingReminders.toggle()
                         }, label: {
                             Text(L10n.Preferences.Reminders.finishEditing)
@@ -303,6 +307,13 @@ struct RemindersPreferencesView: View {
     }
 }
 
-#Preview {
+#Preview("No reminders") {
+    RemindersPreferencesView()
+}
+
+#Preview("Many reminders") {
+    // swiftlint:disable redundant_discardable_let
+    // swiftformat:disable redundantLet
+    let _ = ReminderManager.setup(options: .init(remind: false, preview: true))
     RemindersPreferencesView()
 }
