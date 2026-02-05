@@ -6,20 +6,25 @@
 //
 
 import Foundation
+import SwiftUI
 
 final class OnboardingManager {
     static let shared = OnboardingManager()
 
-    private(set) lazy var shouldShowOnboarding = !AppPreferences.shared.onboardingComplete
+    private var forcedOnboarding = false
+
+    var shouldShowOnboarding: Bool {
+        forcedOnboarding || !AppPreferences.shared.onboardingComplete
+    }
 
     func setup() {
-        if AppPreferences.shared.onboardingComplete {
+        if !shouldShowOnboarding {
             NotificationPermissions.shared.promptIfAlertsNotEnabled()
         }
     }
 
     func forceOnboarding() {
-        shouldShowOnboarding = true
+        forcedOnboarding = true
     }
 
     func onCompletion() {

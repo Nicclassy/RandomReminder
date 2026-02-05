@@ -160,9 +160,6 @@ struct OnboardingView: View {
                 }
             )
         }
-        .onReceive(NotificationCenter.default.publisher(for: .openOnboardingWindow)) { _ in
-            openWindow(id: WindowIds.onboarding)
-        }
         .padding(.all, 30)
         .frame(width: 400, height: 450)
     }
@@ -173,7 +170,7 @@ struct OnboardingView: View {
             if viewModel.step.isLast {
                 dismissWindow(id: WindowIds.onboarding)
                 OnboardingManager.shared.onCompletion()
-                AppDelegate.shared.openReminderPreferences()
+                StatusBarController.shared.openReminderPreferences()
             }
             return
         }
