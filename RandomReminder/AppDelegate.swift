@@ -8,23 +8,16 @@
 import SwiftUI
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    private(set) static var shared: AppDelegate!
-    private(set) var statusBarController: StatusBarController!
-
     func applicationDidFinishLaunching(_: Notification) {
-        Self.shared = self
-        statusBarController = .init()
+        StatusBarController.shared.setup()
+        OnboardingManager.shared.setup()
         ReminderManager.setup()
     }
 
     func applicationDidBecomeActive(_: Notification) {
+        FancyLogger.info("Application became active")
         if let window = NSApp.windows.first {
             window.makeKeyAndOrderFront(nil)
         }
-    }
-
-    func openReminderPreferences() {
-        statusBarController.preferencesViewController.show()
-        ReminderModificationController.shared.refreshReminders()
     }
 }
