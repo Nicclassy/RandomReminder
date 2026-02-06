@@ -256,7 +256,6 @@ struct ReminderModificationView: View {
     @State var fields: ModificationViewFields = .init()
     @State private var validationResult: ValidationResult = .unset
     @State private var step: ReminderModificationStep = .content
-    @State private var singleView = false
     @ObservedObject private var controller: ReminderModificationController = .shared
 
     private let schedulingPreferences: SchedulingPreferences = .shared
@@ -266,7 +265,6 @@ struct ReminderModificationView: View {
     var body: some View {
         activeView
             .onAppear {
-                singleView = true // AppPreferences.shared.singleModificationView
                 guard mode == .edit else {
                     reminder.resetDates()
                     setDefaultTimes()
@@ -290,7 +288,9 @@ struct ReminderModificationView: View {
                 preferences.reset()
                 fields.reset()
                 dismissWindow(id: WindowIds.reminderCommand)
+
                 controller.modificationWindowOpen = false
+                controller.reminder = nil
             }
             .onChange(of: viewPreferences.closeView) {
                 // For some reason, dismissing the window after the alert has closed
@@ -298,6 +298,7 @@ struct ReminderModificationView: View {
                 // Therefore, it is necessary to close the window itself instead
                 if viewPreferences.closeView {
                     NSApp.keyWindow?.close()
+                    // ^ could be an issue later?
                     dismissWindow(id: WindowIds.reminderCommand)
                     viewPreferences.closeView = false
                 }
@@ -385,6 +386,10 @@ struct ReminderModificationView: View {
         }
     }
 
+    private var singleView: Bool {
+        controller.singleModificationView
+    }
+
     private func setDefaultTimes() {
         if schedulingPreferences.defaultEarliestTimeEnabled {
             reminder.earliestDate = .dateToday(withTime: schedulingPreferences.defaultEarliestTime)
@@ -404,11 +409,13 @@ struct ReminderModificationView: View {
 
         validationResult = validator.validate()
         switch validationResult {
-        case .success, .unset:
+        case .success:
             break
         case .error, .warning:
             viewPreferences.showReminderAlert = true
             return
+        case .unset:
+            fatalError("Unreachable state")
         }
 
         createNewReminder()

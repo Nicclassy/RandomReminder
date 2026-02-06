@@ -10,6 +10,7 @@ import Foundation
 final class ReminderModificationController: ObservableObject {
     static let shared = ReminderModificationController()
 
+    @Published var singleModificationView = false
     @Published var modificationWindowOpen = false
     @Published var refreshToggle = false
     weak var reminder: RandomReminder?
