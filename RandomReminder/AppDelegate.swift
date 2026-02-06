@@ -16,8 +16,5 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidBecomeActive(_: Notification) {
         FancyLogger.info("Application became active")
-        if let window = NSApp.windows.first {
-            window.makeKeyAndOrderFront(nil)
-        }
     }
 }

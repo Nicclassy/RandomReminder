@@ -10,7 +10,7 @@ import Settings
 import SwiftUI
 
 final class StatusBarController {
-    static let shared: StatusBarController = .init()
+    static let shared = StatusBarController()
 
     private(set) lazy var statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private(set) lazy var preferencesViewController = PreferencesViewController()

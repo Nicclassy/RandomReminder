@@ -12,34 +12,44 @@ struct RandomReminderApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
-        Window(WindowTitles.onboarding, id: WindowIds.onboarding) {
-            if OnboardingManager.shared.shouldShowOnboarding {
+        Group {
+            Settings {
+                LaunchView()
+            }
+
+            Window(WindowTitles.onboarding, id: WindowIds.onboarding) {
                 OnboardingView()
             }
-        }
-        .defaultPosition(.center)
-        .defaultLaunchBehavior(.presented)
-        .windowResizability(.contentSize)
+            .windowResizability(.contentSize)
 
-        Window(WindowTitles.createReminder, id: WindowIds.createReminder) {
-            ReminderModificationView(mode: .create)
-        }
-        .windowResizability(.contentSize)
+            Window(WindowTitles.createReminder, id: WindowIds.createReminder) {
+                ReminderModificationView(mode: .create)
+            }
+            .windowResizability(.contentSize)
 
-        Window(WindowTitles.editReminder, id: WindowIds.editReminder) {
-            ReminderModificationView(mode: .edit)
-        }
-        .windowResizability(.contentSize)
+            Window(WindowTitles.editReminder, id: WindowIds.editReminder) {
+                ReminderModificationView(mode: .edit)
+            }
+            .windowResizability(.contentSize)
 
-        Window(WindowTitles.reminderCommand, id: WindowIds.reminderCommand) {
-            ReminderCommandView()
-        }
-        .windowResizability(.contentSize)
+            Window(WindowTitles.reminderCommand, id: WindowIds.reminderCommand) {
+                ReminderCommandView()
+            }
+            .windowResizability(.contentSize)
 
-        Window(WindowTitles.activeReminder, id: WindowIds.activeReminder) {
-            ActiveReminderView()
+            Window(WindowTitles.activeReminder, id: WindowIds.activeReminder) {
+                ActiveReminderView()
+            }
+            .windowResizability(.contentSize)
         }
-        .windowResizability(.contentSize)
+        .commands {
+            CommandGroup(replacing: .appSettings) {
+                Button("Settings…") {
+                    StatusBarController.shared.openReminderPreferences()
+                }
+                .keyboardShortcut(",", modifiers: .command)
+            }
+        }
     }
 
     init() {
