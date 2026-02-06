@@ -12,6 +12,7 @@ import SwiftUI
 // swiftlint:disable identifier_name
 final class PreferencesViewController {
     private let defaultPane: Settings.PaneIdentifier = .reminders
+    private var hasOpenedWindow = false
 
     private lazy var windowController = SettingsWindowController(
         panes: [
@@ -86,8 +87,22 @@ final class PreferencesViewController {
     }
 
     func show() {
-        windowController.show(pane: defaultPane)
-        windowController.window?.center()
+        windowController.show(pane: hasOpenedWindow ? nil : defaultPane)
+        if !hasOpenedWindow {
+            hasOpenedWindow = true
+        }
+
+        guard let window = windowController.window else {
+            FancyLogger.warn("No preferences window found")
+            return
+        }
+
+        if !window.isVisible {
+            window.center()
+        }
+
+        NSApp.activate()
+        window.makeKeyAndOrderFront(nil)
     }
 }
 
