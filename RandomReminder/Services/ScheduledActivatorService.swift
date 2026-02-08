@@ -13,7 +13,7 @@ private func calculateActivationDates(for reminder: RandomReminder) -> [Date] {
     let timeRemaining = reminder.interval.latest.timeIntervalSince(startDate)
     let activationDuration = timeRemaining / TimeInterval(reminder.counts.occurencesLeft)
 
-    return (0..<reminder.counts.occurences).map { activationNumber in
+    return (0..<reminder.counts.occurencesLeft).map { activationNumber in
         let start = startDate + activationDuration * TimeInterval(activationNumber)
         let end = start + activationDuration
         return Date(
