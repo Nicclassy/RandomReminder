@@ -153,8 +153,6 @@ internal enum L10n {
     internal enum General {
       /// Launch at Login
       internal static let launchAtLogin = L10n.tr("Localizable", "preferences.general.launch-at-login", fallback: "Launch at Login")
-      /// Enable Quick Reminder
-      internal static let quickReminderEnabled = L10n.tr("Localizable", "preferences.general.quick-reminder-enabled", fallback: "Enable Quick Reminder")
       /// Randomise audio playback start
       internal static let randomiseAudioPlayback = L10n.tr("Localizable", "preferences.general.randomise-audio-playback", fallback: "Randomise audio playback start")
       /// Show reminder counts
@@ -165,13 +163,9 @@ internal enum L10n {
         /// Automatically start RandomReminder when you login.
         internal static let caption = L10n.tr("Localizable", "preferences.general.launch-at-login.caption", fallback: "Automatically start RandomReminder when you login.")
       }
-      internal enum QuickReminderEnabled {
-        /// Show Quick Reminder in the menu bar item's menu.
-        internal static let caption = L10n.tr("Localizable", "preferences.general.quick-reminder-enabled.caption", fallback: "Show Quick Reminder in the menu bar item's menu.")
-      }
       internal enum RandomiseAudioPlayback {
-        /// Start reminder audio playback from a random point in reminders' files.
-        internal static let caption = L10n.tr("Localizable", "preferences.general.randomise-audio-playback.caption", fallback: "Start reminder audio playback from a random point in reminders' files.")
+        /// Start playback from a random point in reminders' audio files.
+        internal static let caption = L10n.tr("Localizable", "preferences.general.randomise-audio-playback.caption", fallback: "Start playback from a random point in reminders' audio files.")
       }
       internal enum ShowReminderCounts {
         /// Show the number of reminders in each category in the category's heading.
@@ -199,9 +193,9 @@ internal enum L10n {
       internal static let finishEditing = L10n.tr("Localizable", "preferences.reminders.finish-editing", fallback: "Finish Editing")
       /// >1 week
       internal static let longerThanOneWeek = L10n.tr("Localizable", "preferences.reminders.longer-than-one-week", fallback: ">1 week")
-      /// %d occurences left
-      internal static func multipleOccurencesLeft(_ p1: Int) -> String {
-        return L10n.tr("Localizable", "preferences.reminders.multiple-occurences-left", p1, fallback: "%d occurences left")
+      /// %d occurrences left
+      internal static func multipleOccurrencesLeft(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "preferences.reminders.multiple-occurrences-left", p1, fallback: "%d occurrences left")
       }
       /// Occurring in %@
       internal static func occurringIn(_ p1: Any) -> String {
@@ -215,8 +209,8 @@ internal enum L10n {
       internal static func remindersCount(_ p1: Int) -> String {
         return L10n.tr("Localizable", "preferences.reminders.reminders-count", p1, fallback: "Reminders: %d")
       }
-      /// 1 occurence left
-      internal static let singleOccurenceLeft = L10n.tr("Localizable", "preferences.reminders.single-occurence-left", fallback: "1 occurence left")
+      /// 1 occurrence left
+      internal static let singleOccurrenceLeft = L10n.tr("Localizable", "preferences.reminders.single-occurrence-left", fallback: "1 occurrence left")
       /// Starting in %@
       internal static func startingIn(_ p1: Any) -> String {
         return L10n.tr("Localizable", "preferences.reminders.starting-in", String(describing: p1), fallback: "Starting in %@")

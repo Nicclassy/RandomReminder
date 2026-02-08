@@ -88,12 +88,10 @@
 
 "preferences.general.launch-at-login" = "Launch at Login";
 "preferences.general.launch-at-login.caption" = "Automatically start RandomReminder when you login.";
-"preferences.general.quick-reminder-enabled" = "Enable Quick Reminder";
-"preferences.general.quick-reminder-enabled.caption" = "Show Quick Reminder in the menu bar item's menu.";
 "preferences.general.show-reminder-counts" = "Show reminder counts";
 "preferences.general.show-reminder-counts.caption" = "Show the number of reminders in each category in the category's heading.";
 "preferences.general.randomise-audio-playback" = "Randomise audio playback start";
-"preferences.general.randomise-audio-playback.caption" = "Start reminder audio playback from a random point in reminders' files.";
+"preferences.general.randomise-audio-playback.caption" = "Start playback from a random point in reminders' audio files.";
 "preferences.general.time-format" = "Time Format";
 "preferences.general.time-format.long" = "hours, minutes, seconds";
 "preferences.general.time-format.medium" = "hrs, mins, secs";
@@ -101,8 +99,8 @@
 
 // MARK: Reminder Preferences
 
-"preferences.reminders.single-occurence-left" = "1 occurence left";
-"preferences.reminders.multiple-occurences-left" = "%d occurences left";
+"preferences.reminders.single-occurrence-left" = "1 occurrence left";
+"preferences.reminders.multiple-occurrences-left" = "%d occurrences left";
 "preferences.reminders.ago" = "%@ ago";
 "preferences.reminders.longer-than-one-week" = ">1 week";
 "preferences.reminders.starting-now" = "Starting now";

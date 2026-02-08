@@ -30,10 +30,10 @@ final class ActiveReminderService {
         }
 
         ReminderManager.shared.modify(reminder) { reminder in
-            reminder.counts.occurences += 1
-            if reminder.counts.occurences == reminder.counts.totalOccurences {
-                FancyLogger.info("Setting reminder state to finished and resetting occurences")
-                reminder.counts.occurences = 0
+            reminder.counts.occurrences += 1
+            if reminder.counts.occurrences == reminder.counts.totalOccurrences {
+                FancyLogger.info("Setting reminder state to finished and resetting occurrences")
+                reminder.counts.occurrences = 0
                 reminder.state = reminder.hasRepeats ? .upcoming : .finished
                 reminder.activationState = .finalActivation(.now)
             } else {

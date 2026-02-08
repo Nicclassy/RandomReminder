@@ -14,7 +14,7 @@ struct ReminderInfoProvider {
 
     let reminder: RandomReminder
 
-    static func timeDifferenceInfo(from start: Date, to end: Date = .now) -> String {
+    private static func timeDifferenceInfo(from start: Date, to end: Date = .now) -> String {
         func componentName(_ component: Calendar.Component, for quantity: Int) -> String {
             guard let unit = TimeUnit(rawValue: String(describing: component)) else {
                 fatalError("Cannot convert \(component) into a TimeUnit")
@@ -57,10 +57,10 @@ struct ReminderInfoProvider {
         }
 
         if reminder.hasBegun {
-            return if reminder.counts.occurencesLeft == 1 {
-                L10n.Preferences.Reminders.singleOccurenceLeft
+            return if reminder.counts.occurrencesLeft == 1 {
+                L10n.Preferences.Reminders.singleOccurrenceLeft
             } else {
-                L10n.Preferences.Reminders.multipleOccurencesLeft(reminder.counts.occurencesLeft)
+                L10n.Preferences.Reminders.multipleOccurrencesLeft(reminder.counts.occurrencesLeft)
             }
         }
 
@@ -81,6 +81,6 @@ struct ReminderInfoProvider {
     }
 
     func timeDifferenceInfo(from date: Date? = nil) -> String {
-        Self.timeDifferenceInfo(from: date ?? reminder.interval.earliest)
+        Self.timeDifferenceInfo(from: reminder.hasPast ? date ?? reminder.interval.latest : reminder.interval.earliest)
     }
 }

@@ -18,7 +18,7 @@ final class MutableReminder {
         id: .unassigned,
         title: String(),
         description: .emptyText,
-        totalOccurences: 1,
+        totalOccurrences: 1,
         earliestDate: defaultEarliestDate,
         latestDate: defaultLatestDate,
         days: [],
@@ -26,7 +26,7 @@ final class MutableReminder {
         repeatIntervalType: .every,
         intervalQuantity: 1,
         activationEvents: ReminderActivationEvents(),
-        occurences: 0
+        occurrences: 0
     )
 
     private static var defaultEarliestDate: Date {
@@ -40,7 +40,7 @@ final class MutableReminder {
     var id: ReminderID
     var title: String
     var description: ReminderDescription
-    var totalOccurences: Int
+    var totalOccurrences: Int
     var earliestDate: Date
     var latestDate: Date
     var days: ReminderDayOptions
@@ -48,13 +48,13 @@ final class MutableReminder {
     var repeatIntervalType: RepeatIntervalType
     var intervalQuantity: Int
     var activationEvents: ReminderActivationEvents
-    var occurences: Int
+    var occurrences: Int
 
     init(
         id: ReminderID,
         title: String,
         description: ReminderDescription,
-        totalOccurences: Int,
+        totalOccurrences: Int,
         earliestDate: Date,
         latestDate: Date,
         days: ReminderDayOptions,
@@ -62,12 +62,12 @@ final class MutableReminder {
         repeatIntervalType: RepeatIntervalType,
         intervalQuantity: Int,
         activationEvents: ReminderActivationEvents,
-        occurences: Int
+        occurrences: Int
     ) {
         self.id = id
         self.title = title
         self.description = description
-        self.totalOccurences = totalOccurences
+        self.totalOccurrences = totalOccurrences
         self.earliestDate = earliestDate
         self.latestDate = latestDate
         self.days = days
@@ -75,14 +75,14 @@ final class MutableReminder {
         self.repeatIntervalType = repeatIntervalType
         self.intervalQuantity = intervalQuantity
         self.activationEvents = activationEvents
-        self.occurences = occurences
+        self.occurrences = occurrences
     }
 
     init(reminder: MutableReminder) {
         self.id = reminder.id
         self.title = reminder.title
         self.description = reminder.description
-        self.totalOccurences = reminder.totalOccurences
+        self.totalOccurrences = reminder.totalOccurrences
         self.earliestDate = reminder.earliestDate
         self.latestDate = reminder.latestDate
         self.days = reminder.days
@@ -90,7 +90,7 @@ final class MutableReminder {
         self.repeatIntervalType = reminder.repeatIntervalType
         self.intervalQuantity = reminder.intervalQuantity
         self.activationEvents = reminder.activationEvents
-        self.occurences = reminder.occurences
+        self.occurrences = reminder.occurrences
     }
 
     convenience init(from reminder: RandomReminder) {
@@ -98,7 +98,7 @@ final class MutableReminder {
             id: reminder.id,
             title: reminder.content.title,
             description: reminder.content.description,
-            totalOccurences: reminder.counts.totalOccurences,
+            totalOccurrences: reminder.counts.totalOccurrences,
             earliestDate: reminder.interval.earliest,
             latestDate: reminder.interval.latest,
             days: reminder.days,
@@ -108,7 +108,7 @@ final class MutableReminder {
             repeatIntervalType: reminder.interval.repeatIntervalType,
             intervalQuantity: reminder.interval.intervalQuantity,
             activationEvents: reminder.activationEvents,
-            occurences: reminder.counts.occurences
+            occurrences: reminder.counts.occurrences
         )
     }
 
@@ -129,7 +129,7 @@ final class MutableReminder {
         id = reminder.id
         title = reminder.title
         description = reminder.description
-        totalOccurences = reminder.totalOccurences
+        totalOccurrences = reminder.totalOccurrences
         earliestDate = reminder.earliestDate
         latestDate = reminder.latestDate
         days = reminder.days
@@ -137,15 +137,15 @@ final class MutableReminder {
         repeatIntervalType = reminder.repeatIntervalType
         activationEvents = reminder.activationEvents
         intervalQuantity = reminder.intervalQuantity
-        occurences = reminder.occurences
+        occurrences = reminder.occurrences
     }
 
     func copyFrom(reminder: RandomReminder) {
         id = reminder.id
         title = reminder.content.title
         description = reminder.content.description
-        occurences = reminder.counts.occurences
-        totalOccurences = reminder.counts.totalOccurences
+        occurrences = reminder.counts.occurrences
+        totalOccurrences = reminder.counts.totalOccurrences
         earliestDate = reminder.interval.earliest
         latestDate = reminder.interval.latest
         days = reminder.days
@@ -203,7 +203,7 @@ final class MutableReminder {
             description: description,
             interval: reminderInterval,
             days: days,
-            totalOccurences: reminderPreferences.nonRandom ? 1 : totalOccurences,
+            totalOccurrences: reminderPreferences.nonRandom ? 1 : totalOccurrences,
             activationEvents: activationEvents
         )
     }
@@ -215,7 +215,7 @@ extension MutableReminder {
             "id": id,
             "title": title,
             "description": description,
-            "totalOccurences": totalOccurences,
+            "totalOccurrences": totalOccurrences,
             "earliestDate": earliestDate,
             "latestDate": latestDate,
             "days": days,
@@ -223,7 +223,7 @@ extension MutableReminder {
             "repeatIntervalType": repeatIntervalType,
             "intervalQuantity": intervalQuantity,
             "activationEvents": activationEvents,
-            "occurences": occurences
+            "occurrences": occurrences
         ])
         let properties = mirror.children
             .map { "\($0.label ?? "?") = \($0.value)" }

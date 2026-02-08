@@ -120,6 +120,7 @@ final class ReminderManager {
                 let date = Date()
                 queue.sync {
                     for reminder in reminders where !reminder.hasPast {
+                        FancyLogger.info("Tick for", reminder)
                         tick(reminder, on: date)
                     }
                 }
@@ -331,7 +332,7 @@ final class ReminderManager {
                         }
                         continue
                     }
-                    assert(reminder.counts.occurences == 0, "Reminder '\(reminder)' should not have occurrences")
+                    assert(reminder.counts.occurrences == 0, "Reminder '\(reminder)' should not have occurrences")
                     FancyLogger.info("Starting reminder '\(reminder)' on initialisation")
                     startReminder(reminder)
                 }

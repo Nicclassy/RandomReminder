@@ -11,9 +11,9 @@ private func calculateActivationDates(for reminder: RandomReminder) -> [Date] {
     // Dates are spaced evenly; this activator is spaced and scheduled
     let startDate = max(reminder.interval.earliest, .now)
     let timeRemaining = reminder.interval.latest.timeIntervalSince(startDate)
-    let activationDuration = timeRemaining / TimeInterval(reminder.counts.occurencesLeft)
+    let activationDuration = timeRemaining / TimeInterval(reminder.counts.occurrencesLeft)
 
-    return (0..<reminder.counts.occurencesLeft).map { activationNumber in
+    return (0..<reminder.counts.occurrencesLeft).map { activationNumber in
         let start = startDate + activationDuration * TimeInterval(activationNumber)
         let end = start + activationDuration
         return Date(
@@ -41,7 +41,7 @@ final class ScheduledActivatorService: ReminderActivatorService {
         self.onReminderActivation = onReminderActivation
         self.onReminderFinished = onReminderFinished
         self.activationDates = calculateActivationDates(for: reminder)
-        self.reminderActivations = reminder.counts.occurences
+        self.reminderActivations = reminder.counts.occurrences
     }
 
     func tick() {
@@ -56,12 +56,12 @@ final class ScheduledActivatorService: ReminderActivatorService {
             return
         }
 
-        let isFinalActivation = reminderActivations == reminder.counts.totalOccurences - 1
+        let isFinalActivation = reminderActivations == reminder.counts.totalOccurrences - 1
         if isFinalActivation {
             reminderActivations += 1
             FancyLogger.info(
                 "Activated final reminder for '\(reminder)'",
-                "(\(reminderActivations)/\(reminder.counts.totalOccurences))"
+                "(\(reminderActivations)/\(reminder.counts.totalOccurrences))"
             )
             onReminderActivation()
             onReminderFinished()
@@ -71,7 +71,7 @@ final class ScheduledActivatorService: ReminderActivatorService {
             onReminderActivation()
             FancyLogger.info(
                 "Activated '\(reminder)'",
-                "(\(reminderActivations)/\(reminder.counts.totalOccurences))!"
+                "(\(reminderActivations)/\(reminder.counts.totalOccurrences))!"
             )
         }
 

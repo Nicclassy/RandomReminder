@@ -69,7 +69,7 @@ final class RandomReminder: Codable {
         description: ReminderDescription,
         interval: ReminderInterval,
         days: ReminderDayOptions? = nil,
-        totalOccurences: Int,
+        totalOccurrences: Int,
         activationEvents: ReminderActivationEvents? = nil,
         activationState: ReminderActivationState? = nil
     ) {
@@ -78,7 +78,7 @@ final class RandomReminder: Codable {
             content: ReminderContent(title: title, description: description),
             reminderInterval: AnyReminderInterval(interval),
             days: days ?? .allOptions(),
-            counts: ReminderCounts(totalOccurences: totalOccurences),
+            counts: ReminderCounts(totalOccurrences: totalOccurrences),
             state: .upcoming,
             activationState: activationState ?? .noActivations,
             activationEvents: activationEvents ?? ReminderActivationEvents()
@@ -116,7 +116,7 @@ extension RandomReminder {
         } else if hasBegun != other.hasBegun {
             hasBegun
         } else if hasBegun && other.hasBegun {
-            counts.occurences < other.counts.occurences
+            counts.occurrences < other.counts.occurrences
         } else if !hasBegun && !other.hasBegun {
             interval.earliest < other.interval.earliest
         } else if hasPast && other.hasPast {
@@ -134,7 +134,7 @@ extension RandomReminder {
 }
 
 extension RandomReminder: CustomStringConvertible {
-    private static let titleOnly = true
+    private static let titleOnly = false
 
     var description: String {
         Self.titleOnly ? content.title : reflectedDescription

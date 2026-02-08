@@ -8,19 +8,19 @@
 import Foundation
 
 struct ReminderCounts: Codable {
-    var occurences: Int
-    let totalOccurences: Int
+    var occurrences: Int
+    let totalOccurrences: Int
 
-    var occurencesLeft: Int {
-        totalOccurences - occurences
+    var occurrencesLeft: Int {
+        totalOccurrences - occurrences
     }
 
-    init(occurences: Int, totalOccurences: Int) {
-        self.occurences = occurences
-        self.totalOccurences = totalOccurences
+    init(occurrences: Int, totalOccurrences: Int) {
+        self.occurrences = occurrences
+        self.totalOccurrences = totalOccurrences
     }
 
-    init(totalOccurences: Int) {
-        self.init(occurences: 0, totalOccurences: totalOccurences)
+    init(totalOccurrences: Int) {
+        self.init(occurrences: 0, totalOccurrences: totalOccurrences)
     }
 }

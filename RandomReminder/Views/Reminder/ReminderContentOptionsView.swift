@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+private enum FocusedField: Hashable {
+    case title
+    case description
+    case occurrences
+}
+
 struct ReminderContentOptionsView: View {
     @Environment(\.openWindow) private var openWindow
 
@@ -14,12 +20,14 @@ struct ReminderContentOptionsView: View {
     @Bindable var reminder: MutableReminder
     @Bindable var preferences: ReminderPreferences
     @Bindable var fields: ModificationViewFields
+    @FocusState private var focusedField: FocusedField?
 
     var body: some View {
         Grid(alignment: .leading) {
             GridRow {
                 Text("Reminder title:")
                 TextField("Title", text: $reminder.title)
+                    .focused($focusedField, equals: .title)
             }
             GridRow(alignment: .top) {
                 Text("Reminder description:")
@@ -31,6 +39,7 @@ struct ReminderContentOptionsView: View {
                                 set: { reminder.description = .text($0) }
                             )
                         )
+                        .focused($focusedField, equals: .description)
                         .font(.system(size: NSFont.systemFontSize))
                         .frame(width: 380, height: 40)
                         .overlay(alignment: .trailing) {
@@ -71,28 +80,32 @@ struct ReminderContentOptionsView: View {
                 }
             }
             GridRow {
-                Text("Total occurences:")
+                Text("Total occurrences:")
                 if preferences.nonRandom {
                     StepperTextField(value: .constant(1))
                         .disabled(true)
                 } else {
                     StepperTextField(
-                        value: $reminder.totalOccurences,
-                        range: reminderOccurencesRange,
+                        value: $reminder.totalOccurrences,
+                        range: reminderOccurrencesRange,
                         onTextChange: { text in
                             DispatchQueue.main.async {
                                 fields.occurrencesText = text
                             }
                         }
                     )
+                    .focused($focusedField, equals: .occurrences)
                     .frame(width: 55)
                 }
             }
         }
+        .task {
+            focusedField = .title
+        }
     }
 
-    private var reminderOccurencesRange: ClosedRange<Int> {
-        ReminderConstants.minOccurences...ReminderConstants.maxOccurences
+    private var reminderOccurrencesRange: ClosedRange<Int> {
+        ReminderConstants.minOccurrences...ReminderConstants.maxOccurrences
     }
 }
 
