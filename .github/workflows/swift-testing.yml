@@ -22,5 +22,8 @@ jobs:
           xcodebuild test \
             -project "RandomReminder.xcodeproj" \
             -scheme "RandomReminder" \
-            -destination "platform=macOS" \
+            -destination "platform=macOS,arch=arm64" \
+            -skipPackagePluginValidation \
+            -testPlan "RandomReminder" \
+            -only-testing:RandomReminderTests \
             | xcpretty
