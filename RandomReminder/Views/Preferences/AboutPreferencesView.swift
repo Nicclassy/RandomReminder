@@ -14,7 +14,7 @@ struct AboutPreferencesView: View {
         VStack {
             Text("About placeholder text")
         }
-        .frame(width: 300, height: 250)
+        .mediumFrame()
     }
 }
 

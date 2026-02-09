@@ -17,25 +17,7 @@ extension View {
         }
     }
 
-    func centerWindowOnAppear(withTitle title: String? = nil, activate: Bool = true) -> some View {
-        onAppear {
-            DispatchQueue.main.async {
-                let window = if let title {
-                    NSApplication.shared.windows.first(where: { $0.title == title })
-                } else {
-                    NSApplication.shared.keyWindow
-                }
-                guard let window else {
-                    FancyLogger.warn("Window with title \(title ?? "(n/a)") was not found when expected")
-                    return
-                }
-
-                window.center()
-                if activate {
-                    NSApplication.shared.activate(ignoringOtherApps: true)
-                    window.makeKeyAndOrderFront(nil)
-                }
-            }
-        }
+    func mediumFrame() -> some View {
+        frame(width: ViewConstants.mediumWindowWidth, height: ViewConstants.mediumWindowHeight)
     }
 }
