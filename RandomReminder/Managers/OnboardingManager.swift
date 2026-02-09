@@ -12,6 +12,7 @@ final class OnboardingManager {
     static let shared = OnboardingManager()
 
     private var forcedOnboarding = false
+    private(set) var onboardingIsComplete = false
 
     var shouldShowOnboarding: Bool {
         forcedOnboarding || !AppPreferences.shared.onboardingComplete
@@ -21,6 +22,8 @@ final class OnboardingManager {
         if !shouldShowOnboarding {
             NotificationPermissions.shared.promptIfAlertsNotEnabled()
         }
+
+        onboardingIsComplete = !forcedOnboarding && AppPreferences.shared.onboardingComplete
     }
 
     func forceOnboarding() {
@@ -29,5 +32,6 @@ final class OnboardingManager {
 
     func onCompletion() {
         AppPreferences.shared.onboardingComplete = true
+        onboardingIsComplete = true
     }
 }

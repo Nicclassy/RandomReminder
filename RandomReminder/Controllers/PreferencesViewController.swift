@@ -87,6 +87,7 @@ final class PreferencesViewController {
     }
 
     func show() {
+        let windowIsAlreadyOpen = windowController.window?.isVisible ?? false
         windowController.show(pane: hasOpenedWindow ? nil : defaultPane)
         if !hasOpenedWindow {
             hasOpenedWindow = true
@@ -97,7 +98,7 @@ final class PreferencesViewController {
             return
         }
 
-        if !window.isVisible {
+        if !windowIsAlreadyOpen {
             window.center()
         }
 

@@ -5,15 +5,15 @@
 //  Created by Luca Napoli on 19/12/2024.
 //
 
-import Foundation
 import Settings
 import SwiftUI
 
-final class StatusBarController {
+final class StatusBarController: NSObject {
     static let shared = StatusBarController()
 
     private(set) lazy var statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private(set) lazy var preferencesViewController = PreferencesViewController()
+    private weak var pauseRemindersItem: NSMenuItem?
 
     func setup() {
         if let button = statusItem.button {
@@ -27,6 +27,7 @@ final class StatusBarController {
     private func buildMenu() -> NSMenu {
         let menu = NSMenu()
         menu.autoenablesItems = false
+        menu.delegate = self
 
         let preferencesMenuItem = NSMenuItem(
             title: L10n.StatusBar.preferences,
@@ -37,13 +38,13 @@ final class StatusBarController {
         menu.addItem(preferencesMenuItem)
 
         let pauseRemindersItem = NSMenuItem(
-            title: "Pause all reminders",
-            action: #selector(pauseAllReminders),
+            title: "",
+            action: #selector(togglePauseAllReminders),
             keyEquivalent: ""
         )
         pauseRemindersItem.target = self
-        pauseRemindersItem.state = SchedulingPreferences.shared.remindersArePaused ? .on : .off
         menu.addItem(pauseRemindersItem)
+        self.pauseRemindersItem = pauseRemindersItem
         menu.addItem(.separator())
 
         let quitMenuItem = NSMenuItem(
@@ -56,8 +57,17 @@ final class StatusBarController {
         return menu
     }
 
+    private func updatePauseMenuItem() {
+        guard let pauseRemindersItem else {
+            fatalError("Pause reminders item not set")
+        }
+
+        let isEnabled = SchedulingPreferences.shared.remindersArePaused
+        pauseRemindersItem.title = isEnabled ? "Unpause all reminders" : "Pause all reminders"
+    }
+
     @objc func openReminderPreferences() {
-        guard AppPreferences.shared.onboardingComplete else {
+        guard OnboardingManager.shared.onboardingIsComplete else {
             showAlert(
                 title: "Onboarding incomplete",
                 message: "You must complete the onboarding process prior to using the application.",
@@ -67,15 +77,22 @@ final class StatusBarController {
         }
 
         preferencesViewController.show()
-        ReminderModificationController.shared.refreshReminders()
+        ReminderModificationController.shared.updateReminderText()
     }
 
-    @objc func pauseAllReminders() {
+    @objc private func togglePauseAllReminders() {
         SchedulingPreferences.shared.remindersArePaused.toggle()
-        ReminderModificationController.shared.refreshReminders()
+        updatePauseMenuItem()
+        ReminderModificationController.shared.updateReminderText()
     }
 
     @objc private func quit() {
         NSApp.terminate(self)
+    }
+}
+
+extension StatusBarController: NSMenuDelegate {
+    func menuWillOpen(_: NSMenu) {
+        updatePauseMenuItem()
     }
 }
