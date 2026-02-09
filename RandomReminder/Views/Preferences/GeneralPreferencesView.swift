@@ -14,46 +14,39 @@ struct GeneralPreferencesView: View {
     var body: some View {
         Form {
             Section {
-                Toggle(isOn: appPreferences.$launchAtLogin) {
-                    Text(L10n.Preferences.General.launchAtLogin)
-                    CaptionText(L10n.Preferences.General.LaunchAtLogin.caption)
-                }
+                ToggleablePreference(
+                    title: L10n.Preferences.General.launchAtLogin,
+                    caption: L10n.Preferences.General.LaunchAtLogin.caption,
+                    isOn: appPreferences.$launchAtLogin
+                )
                 .onChange(of: appPreferences.launchAtLogin) { _, isEnabled in
                     LaunchAtLogin.isEnabled = isEnabled
                 }
+
+                ToggleablePreference(
+                    title: L10n.Preferences.General.showReminderCounts,
+                    caption: L10n.Preferences.General.ShowReminderCounts.caption,
+                    isOn: appPreferences.$showReminderCounts
+                )
+
+                ToggleablePreference(
+                    title: L10n.Preferences.General.randomiseAudioPlayback,
+                    caption: L10n.Preferences.General.RandomiseAudioPlayback.caption,
+                    isOn: appPreferences.$randomiseAudioPlaybackStart
+                )
+
+                ToggleablePreference(
+                    title: "Modify reminders on a single screen",
+                    caption: "When disabled, reminder modification is split across two screens.",
+                    isOn: appPreferences.$singleModificationView
+                )
             }
 
             Section {
-                Toggle(isOn: appPreferences.$showReminderCounts) {
-                    Text(L10n.Preferences.General.showReminderCounts)
-                    CaptionText(L10n.Preferences.General.ShowReminderCounts.caption)
-                }
-                .onChange(of: appPreferences.showReminderCounts) { _, showReminderCount in
-                    appPreferences.showReminderCounts = showReminderCount
-                }
-            }
+                Text(L10n.Preferences.General.timeFormat)
+                    .padding(.top, 1)
+                    .padding(.leading, 20)
 
-            Section {
-                Toggle(isOn: appPreferences.$randomiseAudioPlaybackStart) {
-                    Text(L10n.Preferences.General.randomiseAudioPlayback)
-                    CaptionText(L10n.Preferences.General.RandomiseAudioPlayback.caption)
-                }
-            }
-
-            Section {
-                Toggle(isOn: appPreferences.$singleModificationView) {
-                    Text("Reminder modification is one screen")
-                    CaptionText(multilineString {
-                        "If disabled, reminder modification will "
-                        "be split into two different screens"
-                    })
-                }
-            }
-
-            Spacer().frame(height: 10)
-
-            Section {
-                Text(L10n.Preferences.General.timeFormat).padding(.leading, 20)
                 Picker("", selection: appPreferences.$timeFormat) {
                     Text(L10n.Preferences.General.TimeFormat.long).tag(TimeFormat.long)
                     Text(L10n.Preferences.General.TimeFormat.medium).tag(TimeFormat.medium)
@@ -64,8 +57,13 @@ struct GeneralPreferencesView: View {
                     ReminderModificationController.shared.refreshModificationWindow()
                 }
             }
+
+            Section {
+                Spacer().frame(maxHeight: .infinity)
+            }
         }
-        .frame(width: 320, height: 300)
+        .mediumFrame()
+        .padding()
     }
 }
 

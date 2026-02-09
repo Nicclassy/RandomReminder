@@ -15,6 +15,7 @@ struct CaptionText: View {
         Text(caption)
             .foregroundStyle(.secondary)
             .font(.caption)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     init(_ caption: String) {
