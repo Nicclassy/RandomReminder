@@ -22,6 +22,10 @@ struct ReminderAudioFile: Codable, Equatable, Hashable {
         lhs.url == rhs.url
     }
 
+    func exists() -> Bool {
+        FileManager.default.fileExists(atPath: url.path())
+    }
+
     func hash(into hasher: inout Hasher) {
         hasher.combine(url)
     }

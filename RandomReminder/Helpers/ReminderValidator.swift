@@ -66,6 +66,11 @@ struct ReminderValidator {
                 alertText: "A reminder already exists with the title '\(reminder.title)'",
                 messageText: "Are you sure you want to create a new reminder with the same title?"
             )
+        } else if let nonExistentFile = reminderAudioNoLongerExists() {
+            .error(
+                alertText: "Reminder audio no longer exists",
+                messageText: "The audio file located at \(nonExistentFile.url.path()) was deleted since it was selected"
+            )
         } else {
             .success
         }
@@ -92,6 +97,14 @@ struct ReminderValidator {
         let isEditingThisReminder = ReminderModificationController.shared.isEditingReminder(with: reminder.id)
         let reminderWithSameTitleExists = ReminderManager.shared.reminderWithSameTitleExists(as: reminder.title)
         return !isEditingThisReminder && reminderWithSameTitleExists
+    }
+
+    private func reminderAudioNoLongerExists() -> ReminderAudioFile? {
+        if let audioFile = reminder.activationEvents.audio {
+            if !audioFile.exists() { audioFile } else { nil }
+        } else {
+            nil
+        }
     }
 
     private func reminderHasAlreadyHappened() -> Bool {
