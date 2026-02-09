@@ -21,60 +21,62 @@ private struct ReminderPreferencesRow: View {
     @Environment(\.openWindow) private var openWindow
     @Binding private var editing: Bool
 
-    private var timer: PublishedTimer
-    private var parentNumberOfRows: Int
-    private var parentRowsBeforeScroll: UInt
+    private let timer: PublishedTimer
+    private let parentNumberOfRows: Int
+    private let parentRowsBeforeScroll: UInt
 
     var body: some View {
         HStack {
             Text(reminder.content.title)
             Spacer()
-            if editing {
-                Button(L10n.Preferences.Reminders.Rows.edit) {
-                    FancyLogger.info("Edit window opened")
-                    ReminderModificationController.shared.reminder = reminder
-                    openWindow(id: WindowIds.editReminder)
-                    controller.modificationWindowOpen = true
-                }
-                .disabled(controller.modificationWindowOpen)
+            Group {
+                if editing {
+                    Button(L10n.Preferences.Reminders.Rows.edit) {
+                        FancyLogger.info("Edit window opened")
+                        ReminderModificationController.shared.reminder = reminder
+                        openWindow(id: WindowIds.editReminder)
+                        controller.modificationWindowOpen = true
+                    }
+                    .disabled(controller.modificationWindowOpen)
 
-                Button(L10n.Preferences.Reminders.Rows.delete) {
-                    showDeleteAlert = true
-                }
-                .disabled(controller.modificationWindowOpen)
-                .alert(
-                    L10n.Preferences.Reminders.Rows.deleteAlert(reminder.content.title),
-                    isPresented: $showDeleteAlert
-                ) {
-                    Button(L10n.Preferences.Reminders.Rows.cancel, role: .cancel) {}
-                    Button(L10n.Preferences.Reminders.Rows.delete, role: .destructive) {
-                        if parentNumberOfRows > Int(parentRowsBeforeScroll) {
-                            withAnimation(.default) {
+                    Button(L10n.Preferences.Reminders.Rows.delete) {
+                        showDeleteAlert = true
+                    }
+                    .disabled(controller.modificationWindowOpen)
+                    .alert(
+                        L10n.Preferences.Reminders.Rows.deleteAlert(reminder.content.title),
+                        isPresented: $showDeleteAlert
+                    ) {
+                        Button(L10n.Preferences.Reminders.Rows.cancel, role: .cancel) {}
+                        Button(L10n.Preferences.Reminders.Rows.delete, role: .destructive) {
+                            if parentNumberOfRows > Int(parentRowsBeforeScroll) {
+                                withAnimation {
+                                    controller.refreshReminders()
+                                    ReminderManager.shared.removeReminder(reminder)
+                                }
+                            } else {
+                                // We do not want to animate the rows if the reminder is deleted
+                                // when there are few rows, because this animation looks very strange
                                 controller.refreshReminders()
                                 ReminderManager.shared.removeReminder(reminder)
                             }
-                        } else {
-                            // We do not want to animate the rows if the reminder is deleted
-                            // when there are few rows, because this animation looks very strange
-                            controller.refreshReminders()
-                            ReminderManager.shared.removeReminder(reminder)
-                        }
 
-                        FancyLogger.info("Deleted reminder '\(reminder.content.title)'")
+                            FancyLogger.info("Deleted reminder '\(reminder.content.title)'")
+                        }
+                    } message: {
+                        Text(L10n.Preferences.Reminders.Rows.deleteCaption)
                     }
-                } message: {
-                    Text(L10n.Preferences.Reminders.Rows.deleteCaption)
+                } else {
+                    Text(reminderInfo)
+                        .frame(height: 20)
+                        .foregroundStyle(.secondary)
                 }
-            } else {
-                Text(reminderInfo)
-                    .frame(height: 20)
-                    .foregroundStyle(.secondary)
-                    .onReceive(timer) { _ in
-                        updateText()
-                    }
-                    .onReceive(NotificationCenter.default.publisher(for: .updateReminderPreferencesText)) { _ in
-                        updateText()
-                    }
+            }
+            .onReceive(timer) { _ in
+                updateText()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .updateReminderPreferencesText)) { _ in
+                updateText()
             }
         }
         .padding(.all, 10)
@@ -102,7 +104,7 @@ private struct ReminderPreferencesRow: View {
         let todaysDay = ReminderManager.shared.todaysDay
         reminderInfo = if ActiveReminderManager.shared.reminderIsActive(reminder) {
             L10n.Preferences.Reminders.Rows.notificationIsPresent
-        } else if SchedulingPreferences.shared.remindersArePaused {
+        } else if SchedulingPreferences.shared.remindersArePaused && !reminder.hasPast {
             L10n.Preferences.Reminders.Rows.paused
         } else if reminder.eponymous && !reminder.days.contains(todaysDay) && !reminder.hasPast {
             L10n.Preferences.Reminders.Rows.resumesOn(reminder.days.nextOccurringDay())
@@ -115,6 +117,7 @@ private struct ReminderPreferencesRow: View {
 private struct ReminderPreferencesRows: View {
     @ObservedObject private var appPreferences: AppPreferences = .shared
     @Binding private var editingReminders: Bool
+
     private let remindersProvider: () -> [RandomReminder]
     private let timer = Timer.publish(every: 1, on: .current, in: .common).autoconnect()
 
