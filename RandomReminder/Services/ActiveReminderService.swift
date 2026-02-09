@@ -51,6 +51,11 @@ final class ActiveReminderService {
         }
 
         let url = audioFile.url
+        guard audioFile.exists() else {
+            FancyLogger.warn("File at \(url) does not exist")
+            return
+        }
+
         guard let audioPlayer = try? AVAudioPlayer(contentsOf: url) else {
             FancyLogger.warn("Audio player cannot play file '\(url)'")
             return

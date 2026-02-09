@@ -35,7 +35,6 @@ struct ActiveReminderView: View {
         }
         .frame(width: ViewConstants.mediumWindowWidth, height: ViewConstants.mediumWindowHeight)
         .padding()
-        .centerWindowOnAppear(withTitle: WindowTitles.activeReminder, activate: true)
     }
 
     private var reminder: RandomReminder {

@@ -70,7 +70,6 @@ final class NotificationManager {
         for notification in notifications {
             let notificationUserInfo = notification.request.content.userInfo
             guard let notificationReminderId = notificationUserInfo["reminderId"] as? Int else {
-                FancyLogger.warn("Notification does not contain the required userInfo key")
                 continue
             }
 
@@ -106,6 +105,7 @@ final class NotificationManager {
         return true
     }
 
+    // swiftlint:disable:next function_body_length
     private func processNotification(
         for reminderService: ActiveReminderService,
         with request: UNNotificationRequest

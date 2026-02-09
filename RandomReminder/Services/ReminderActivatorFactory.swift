@@ -7,17 +7,18 @@
 
 import Foundation
 
-private enum ActivatorType {
+enum ActivatorType {
     case ticked
     case scheduled
 }
 
 final class ReminderActivatorFactory {
     let tickInterval: ReminderTickInterval
-    private let activatorType: ActivatorType = .ticked
+    let activatorType: ActivatorType
 
-    init(tickInterval: ReminderTickInterval) {
+    init(tickInterval: ReminderTickInterval, activatorType: ActivatorType = .scheduled) {
         self.tickInterval = tickInterval
+        self.activatorType = activatorType
     }
 
     func createActivator(for reminder: RandomReminder) -> ReminderActivatorService {

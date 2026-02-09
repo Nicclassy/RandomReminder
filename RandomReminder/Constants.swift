@@ -31,8 +31,8 @@ enum StoredReminders {
 }
 
 enum ReminderConstants {
-    static let minOccurences = 1
-    static let maxOccurences = 999
+    static let minOccurrences = 1
+    static let maxOccurrences = 999
 
     static let reminderDayChunkSize = 3
 }
@@ -49,8 +49,9 @@ enum ViewConstants {
 
     static let reminderWindowWidth: CGFloat = 550
     static let reminderWindowHeight: CGFloat = 200
+
     static let mediumWindowWidth: CGFloat = 350
-    static let mediumWindowHeight: CGFloat = 200
+    static let mediumWindowHeight: CGFloat = 250
 
     static let modificationButtonSize: CGFloat = 60
     static let horizontalButtonSpace: CGFloat = 15

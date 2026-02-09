@@ -53,6 +53,6 @@ struct RandomReminderApp: App {
     }
 
     init() {
-        OnboardingManager.shared.forceOnboarding()
+        // OnboardingManager.shared.forceOnboarding()
     }
 }

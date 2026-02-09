@@ -15,6 +15,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidBecomeActive(_: Notification) {
-        FancyLogger.info("Application became active")
+        if !isPreview {
+            FancyLogger.info("Application became active")
+        }
     }
 }

@@ -25,7 +25,7 @@ func kebaber(_ input: String) -> String {
 }
 
 final class IdentifierQualnameRegistry {
-    typealias AnIdentifierType = any StaticIdentifier.Type
+    fileprivate typealias AnIdentifierType = any StaticIdentifier.Type
 
     static let shared = {
         let registry = IdentifierQualnameRegistry()
@@ -46,7 +46,6 @@ final class IdentifierQualnameRegistry {
             let typeName = String(describing: type)
             predecessors.append(type)
             typesByName[typeName] = Array(predecessors)
-            print("\(typeName) assigned to \(predecessors)")
         }
     }
 
