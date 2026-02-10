@@ -10,6 +10,8 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Credit goes to https://github.com/KhaosT/MacVM/issues/22
+# for helping me resolve signing issues-I didn't see this fix anywhere else!
 jobs:
   test:
     runs-on: macos-latest

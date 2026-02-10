@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+
+// Credit goes to the post below
+// https://www.fivestars.blog/articles/swiftui-share-layout-information/
 private struct SizePreferenceKey: PreferenceKey {
     static let defaultValue: CGSize = .zero
 
