@@ -130,6 +130,15 @@
 "modification.delete" = "Delete";
 "modification.create" = "Create";
 "modification.save" = "Save";
+"modification.next" = "Next";
+"modification.back" = "Back";
+
+"modification.content.reminder-title" = "Reminder title:";
+"modification.content.reminder-title.text" = "Title";
+"modification.content.reminder-description" = "Reminder description:";
+"modification.content.delete-description-command" = "Delete description command";
+"modification.content.total-occurrences" = "Total occurrences:";
+
 "modification.discard-reminder.create.title" = "Are you sure you want to discard this reminder?";
 "modification.discard-reminder.edit.title" = "Are you sure you want to stop editing this reminder?";
 "modification.discard-reminder.message" = "All entered information will be lost.";

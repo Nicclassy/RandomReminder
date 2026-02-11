@@ -115,7 +115,7 @@ private struct ReminderContentView: View {
                     Button(
                         action: onNextButtonClicked,
                         label: {
-                            Text("Next")
+                            Text(L10n.Modification.back)
                                 .frame(width: ViewConstants.modificationButtonSize)
                         }
                     )
@@ -192,7 +192,7 @@ private struct ReminderCreateView: View {
                     Button(
                         action: onBackButtonClicked,
                         label: {
-                            Text("Back")
+                            Text(L10n.Modification.next)
                                 .frame(width: ViewConstants.modificationButtonSize)
                         }
                     )
@@ -391,12 +391,18 @@ struct ReminderModificationView: View {
     }
 
     private func setDefaultTimes() {
-        if schedulingPreferences.defaultEarliestTimeEnabled {
+        if case schedulingPreferences.defaultReminderTimesMode = .exact {
             reminder.earliestDate = .dateToday(withTime: schedulingPreferences.defaultEarliestTime)
-        }
-        if schedulingPreferences.defaultLatestTimeEnabled {
             reminder.latestDate = .dateToday(withTime: schedulingPreferences.defaultLatestTime)
-            FancyLogger.info("Latest date: \(reminder.latestDate)")
+        } else if case schedulingPreferences.defaultReminderTimesMode = .offsets {
+            reminder.earliestDate = .now.addingInterval(
+                schedulingPreferences.earliestOffsetTimeUnit,
+                quantity: schedulingPreferences.earliestOffsetQuantity
+            )
+            reminder.latestDate = reminder.earliestDate.addingInterval(
+                schedulingPreferences.latestOffsetTimeUnit,
+                quantity: schedulingPreferences.latestOffsetQuantity
+            )
         }
     }
 

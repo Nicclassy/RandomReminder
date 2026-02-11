@@ -25,12 +25,12 @@ struct ReminderContentOptionsView: View {
     var body: some View {
         Grid(alignment: .leading) {
             GridRow {
-                Text("Reminder title:")
-                TextField("Title", text: $reminder.title)
+                Text(L10n.Modification.Content.reminderTitle)
+                TextField(L10n.Modification.Content.ReminderTitle.text, text: $reminder.title)
                     .focused($focusedField, equals: .title)
             }
             GridRow(alignment: .top) {
-                Text("Reminder description:")
+                Text(L10n.Modification.Content.reminderDescription)
                 if case let .text(description) = reminder.description {
                     ZStack(alignment: .topLeading) {
                         TextEditor(
@@ -74,13 +74,13 @@ struct ReminderContentOptionsView: View {
                         }
                     }
                 } else {
-                    Button("Delete description command") {
-                        reminder.description = .text("")
+                    Button(L10n.Modification.Content.deleteDescriptionCommand) {
+                        reminder.description = .emptyText
                     }
                 }
             }
             GridRow {
-                Text("Total occurrences:")
+                Text(L10n.Modification.Content.totalOccurrences)
                 if preferences.nonRandom {
                     StepperTextField(value: .constant(1))
                         .disabled(true)
