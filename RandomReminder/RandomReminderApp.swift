@@ -45,7 +45,7 @@ struct RandomReminderApp: App {
         .commands {
             CommandGroup(replacing: .appSettings) {
                 Button("Settings…") {
-                    StatusBarController.shared.openReminderPreferences()
+                    StatusBarController.shared.openPreferences()
                 }
                 .keyboardShortcut(",", modifiers: .command)
             }

@@ -99,6 +99,9 @@ final class PreferencesViewController {
         }
 
         if !windowIsAlreadyOpen {
+            if NSApp.activationPolicy() != .regular {
+                NSApp.setActivationPolicy(.regular)
+            }
             window.center()
         }
 

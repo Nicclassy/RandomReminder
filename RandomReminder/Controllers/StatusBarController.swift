@@ -31,7 +31,7 @@ final class StatusBarController: NSObject {
 
         let preferencesMenuItem = NSMenuItem(
             title: L10n.StatusBar.preferences,
-            action: #selector(openReminderPreferences),
+            action: #selector(openPreferences),
             keyEquivalent: ","
         )
         preferencesMenuItem.target = self
@@ -64,9 +64,10 @@ final class StatusBarController: NSObject {
 
         let isEnabled = SchedulingPreferences.shared.remindersArePaused
         pauseRemindersItem.title = isEnabled ? "Unpause all reminders" : "Pause all reminders"
+        pauseRemindersItem.isHidden = ReminderManager.shared.noCreatedReminders
     }
 
-    @objc func openReminderPreferences() {
+    @objc func openPreferences() {
         guard OnboardingManager.shared.onboardingIsComplete else {
             showAlert(
                 title: "Onboarding incomplete",

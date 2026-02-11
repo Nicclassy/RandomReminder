@@ -170,7 +170,7 @@ struct OnboardingView: View {
             if viewModel.step.isLast {
                 dismissWindow(id: WindowIds.onboarding)
                 OnboardingManager.shared.onCompletion()
-                StatusBarController.shared.openReminderPreferences()
+                StatusBarController.shared.openPreferences()
             }
             return
         }

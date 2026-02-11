@@ -14,6 +14,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         ReminderManager.setup()
     }
 
+    func applicationShouldHandleReopen(_: NSApplication, _: Bool) -> Bool {
+        StatusBarController.shared.openPreferences()
+        FancyLogger.info("Reopening preferences")
+        return false
+    }
+
     func applicationDidBecomeActive(_: Notification) {
         if !isPreview {
             FancyLogger.info("Application became active")
