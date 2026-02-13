@@ -21,7 +21,7 @@ extension Date {
     }
 
     static func endOfDay(date: Date = Date()) -> Self {
-        Calendar.current.date(byAdding: .day, value: 1, to: startOfDay(date: date))!
+        Calendar.current.date(byAdding: .day, value: 1, to: startOfDay(date: date))!.addingTimeInterval(-60)
     }
 
     static func dateToday(withTime timeIntervalSince1970: TimeInterval) -> Self {

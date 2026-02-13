@@ -110,7 +110,7 @@ extension ReminderManager {
             ),
             RandomReminder(
                 id: 6,
-                title: "Log some important data",
+                title: "Log some very important data",
                 description: .text("Text"),
                 interval: ReminderDateInterval(
                     earliest: Date().subtractMinutes(6000).addSeconds(45),

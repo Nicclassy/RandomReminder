@@ -20,4 +20,26 @@ extension View {
     func mediumFrame() -> some View {
         frame(width: ViewConstants.mediumWindowWidth, height: ViewConstants.mediumWindowHeight)
     }
+
+    func readWidth(_ perform: @escaping (CGFloat) -> Void) -> some View {
+        background(
+            GeometryReader { geometryProxy in
+                Color.clear
+                    .onAppear {
+                        perform(geometryProxy.size.width)
+                    }
+            }
+        )
+    }
+
+    func readHeight(_ perform: @escaping (CGFloat) -> Void) -> some View {
+        background(
+            GeometryReader { geometryProxy in
+                Color.clear
+                    .onAppear {
+                        perform(geometryProxy.size.height)
+                    }
+            }
+        )
+    }
 }
