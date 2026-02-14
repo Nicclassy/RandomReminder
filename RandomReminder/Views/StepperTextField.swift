@@ -12,9 +12,11 @@ struct StepperTextField: View {
     @Binding private var value: Int
     @State private var text: String
     @State private var stepperClicked = false
+
     let range: ClosedRange<Int>
     let spacing: CGFloat
     let textFieldWidth: CGFloat
+
     private let preStepperView: ((Int) -> AnyView)?
     private let onTextChange: ((String) -> Void)?
 
@@ -54,6 +56,7 @@ struct StepperTextField: View {
                     }
                 }
                 .frame(width: textFieldWidth)
+                .labelsHidden()
 
             if let preStepperView {
                 Spacer().frame(width: spacing)
@@ -73,7 +76,8 @@ struct StepperTextField: View {
                     text = String(value)
                 }
             )
-            .padding(.leading, -5)
+            .padding(.leading, 5)
+            .labelsHidden()
         }
     }
 
@@ -102,16 +106,20 @@ struct StepperTextField: View {
 private struct StepperTextFieldPreview: View {
     @State private var value = 1
     @State private var selection: RepeatInterval = .minute
-    private let showNumber = false
+    private let showNumber = true
 
     var body: some View {
         VStack {
-            StepperTextField(
-                value: $value,
-                range: 0...100,
-                spacing: 0,
-                textFieldWidth: 45
-            )
+            HStack {
+                Text("Stuff: ")
+                Spacer()
+                StepperTextField(
+                    value: $value,
+                    range: 0...100,
+                    spacing: 0,
+                    textFieldWidth: 45
+                )
+            }
             if showNumber {
                 Text("Value is \(value)")
                     .font(.caption)

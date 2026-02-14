@@ -7,11 +7,6 @@
 
 import SwiftUI
 
-private enum ReminderModificationStep: Traversable {
-    case content
-    case create
-}
-
 enum ReminderModificationMode {
     case create
     case edit
@@ -115,7 +110,7 @@ private struct ReminderContentView: View {
                     Button(
                         action: onNextButtonClicked,
                         label: {
-                            Text(L10n.Modification.back)
+                            Text(L10n.Modification.next)
                                 .frame(width: ViewConstants.modificationButtonSize)
                         }
                     )
@@ -192,7 +187,7 @@ private struct ReminderCreateView: View {
                     Button(
                         action: onBackButtonClicked,
                         label: {
-                            Text(L10n.Modification.next)
+                            Text(L10n.Modification.back)
                                 .frame(width: ViewConstants.modificationButtonSize)
                         }
                     )
@@ -247,6 +242,11 @@ private struct ReminderCreateView: View {
 }
 
 struct ReminderModificationView: View {
+    enum Step: Traversable {
+        case content
+        case create
+    }
+    
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
 
@@ -255,7 +255,7 @@ struct ReminderModificationView: View {
     @State var viewPreferences: ModificationViewPreferences = .init()
     @State var fields: ModificationViewFields = .init()
     @State private var validationResult: ValidationResult = .unset
-    @State private var step: ReminderModificationStep = .content
+    @State private var step: Step = .content
     @ObservedObject private var controller: ReminderModificationController = .shared
 
     private let schedulingPreferences: SchedulingPreferences = .shared
@@ -296,8 +296,14 @@ struct ReminderModificationView: View {
                 // For some reason, dismissing the window after the alert has closed
                 // or in this closure does not work.
                 // Therefore, it is necessary to close the window itself instead
+                guard let window = NSApplication.shared.windows.first(
+                    where: { $0.title == WindowTitles.modificationFirstStep || $0.title == WindowTitles.modificationFinalStep }
+                ) else {
+                    fatalError("Could not find window to close")
+                }
+                
                 if viewPreferences.closeView {
-                    NSApp.keyWindow?.close()
+                    window.close()
                     // ^ could be an issue later?
                     dismissWindow(id: WindowIds.reminderCommand)
                     viewPreferences.closeView = false
@@ -382,7 +388,7 @@ struct ReminderModificationView: View {
         if singleView {
             WindowTitles.createReminder
         } else {
-            step == .content ? WindowTitles.createFirstStep : WindowTitles.createFinalStep
+            step == .content ? WindowTitles.modificationFirstStep : WindowTitles.modificationFinalStep
         }
     }
 
@@ -391,6 +397,10 @@ struct ReminderModificationView: View {
     }
 
     private func setDefaultTimes() {
+        guard mode == .create else {
+            return
+        }
+        
         if case schedulingPreferences.defaultReminderTimesMode = .exact {
             reminder.earliestDate = .dateToday(withTime: schedulingPreferences.defaultEarliestTime)
             reminder.latestDate = .dateToday(withTime: schedulingPreferences.defaultLatestTime)

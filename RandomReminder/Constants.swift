@@ -67,8 +67,8 @@ enum WindowIds {
 
 enum WindowTitles {
     static let createReminder = "Create New Reminder"
-    static let createFirstStep = "Reminder Content"
-    static let createFinalStep = "Reminder Settings"
+    static let modificationFirstStep = "Reminder Content"
+    static let modificationFinalStep = "Reminder Settings"
     static let editReminder = "Edit Reminder"
     static let descriptionCommand = "Description Command"
     static let activationCommand = "Activation Command"

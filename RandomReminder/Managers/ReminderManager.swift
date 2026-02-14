@@ -12,6 +12,9 @@ final class ReminderManager {
         var persistentChanges = false
         var remind = true
         var preview = false
+        
+        static var preview: Self = .init(persistentChanges: false, remind: false)
+        static var previewReminders: Self = .init(persistentChanges: false, remind: false, preview: true)
     }
 
     private static var instance: ReminderManager?
@@ -20,8 +23,6 @@ final class ReminderManager {
         get {
             if let instance {
                 instance
-            } else if isPreview {
-                setup()
             } else {
                 fatalError("ReminderManager instance is not set")
             }
@@ -97,8 +98,8 @@ final class ReminderManager {
     }
 
     @discardableResult
-    static func setup(options: Options = .init()) -> ReminderManager {
-        shared = ReminderManager(options: options)
+    static func setup(options: Options? = nil) -> ReminderManager {
+        shared = ReminderManager(options: options == nil && isPreview ? .preview : options ?? .init())
         shared.setup()
         return shared
     }
@@ -120,7 +121,6 @@ final class ReminderManager {
                 let date = Date()
                 queue.sync {
                     for reminder in reminders where !reminder.hasPast {
-                        FancyLogger.info("Tick for", reminder)
                         tick(reminder, on: date)
                     }
                 }

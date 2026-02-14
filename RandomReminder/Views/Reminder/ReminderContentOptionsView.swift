@@ -7,20 +7,20 @@
 
 import SwiftUI
 
-private enum FocusedField: Hashable {
-    case title
-    case description
-    case occurrences
-}
-
 struct ReminderContentOptionsView: View {
+    enum Field: Hashable {
+        case title
+        case description
+        case occurrences
+    }
+
     @Environment(\.openWindow) private var openWindow
 
     private let commandIcon = false
     @Bindable var reminder: MutableReminder
     @Bindable var preferences: ReminderPreferences
     @Bindable var fields: ModificationViewFields
-    @FocusState private var focusedField: FocusedField?
+    @FocusState private var focusedField: Field?
 
     var body: some View {
         Grid(alignment: .leading) {

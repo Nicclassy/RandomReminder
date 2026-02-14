@@ -113,8 +113,8 @@ extension ReminderManager {
                 title: "Log some very important data",
                 description: .text("Text"),
                 interval: ReminderDateInterval(
-                    earliest: Date().subtractMinutes(6000).addSeconds(45),
-                    latest: Date().subtractMinutes(6000).addSeconds(47)
+                    earliest: Date().subtractMinutes(6000).addSeconds(50),
+                    latest: Date().subtractMinutes(6000).addSeconds(59)
                 ),
                 totalOccurrences: 1
             )
