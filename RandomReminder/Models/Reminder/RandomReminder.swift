@@ -113,14 +113,14 @@ extension RandomReminder {
     func compare(with other: RandomReminder) -> Bool {
         if hasPast != other.hasPast {
             hasPast
+        } else if hasPast && other.hasPast {
+            interval.latest > other.interval.latest
         } else if hasBegun != other.hasBegun {
             hasBegun
         } else if hasBegun && other.hasBegun {
             counts.occurrences < other.counts.occurrences
         } else if !hasBegun && !other.hasBegun {
             interval.earliest < other.interval.earliest
-        } else if hasPast && other.hasPast {
-            interval.latest < other.interval.latest
         } else {
             content.title < other.content.title
         }
@@ -134,7 +134,7 @@ extension RandomReminder {
 }
 
 extension RandomReminder: CustomStringConvertible {
-    private static let titleOnly = false
+    private static let titleOnly = true
 
     var description: String {
         Self.titleOnly ? content.title : reflectedDescription
