@@ -7,27 +7,8 @@
 
 import SwiftUI
 
-
 // Credit goes to the post below
 // https://www.fivestars.blog/articles/swiftui-share-layout-information/
-private struct SizePreferenceKey: PreferenceKey {
-    static let defaultValue: CGSize = .zero
-
-    static func reduce(value _: inout CGSize, nextValue _: () -> CGSize) {}
-}
-
-private extension View {
-    func readSize(_ onChange: @escaping (CGSize) -> Void) -> some View {
-        background(
-            GeometryReader { geometryProxy in
-                Color.clear
-                    .preference(key: SizePreferenceKey.self, value: geometryProxy.size)
-            }
-        )
-        .onPreferenceChange(SizePreferenceKey.self, perform: onChange)
-    }
-}
-
 struct ViewWithTallerHeightOfTwo<First: View, Second: View>: View {
     let first: First
     let second: Second
@@ -38,15 +19,19 @@ struct ViewWithTallerHeightOfTwo<First: View, Second: View>: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
             first
-                .readSize { size in
-                    firstViewHeight = size.height
+                .readHeight { height in
+                    firstViewHeight = height
                 }
-                .opacity(showFirst ? 1 : 0)
+                .if(!showFirst) { it in
+                    it.hidden()
+                }
             second
-                .readSize { size in
-                    secondViewHeight = size.height
+                .readHeight { height in
+                    secondViewHeight = height
                 }
-                .opacity(showFirst ? 0 : 1)
+                .if(showFirst) { it in
+                    it.hidden()
+                }
         }
         .frame(height: height)
     }
@@ -82,7 +67,7 @@ struct ViewWithTallerHeightOfTwo_Previews: PreviewProvider {
                 ViewWithTallerHeightOfTwo(
                     Button("Hello") {},
                     VStack(alignment: .leading) {
-                        Text("Hello")
+                        Text("What")
                         Text("World!")
                     },
                     showFirst: $showFirst
