@@ -18,50 +18,20 @@ final class NotificationManager {
     private init() {}
 
     func addReminderNotification(for service: ActiveReminderService) {
-        FancyLogger.info("Waiting to add request of reminder '\(service.reminder)' to the queue")
+        let reminder = service.reminder
+        FancyLogger.info("Waiting to add request of reminder '\(reminder)' to the queue")
+        ActiveReminderManager.shared.enqueueReminder(reminder)
+
         queue.async { [self] in
-            let reminder = service.reminder
-            let content = UNMutableNotificationContent()
-
-            let (title, subtitle) = notificationTitleAndSubtitle(for: reminder)
-            content.title = title
-            content.subtitle = subtitle ?? " "
-            content.sound = .default
-            content.userInfo = ["reminderId": reminder.id.value]
-
-            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+            let notification = ReminderNotification.create(for: reminder)
             let semaphore = DispatchSemaphore(value: 0)
             Task {
                 FancyLogger.error("Processing for \(service.reminder)")
-                await processNotification(for: service, with: request)
+                await processNotification(notification, with: service)
                 semaphore.signal()
             }
             semaphore.wait()
-        }
-    }
-
-    private func notificationTitleAndSubtitle(for reminder: RandomReminder) -> (title: String, subtitle: String?) {
-        switch reminder.content.description {
-        case let .text(subtitle):
-            return (reminder.content.title, !subtitle.isEmpty ? subtitle : nil)
-        case let .command(command, generatesTitle):
-            var subprocess = Subprocess(command: command)
-            let result = subprocess.run()
-            if result != .success {
-                FancyLogger.error("Command '\(command)' did not succeed, instead got \(result)")
-            }
-
-            guard generatesTitle else {
-                return (reminder.content.title, subprocess.stdout)
-            }
-
-            let parts = subprocess.stdout.split(separator: "\n", maxSplits: 1).map(String.init)
-            guard let title = parts.first else {
-                return (reminder.content.title, nil)
-            }
-
-            let subtitle = parts.count > 1 ? parts[1] : nil
-            return (title, subtitle)
+            ActiveReminderManager.shared.dequeueReminder(reminder)
         }
     }
 
@@ -107,8 +77,8 @@ final class NotificationManager {
 
     // swiftlint:disable:next function_body_length
     private func processNotification(
-        for reminderService: ActiveReminderService,
-        with request: UNNotificationRequest
+        _ notification: ReminderNotification,
+        with reminderService: ActiveReminderService
     ) async {
         // An important point before this lengthy explanation.
         // Swift really should have a way to do something when a notification appears/
@@ -138,6 +108,7 @@ final class NotificationManager {
 
         // Eventually, we need to check if the reminder is past. This
         // will be tricky
+        let request = notification.createRequest()
         do {
             try await notificationCentre.add(request)
         } catch {
@@ -156,7 +127,7 @@ final class NotificationManager {
         // Has appeared
         await MainActor.run {
             FancyLogger.info("🟩 Notification appeared 🟩")
-            ActiveReminderManager.shared.setActiveReminder(reminder, with: request.content.subtitle)
+            ActiveReminderManager.shared.setActiveReminder(with: notification)
             reminderService.start()
             if reminder.activationEvents.showWhenActive {
                 NotificationCenter.default.post(name: .openActiveReminderWindow, object: nil)
@@ -194,7 +165,7 @@ final class NotificationManager {
         if schedulingPreferences.notificationGapEnabled {
             let notificationGapTimeInterval = Int(schedulingPreferences.notificationGapTimeUnit.timeInterval)
             let notificationGap = UInt64(
-                schedulingPreferences.notificationGapTime * notificationGapTimeInterval
+                schedulingPreferences.notificationGapTime * Int(notificationGapTimeInterval)
             )
             FancyLogger.info("Sleeping for \(notificationGap) seconds")
             try? await Task.sleep(nanoseconds: notificationGap * 1_000_000_000)

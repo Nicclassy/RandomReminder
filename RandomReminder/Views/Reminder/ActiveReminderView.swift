@@ -13,12 +13,19 @@ struct ActiveReminderView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text(reminder.content.title)
+            Text(activeReminderNotification.title)
                 .font(.title3)
                 .fontWeight(.bold)
                 .lineLimit(lineLimit)
                 .fixedSize(horizontal: false, vertical: true)
-            ScrollView { Text(description) }
+            ScrollView {
+                if activeReminderNotification.subtitle.didNotSuccessfullyGenerate {
+                    Text(activeReminderNotification.subtitle.text)
+                        .foregroundStyle(.red)
+                } else {
+                    Text(activeReminderNotification.subtitle.text)
+                }
+            }
             Button(
                 action: {
                     DispatchQueue.main.async {
@@ -31,18 +38,14 @@ struct ActiveReminderView: View {
                 }
             )
             .buttonStyle(.borderedProminent)
-            .frame(width: 120)
+            .frame(width: 90)
         }
         .frame(width: ViewConstants.mediumWindowWidth, height: ViewConstants.mediumWindowHeight)
         .padding()
     }
-
-    private var reminder: RandomReminder {
-        ActiveReminderManager.shared.activeReminder
-    }
-
-    private var description: String {
-        ActiveReminderManager.shared.activeReminderDescription
+    
+    private var activeReminderNotification: ReminderNotification {
+        ActiveReminderManager.shared.activeReminderNotification
     }
 }
 
@@ -51,18 +54,36 @@ private struct ActiveReminderViewPreview: View {
         ActiveReminderView()
     }
 
-    init() {
-        let reminder = MutableReminder()
-        reminder.title = "Active reminder title that is very long and has many characters"
-        ActiveReminderManager.shared.activeReminderDescription = multilineString {
+    init(success: Bool) {
+        let title = "Active reminder title that is very long and has many characters"
+        let description = multilineString {
             "This is a reminder description. "
             "It is a long description to test the capabilities of extending text.\n\n"
             "Let us see if the scroll view works and newlines work as desired."
         }
-        ActiveReminderManager.shared.activeReminder = reminder.build(preferences: .init())
+        
+        var notification: ReminderNotification!
+        if success {
+            let reminder = MutableReminder()
+            reminder.title = title
+            reminder.description = .text(description)
+            notification = ReminderNotification.create(for: reminder.build(preferences: .init()))
+        } else {
+            notification = ReminderNotification(
+                title: title,
+                subtitle: .failure(description + "\n\nThis one failed."),
+                reminder: MutableReminder().build(preferences: .init())
+            )
+        }
+        
+        ActiveReminderManager.shared.activeReminderNotification = notification
     }
 }
 
-#Preview {
-    ActiveReminderViewPreview()
+#Preview("Successful notification") {
+    ActiveReminderViewPreview(success: true)
+}
+
+#Preview("Failed notification") {
+    ActiveReminderViewPreview(success: false)
 }
