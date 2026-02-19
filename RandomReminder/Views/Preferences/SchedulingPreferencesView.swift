@@ -7,129 +7,238 @@
 
 import SwiftUI
 
-struct SchedulingPreferencesView: View {
-    @ObservedObject var schedulingPreferences: SchedulingPreferences = .shared
-    @ObservedObject var appPreferences: AppPreferences = .shared
+enum DefaultReminderTimesMode: Codable, EnumRawRepresentable {
+    case exact
+    case offsets
+}
 
-    var defaultEarliestDate: Binding<Date> {
+private struct TimeUnitWithQuantityView: View {
+    @Binding var quantity: Int
+    @Binding var selection: TimeUnit
+    let permittedUnits: [TimeUnit]
+
+    var body: some View {
+        HStack {
+            StepperTextField(
+                value: $quantity,
+                range: 0...59
+            )
+            .multilineTextAlignment(.trailing)
+
+            Picker("", selection: $selection) {
+                ForEach(permittedUnits, id: \.self) { unit in
+                    let unitName = unit.name(for: quantity)
+                    Text(unitName).tag(unit)
+                }
+            }
+            .labelsHidden()
+            .frame(width: 100)
+        }
+    }
+}
+
+private struct ExactReminderTimesView: View {
+    @ObservedObject var schedulingPreferences: SchedulingPreferences = .shared
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            let picker = DualDatePicker(
+                displayedComponents: .hourAndMinute,
+                earliestDate: defaultEarliestDate,
+                latestDate: defaultLatestDate
+            )
+
+            HStack {
+                Text(L10n.TimePicker.EarliestDefaultTime.heading)
+                Spacer()
+                picker.earliestDatePicker
+            }
+            .padding(.leading, 20)
+
+            VStack(alignment: .leading) {
+                HStack {
+                    Text(L10n.TimePicker.LatestDefaultTime.heading)
+                    Spacer()
+                    picker.latestDatePicker
+                }
+
+                CaptionText(multilineString {
+                    "Reminders will have these times as their initial start/end times "
+                    "during the creation process."
+                })
+                .fixedSize(horizontal: false, vertical: true)
+            }
+            .onAppear {
+                if schedulingPreferences.defaultEarliestTime == 0 {
+                    schedulingPreferences.defaultEarliestTime = Date.startOfDay().timeIntervalSince1970
+                }
+
+                if schedulingPreferences.defaultLatestTime == 0 {
+                    schedulingPreferences.defaultLatestTime = Date.endOfDay().timeIntervalSince1970
+                }
+            }
+            .padding(.leading, 20)
+        }
+    }
+
+    private var defaultEarliestDate: Binding<Date> {
         Binding(
-            get: {
-                let timeInterval = intervalOrDefault(
-                    interval: schedulingPreferences.defaultEarliestTime,
-                    default: .startOfDay()
-                )
-                return Date(timeIntervalSince1970: timeInterval)
-            },
+            get: { Date(timeIntervalSince1970: schedulingPreferences.defaultEarliestTime) },
             set: { schedulingPreferences.defaultEarliestTime = $0.timeIntervalSince1970 }
         )
     }
 
-    var defaultLatestDate: Binding<Date> {
+    private var defaultLatestDate: Binding<Date> {
         Binding(
-            get: {
-                let timeInterval = intervalOrDefault(
-                    interval: schedulingPreferences.defaultLatestTime,
-                    default: .endOfDay()
-                )
-                return Date(timeIntervalSince1970: timeInterval)
-            },
+            get: { Date(timeIntervalSince1970: schedulingPreferences.defaultLatestTime) },
             set: { schedulingPreferences.defaultLatestTime = $0.timeIntervalSince1970 }
         )
     }
+}
+
+private struct OffsetReminderTimesView: View {
+    private static let offsetUnits: [TimeUnit] = [.minute, .hour, .day]
+
+    @ObservedObject private var schedulingPreferences: SchedulingPreferences = .shared
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            HStack {
+                Text("Earliest: ")
+                    .padding(.top, 5)
+                    .padding(.leading, 20)
+                Spacer()
+                TimeUnitWithQuantityView(
+                    quantity: schedulingPreferences.$earliestOffsetQuantity,
+                    selection: schedulingPreferences.$earliestOffsetTimeUnit,
+                    permittedUnits: Self.offsetUnits
+                )
+            }
+
+            Spacer().frame(height: 10)
+
+            HStack {
+                Text("Latest (from earliest): ")
+                    .padding(.leading, 20)
+                Spacer()
+                TimeUnitWithQuantityView(
+                    quantity: latestOffsetQuantity,
+                    selection: schedulingPreferences.$latestOffsetTimeUnit,
+                    permittedUnits: Self.offsetUnits
+                )
+            }
+
+            CaptionText(multilineString {
+                "The initial earliest time of a reminder during creation is determined by "
+                "applying the specified offset to the current time, "
+                "and the latest by appling the specified offset to the earliest time."
+            })
+            .padding(.leading, 20)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private var latestOffsetQuantity: Binding<Int> {
+        .init(
+            get: { max(schedulingPreferences.latestOffsetQuantity, 1) },
+            set: { schedulingPreferences.latestOffsetQuantity = max($0, 1) }
+        )
+    }
+}
+
+struct SchedulingPreferencesView: View {
+    @ObservedObject var schedulingPreferences: SchedulingPreferences = .shared
+    @ObservedObject var appPreferences: AppPreferences = .shared
 
     var body: some View {
         Form {
             Section {
-                let picker = DualDatePicker(
-                    displayedComponents: .hourAndMinute,
-                    earliestDate: defaultEarliestDate,
-                    latestDate: defaultLatestDate
-                )
-
-                Toggle(isOn: schedulingPreferences.$defaultEarliestTimeEnabled) {
+                VStack(alignment: .leading) {
                     HStack {
-                        Text(L10n.TimePicker.EarliestDefaultTime.heading)
+                        Text("Default reminder times mode: ")
+                            .padding(.leading, 20)
+                            .padding(.bottom, 2)
                         Spacer()
-                        picker.earliestDatePicker
-                            .disabled(!schedulingPreferences.defaultEarliestTimeEnabled)
-                    }
-                }
-
-                Toggle(isOn: schedulingPreferences.$defaultLatestTimeEnabled) {
-                    HStack {
-                        Text(L10n.TimePicker.LatestDefaultTime.heading)
-                        Spacer()
-                        picker.latestDatePicker
-                            .disabled(!schedulingPreferences.defaultLatestTimeEnabled)
-                    }
-
-                    CaptionText(
-                        multilineString {
-                            "If enabled, reminders will have these times as their initial start/end times "
-                            "during the creation process."
+                        Picker("", selection: schedulingPreferences.$defaultReminderTimesMode) {
+                            Text("Exact").tag(DefaultReminderTimesMode.exact)
+                            Text("Offsets").tag(DefaultReminderTimesMode.offsets)
                         }
-                    )
-                }
-                .onChange(of: schedulingPreferences.defaultLatestTimeEnabled) { _, newValue in
-                    if newValue {
-                        schedulingPreferences.defaultEarliestTimeEnabled = true
+                        .labelsHidden()
+                        .frame(width: 90)
                     }
+
+                    ViewWithTallerHeightOfTwo(
+                        ExactReminderTimesView(),
+                        OffsetReminderTimesView(),
+                        showFirst: showFirst
+                    )
                 }
             }
 
             Spacer().frame(height: ViewConstants.preferencesSpacing)
 
             Section {
-                Toggle(isOn: schedulingPreferences.$notificationGapEnabled) {
+                ToggleablePreference(
+                    caption: multilineString {
+                        "Reminders never occur simultaneously. "
+                        "Control the time between one reminder's occurrence and the next "
+                        "when multiple reminders are scheduled to occur."
+                    },
+                    isOn: schedulingPreferences.$notificationGapEnabled
+                ) {
                     VStack(alignment: .leading) {
                         Text("Allow time between reminders")
+
                         HStack {
                             Text("Minimum time:")
                                 .padding(.trailing, -5)
-                            StepperTextField(
-                                value: schedulingPreferences.$notificationGapTime,
-                                range: 0...59
+                            TimeUnitWithQuantityView(
+                                quantity: $schedulingPreferences.notificationGapTime,
+                                selection: $schedulingPreferences.notificationGapTimeUnit,
+                                permittedUnits: [.second, .minute, .hour, .day]
                             )
-                            .multilineTextAlignment(.trailing)
-                            .padding(.trailing, -10)
-                            .disabled(!schedulingPreferences.notificationGapEnabled)
-
-                            Picker("", selection: schedulingPreferences.$notificationGapTimeUnit) {
-                                ForEach(RepeatInterval.gapIntervals, id: \.self) { interval in
-                                    let intervalName = interval.name(
-                                        for: schedulingPreferences.notificationGapTime
-                                    )
-                                    Text(intervalName).tag(interval)
-                                }
-                            }
-                            .frame(width: 100)
                             .disabled(!schedulingPreferences.notificationGapEnabled)
                         }
                     }
-
-                    CaptionText(
-                        "Reminders never occur simultaneously. Control the time between one reminder's occurence and the next when multiple reminders are scheduled to occur."
-                    ) // swiftlint:disable:previous line_length
                 }
             }
-
-            Spacer().frame(height: ViewConstants.preferencesSpacing)
 
             Section {
-                Toggle(isOn: schedulingPreferences.$remindersArePaused) {
-                    Text("Pause all reminders")
-                }
-                .onChange(of: schedulingPreferences.remindersArePaused) {
-                    ReminderModificationController.shared.updateReminderText()
+                ToggleablePreference(isOn: schedulingPreferences.$notificationAutoDismissEnabled) {
+                    VStack(alignment: .leading) {
+                        Text("Automatically dismiss reminder notifications")
+
+                        HStack {
+                            Text("After")
+                                .padding(.trailing, -5)
+                            TimeUnitWithQuantityView(
+                                quantity: notificationAutoDismissTime,
+                                selection: $schedulingPreferences.notificationAutoDismissTimeUnit,
+                                permittedUnits: [.second, .minute]
+                            )
+                            .disabled(!schedulingPreferences.notificationAutoDismissEnabled)
+                        }
+                    }
                 }
             }
+
+            Section {
+                Spacer().frame(maxHeight: .infinity)
+            }
         }
-        .frame(width: 320, height: 300)
+        .mediumFrame()
         .padding()
     }
 
-    private func intervalOrDefault(interval: TimeInterval, default date: @autoclosure () -> Date) -> TimeInterval {
-        interval == 0 ? date().timeIntervalSince1970 : interval
+    private var notificationAutoDismissTime: Binding<Int> {
+        Binding(
+            get: { max(schedulingPreferences.notificationAutoDismissTime, 1) },
+            set: { schedulingPreferences.notificationAutoDismissTime = max($0, 1) }
+        )
+    }
+
+    private var showFirst: Binding<Bool> {
+        .init(get: { schedulingPreferences.defaultReminderTimesMode == .exact }, set: { _ in })
     }
 }
 
