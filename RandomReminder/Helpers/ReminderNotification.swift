@@ -14,25 +14,25 @@ struct ReminderNotification {
         case generated(String)
         case empty
         case failure(String)
-        
+
         var didNotSuccessfullyGenerate: Bool {
             if case .failure = self { true } else { false }
         }
-        
+
         var text: String {
             switch self {
-            case let .regular(text), let .generated(text), let .failure(text):
+            case let .failure(text), let .generated(text), let .regular(text):
                 text
             case .empty:
                 " "
             }
         }
     }
-    
+
     let title: String
     let subtitle: Subtitle
     let reminder: RandomReminder
-    
+
     static func create(for reminder: RandomReminder) -> Self {
         switch reminder.content.description {
         case let .text(subtitle):
@@ -72,7 +72,7 @@ struct ReminderNotification {
             )
         }
     }
-    
+
     func createRequest() -> UNNotificationRequest {
         let content = UNMutableNotificationContent()
         content.title = title

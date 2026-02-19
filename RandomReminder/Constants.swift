@@ -51,7 +51,7 @@ enum ViewConstants {
     static let reminderWindowHeight: CGFloat = 200
 
     static let mediumWindowWidth: CGFloat = 350
-    static let mediumWindowHeight: CGFloat = 250
+    static let mediumWindowHeight: CGFloat = 300
 
     static let modificationButtonSize: CGFloat = 60
     static let horizontalButtonSpace: CGFloat = 15

@@ -12,7 +12,7 @@ final class ReminderManager {
         var persistentChanges = false
         var remind = true
         var preview = false
-        
+
         static var preview: Self = .init(persistentChanges: false, remind: false)
         static var previewReminders: Self = .init(persistentChanges: false, remind: false, preview: true)
     }

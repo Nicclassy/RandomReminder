@@ -43,7 +43,7 @@ struct ActiveReminderView: View {
         .frame(width: ViewConstants.mediumWindowWidth, height: ViewConstants.mediumWindowHeight)
         .padding()
     }
-    
+
     private var activeReminderNotification: ReminderNotification {
         ActiveReminderManager.shared.activeReminderNotification
     }
@@ -61,7 +61,7 @@ private struct ActiveReminderViewPreview: View {
             "It is a long description to test the capabilities of extending text.\n\n"
             "Let us see if the scroll view works and newlines work as desired."
         }
-        
+
         var notification: ReminderNotification!
         if success {
             let reminder = MutableReminder()
@@ -75,7 +75,7 @@ private struct ActiveReminderViewPreview: View {
                 reminder: MutableReminder().build(preferences: .init())
             )
         }
-        
+
         ActiveReminderManager.shared.activeReminderNotification = notification
     }
 }

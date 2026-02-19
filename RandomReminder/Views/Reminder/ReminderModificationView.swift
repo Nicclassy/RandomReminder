@@ -246,7 +246,7 @@ struct ReminderModificationView: View {
         case content
         case create
     }
-    
+
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
 
@@ -297,11 +297,14 @@ struct ReminderModificationView: View {
                 // or in this closure does not work.
                 // Therefore, it is necessary to close the window itself instead
                 guard let window = NSApplication.shared.windows.first(
-                    where: { $0.title == WindowTitles.modificationFirstStep || $0.title == WindowTitles.modificationFinalStep }
+                    where: { window in
+                        window.title == WindowTitles.modificationFirstStep
+                            || window.title == WindowTitles.modificationFinalStep
+                    }
                 ) else {
                     fatalError("Could not find window to close")
                 }
-                
+
                 if viewPreferences.closeView {
                     window.close()
                     // ^ could be an issue later?
@@ -400,7 +403,7 @@ struct ReminderModificationView: View {
         guard mode == .create else {
             return
         }
-        
+
         if case schedulingPreferences.defaultReminderTimesMode = .exact {
             reminder.earliestDate = .dateToday(withTime: schedulingPreferences.defaultEarliestTime)
             reminder.latestDate = .dateToday(withTime: schedulingPreferences.defaultLatestTime)

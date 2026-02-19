@@ -49,10 +49,4 @@ enum RepeatInterval: Codable, Equatable, Hashable, CaseIterable {
     }
 }
 
-extension RepeatInterval {
-    static var gapIntervals: [Self] {
-        [.second, .minute, .hour, .day]
-    }
-}
-
-extension RepeatInterval: EnumRawRepresentable {}
+extension TimeUnit: EnumRawRepresentable {}

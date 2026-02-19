@@ -61,7 +61,7 @@ extension ReminderManager {
             RandomReminder(
                 id: 1,
                 title: "Posture check",
-                description: .text("Text"),
+                description: .text("That's a good suggestion!"),
                 interval: ReminderDateInterval(
                     earliest: Date(),
                     latest: Date().addMinutes(3)
@@ -71,20 +71,20 @@ extension ReminderManager {
             RandomReminder(
                 id: 2,
                 title: "Check RandomReminder on GitHub",
-                description: .text("Text"),
+                description: .text("Yeah go do it!"),
                 interval: ReminderDateInterval(
                     earliest: Date().subtractMinutes(2).addSeconds(37),
-                    latest: Date().addMinutes(5)
+                    latest: Date().addMinutes(2)
                 ),
-                totalOccurrences: 1
+                totalOccurrences: 2
             ),
             RandomReminder(
                 id: 3,
-                title: "Posture check",
-                description: .text("Text"),
+                title: "Another reminder",
+                description: .text("Remind the user to do something"),
                 interval: ReminderDateInterval(
-                    earliest: Date().addMinutes(2),
-                    latest: Date().addMinutes(4)
+                    earliest: Date().addMinutes(1),
+                    latest: Date().addMinutes(2).addSeconds(25)
                 ),
                 totalOccurrences: 1
             ),
