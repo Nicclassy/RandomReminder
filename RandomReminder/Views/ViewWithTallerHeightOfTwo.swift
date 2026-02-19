@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-// Credit goes to the post below
-// https://www.fivestars.blog/articles/swiftui-share-layout-information/
+/// Credit goes to the post below
+/// https://www.fivestars.blog/articles/swiftui-share-layout-information/
 struct ViewWithTallerHeightOfTwo<First: View, Second: View>: View {
     let first: First
     let second: Second

@@ -62,7 +62,9 @@ final class ReminderManager {
     }
 
     var noCreatedReminders: Bool {
-        reminders.isEmpty
+        queue.sync {
+            reminders.isEmpty
+        }
     }
 
     private init(_ reminders: [RandomReminder], options: Options) {
@@ -213,6 +215,10 @@ final class ReminderManager {
     }
 
     func startReminder(_ reminder: RandomReminder) {
+        modify(reminder) { reminder in
+            reminder.activationState = .noActivations
+        }
+
         guard reminder.eponymous else {
             modify(reminder) { reminder in
                 reminder.state = .started
@@ -239,12 +245,6 @@ final class ReminderManager {
                 try? await Task.sleep(nanoseconds: sleepInterval)
                 reminderActivator.tick()
             }
-
-            if !reminderActivator.terminated {
-                resetReminder(reminder)
-            } else {
-                FancyLogger.info("Reminder '\(reminder)' will not be restarted")
-            }
         }
     }
 
@@ -265,10 +265,6 @@ final class ReminderManager {
             if permanent {
                 reminderActivator.terminated = true
             }
-
-            modify(reminder) { reminder in
-                reminder.activationState = .noActivations
-            }
         }
     }
 
@@ -278,13 +274,11 @@ final class ReminderManager {
             FancyLogger.info("Restarted reminder '\(reminder)'")
             modify(reminder) { reminder in
                 reminder.advanceToNextRepeat()
-                reminder.activationState = .noActivations
             }
         } else {
             FancyLogger.info("Setting '\(reminder)' to past")
             modify(reminder) { reminder in
                 reminder.state = .finished
-                reminder.activationState = .noActivations
             }
         }
     }
@@ -311,7 +305,7 @@ final class ReminderManager {
             FancyLogger.info("Stopping reminder '\(reminder)'")
             stopReminder(reminder)
         } else if reminder.hasEnded(after: date) {
-            FancyLogger.info("Reminder '\(reminder) will end but has not started")
+            FancyLogger.info("Reminder '\(reminder)' will end but has not started")
             resetReminder(reminder)
         }
     }

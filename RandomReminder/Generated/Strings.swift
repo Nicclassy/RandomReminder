@@ -243,6 +243,8 @@ internal enum L10n {
       internal static let edit = L10n.tr("Localizable", "preferences.reminders.edit", fallback: "Edit Reminders")
       /// Finish Editing
       internal static let finishEditing = L10n.tr("Localizable", "preferences.reminders.finish-editing", fallback: "Finish Editing")
+      /// Finished
+      internal static let finished = L10n.tr("Localizable", "preferences.reminders.finished", fallback: "Finished")
       /// >1 week
       internal static let longerThanOneWeek = L10n.tr("Localizable", "preferences.reminders.longer-than-one-week", fallback: ">1 week")
       /// %d occurrences left

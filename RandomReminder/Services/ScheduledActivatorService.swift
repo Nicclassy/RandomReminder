@@ -52,27 +52,18 @@ final class ScheduledActivatorService: ReminderActivatorService {
         }
 
         guard Date() >= upcomingDate else {
-            FancyLogger.info("Did not activate '\(reminder)'")
             return
         }
 
         let isFinalActivation = reminderActivations == reminder.counts.totalOccurrences - 1
         if isFinalActivation {
             reminderActivations += 1
-            FancyLogger.info(
-                "Activated final reminder for '\(reminder)'",
-                "(\(reminderActivations)/\(reminder.counts.totalOccurrences))"
-            )
             onReminderActivation()
             onReminderFinished()
             running = false
         } else {
             reminderActivations += 1
             onReminderActivation()
-            FancyLogger.info(
-                "Activated '\(reminder)'",
-                "(\(reminderActivations)/\(reminder.counts.totalOccurrences))!"
-            )
         }
 
         activationDates.removeFirst()

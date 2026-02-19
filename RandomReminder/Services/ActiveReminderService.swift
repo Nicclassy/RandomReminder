@@ -34,8 +34,9 @@ final class ActiveReminderService {
             if reminder.counts.occurrences == reminder.counts.totalOccurrences {
                 FancyLogger.info("Setting reminder state to finished and resetting occurrences")
                 reminder.counts.occurrences = 0
-                reminder.state = reminder.hasRepeats ? .upcoming : .finished
                 reminder.activationState = .finalActivation(.now)
+                reminder.state = reminder.hasRepeats ? .upcoming : .finished
+                FancyLogger.info("Activation state is \(reminder.activationState), (\(Date())")
             } else {
                 reminder.activationState = .lastActivated(.now)
             }

@@ -14,15 +14,11 @@ enum ReminderCommand: CaseIterable {
 
 final class CommandController {
     static let shared = CommandController()
-    fileprivate let notificationNamesByCommand: [ReminderCommand: Notification.Name] = {
-        var mapping: [ReminderCommand: Notification.Name] = [:]
-        for command in ReminderCommand.allCases {
-            let notificationName = Notification.Name(String(describing: command))
-            mapping[command] = notificationName
+    fileprivate let notificationNamesByCommand: [ReminderCommand: Notification.Name] = .init(
+        uniqueKeysWithValues: ReminderCommand.allCases.map { command in
+            (command, Notification.Name(String(describing: command)))
         }
-
-        return mapping
-    }()
+    )
 
     private var valuesByCommand: [ReminderCommand: Any] = [.activationCommand: ActivationCommand.default]
     var commandType: ReminderCommand = .descriptionCommand

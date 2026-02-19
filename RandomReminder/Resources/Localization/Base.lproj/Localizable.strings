@@ -107,6 +107,7 @@
 "preferences.reminders.starting-in" = "Starting in %@";
 "preferences.reminders.occurring-now" = "Occurring now";
 "preferences.reminders.occurring-in" = "Occurring in %@";
+"preferences.reminders.finished" = "Finished";
 
 "preferences.reminders.rows.edit" = "Edit";
 "preferences.reminders.rows.delete" = "Delete";

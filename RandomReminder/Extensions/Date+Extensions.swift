@@ -65,10 +65,4 @@ extension Date {
         let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: self)
         return calendar.date(from: components)!
     }
-
-    func formatYearMonthDay() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd/mm/yy"
-        return formatter.string(from: self)
-    }
 }

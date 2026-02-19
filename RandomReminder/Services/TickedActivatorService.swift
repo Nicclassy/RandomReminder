@@ -51,22 +51,12 @@ final class TickedActivatorService: ReminderActivatorService {
         let isFinalActivation = reminderActivations == reminder.counts.totalOccurrences - 1
         if reminderWillActivate && isFinalActivation {
             reminderActivations += 1
-            FancyLogger.info(
-                "Activated final reminder for '\(reminder)'",
-                "(\(reminderActivations)/\(reminder.counts.totalOccurrences))"
-            )
             onReminderActivation()
             onReminderFinished()
             running = false
         } else if reminderWillActivate {
             reminderActivations += 1
             onReminderActivation()
-            FancyLogger.info(
-                "Activated '\(reminder)'",
-                "(\(reminderActivations)/\(reminder.counts.totalOccurrences))!"
-            )
-        } else {
-            FancyLogger.info("Did not activate '\(reminder)'")
         }
     }
 

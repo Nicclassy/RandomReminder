@@ -7,16 +7,24 @@
 
 import SwiftUI
 
-struct ToggleablePreference: View {
-    let title: String
-    var caption: String?
-    @Binding var isOn: Bool
+struct ToggleablePreference<Content: View>: View {
+    private let title: String?
+    private let caption: String?
+    @Binding private var isOn: Bool
+
+    @ViewBuilder
+    private let content: (() -> Content)?
 
     var body: some View {
         Toggle(isOn: $isOn) {
             HStack {
                 VStack(alignment: .leading) {
-                    Text(title)
+                    if let title {
+                        Text(title)
+                    }
+                    if let content {
+                        content()
+                    }
                     if let caption {
                         CaptionText(caption)
                             .fixedSize(horizontal: false, vertical: true)
@@ -26,6 +34,22 @@ struct ToggleablePreference: View {
                 Spacer(minLength: 0)
             }
         }
+    }
+
+    init(title: String? = nil, caption: String? = nil, isOn: Binding<Bool>, content: @escaping () -> Content) {
+        self.title = title
+        self.content = content
+        self.caption = caption
+        self._isOn = isOn
+    }
+}
+
+extension ToggleablePreference where Content == EmptyView {
+    init(title: String? = nil, caption: String? = nil, isOn: Binding<Bool>) {
+        self.title = title
+        self.content = nil
+        self.caption = caption
+        self._isOn = isOn
     }
 }
 

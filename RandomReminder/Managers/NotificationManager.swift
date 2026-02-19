@@ -29,11 +29,11 @@ final class NotificationManager {
             defer {
                 semaphore.signal()
             }
-            
+
             let notification = ReminderNotification.create(for: reminder)
             FancyLogger.info("Processing for \(service.reminder)")
             await processNotification(notification, with: service)
-            
+
             if schedulingPreferences.notificationGapEnabled {
                 await notificationGap()
             }
@@ -121,7 +121,7 @@ final class NotificationManager {
         defer {
             ActiveReminderManager.shared.removeWaiting(reminder)
         }
-        
+
         guard reminderCanOccur(reminder) else {
             return
         }

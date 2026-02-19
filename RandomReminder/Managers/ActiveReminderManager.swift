@@ -15,10 +15,14 @@ final class ActiveReminderManager {
         qos: .userInitiated
     )
 
-    var activeReminderNotification: ReminderNotification!
-    var activeReminderDescription: String!
+    var activeReminderNotification: ReminderNotification! {
+        didSet {
+            ReminderModificationController.shared.updateReminderText()
+        }
+    }
+
     private var activeReminders: [ActiveReminderService] = []
-    private var queuedReminders: [RandomReminder] = []
+    private var waitingReminderIds: Set<ReminderID> = []
 
     private init() {}
 
@@ -27,23 +31,27 @@ final class ActiveReminderManager {
     }
 
     func reminderIsWaiting(_ reminder: RandomReminder) -> Bool {
-        queuedReminders.contains(reminder)
-    }
-
-    func enqueueReminder(_ reminder: RandomReminder) {
-        queuedReminders.append(reminder)
-    }
-
-    func dequeueReminder(_ reminder: RandomReminder) {
-        guard let index = queuedReminders.firstIndex(of: reminder) else {
-            fatalError("Reminder \(reminder) not found in queue")
+        queue.sync {
+            waitingReminderIds.contains(reminder.id)
         }
+    }
 
-        queuedReminders.remove(at: index)
+    func markAsWaiting(_ reminder: RandomReminder) {
+        queue.sync {
+            _ = waitingReminderIds.insert(reminder.id)
+        }
+        ReminderModificationController.shared.updateReminderText()
+    }
+
+    func removeWaiting(_ reminder: RandomReminder) {
+        queue.sync {
+            _ = waitingReminderIds.remove(reminder.id)
+        }
+        ReminderModificationController.shared.updateReminderText()
     }
 
     func setActiveReminder(with notification: ReminderNotification) {
-        self.activeReminderNotification = notification
+        activeReminderNotification = notification
     }
 
     func unsetActiveReminder() {
