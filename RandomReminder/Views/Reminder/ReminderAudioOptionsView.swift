@@ -17,20 +17,20 @@ struct ReminderAudioOptionsView: View {
 
     var body: some View {
         HStack(spacing: ViewConstants.horizontalSpacing) {
-            Toggle("Play audio when the reminder occurs", isOn: $useAudioFile)
+            Toggle(L10n.Modification.Audio.play, isOn: $useAudioFile)
                 .padding(.bottom, 5)
             HStack {
                 let audioFiles = availableAudioFiles()
                 let showPicker = showPicker(audioFiles: audioFiles)
                 if alwaysShowFilePicker || showPicker {
-                    Picker("Audio file", selection: audioFileSelection(audioFiles: audioFiles)) {
+                    Picker(L10n.Modification.Audio.audioFile, selection: audioFileSelection(audioFiles: audioFiles)) {
                         ForEach(audioFiles, id: \.self) { audioFile in
                             Text(String(describing: audioFile.name)).tag(audioFile)
                         }
                     }
                     .disabled(!useAudioFile)
                     .frame(width: 300)
-                    Text("OR")
+                    Text(L10n.Modification.Audio.alternativeOption)
                 }
 
                 Button(buttonText(pickerIsShown: showPicker)) {
@@ -55,9 +55,11 @@ struct ReminderAudioOptionsView: View {
 
     private func buttonText(pickerIsShown: Bool) -> String {
         if let audioFile = reminder.activationEvents.audio {
-            pickerIsShown ? "Change audio file" : "Change audio file from \(audioFile.name)"
+            pickerIsShown
+                ? L10n.Modification.Audio.Change.pickerIsShown
+                : L10n.Modification.Audio.Change.pickerIsNotShown(audioFile.name)
         } else {
-            "Choose an audio file"
+            L10n.Modification.Audio.Change.noFileSelected
         }
     }
 
