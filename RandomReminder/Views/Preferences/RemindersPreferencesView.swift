@@ -12,6 +12,10 @@ import SwiftUI
 private struct ReminderPreferencesRow: View {
     fileprivate typealias PublishedTimer = Publishers.Autoconnect<Timer.TimerPublisher>
 
+    private static let font: NSFont = .preferredFont(forTextStyle: .body)
+    private static let minSpace: CGFloat = 25
+    private static var rowWidth: CGFloat?
+
     @State private var reminder: RandomReminder
     @State private var reminderInfo: String
     @State private var reminderInfoProvider: ReminderInfoProvider
@@ -21,6 +25,7 @@ private struct ReminderPreferencesRow: View {
     @Environment(\.openWindow) private var openWindow
     @Binding private var editing: Bool
 
+    private let reminderTitleWidth: CGFloat
     private let timer: PublishedTimer
     private let parentNumberOfRows: Int
     private let parentRowsBeforeScroll: UInt
@@ -28,6 +33,9 @@ private struct ReminderPreferencesRow: View {
     var body: some View {
         HStack {
             Text(reminder.content.title)
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .layoutPriority(0)
             Spacer()
             Group {
                 if editing {
@@ -68,6 +76,8 @@ private struct ReminderPreferencesRow: View {
                     }
                 } else {
                     Text(reminderInfo)
+                        .lineLimit(1)
+                        .layoutPriority(1)
                         .frame(height: 20)
                         .foregroundStyle(.secondary)
                 }
@@ -81,6 +91,8 @@ private struct ReminderPreferencesRow: View {
         }
         .padding(.all, 10)
         .padding(.horizontal, 5)
+        .readWidth { Self.rowWidth = Self.rowWidth ?? $0 }
+        .frame(width: Self.rowWidth)
     }
 
     init(
@@ -90,26 +102,60 @@ private struct ReminderPreferencesRow: View {
         parentRowsBeforeScroll: UInt,
         editing: Binding<Bool>
     ) {
-        let reminderInfoProvider = ReminderInfoProvider(reminder: reminder)
+        let reminderInfoProvider = ReminderInfoProvider(reminder: reminder, font: Self.font)
+        let reminderTitleSize = reminder.content.title.width(with: Self.font)
+        self.init(
+            reminder: reminder,
+            reminderInfoProvider: reminderInfoProvider,
+            reminderTitleWidth: reminderTitleSize,
+            timer: timer,
+            parentNumberOfRows: parentNumberOfRows,
+            parentRowsBeforeScroll: parentRowsBeforeScroll,
+            editing: editing
+        )
+    }
+
+    private init(
+        reminder: RandomReminder,
+        reminderInfoProvider: ReminderInfoProvider,
+        reminderTitleWidth: CGFloat,
+        timer: PublishedTimer,
+        parentNumberOfRows: Int,
+        parentRowsBeforeScroll: UInt,
+        editing: Binding<Bool>
+    ) {
         self.reminder = reminder
         self.reminderInfoProvider = reminderInfoProvider
-        self.reminderInfo = reminderInfoProvider.preferencesInfo()
+        self.reminderInfo = reminderInfoProvider.preferencesInfo(
+            fitting: Self.maxInfoWidth(reminderTitleWidth: reminderTitleWidth)
+        )
+        self.reminderTitleWidth = reminderTitleWidth
         self.timer = timer
         self.parentNumberOfRows = parentNumberOfRows
         self.parentRowsBeforeScroll = parentRowsBeforeScroll
         self._editing = editing
     }
 
+    private static func maxInfoWidth(reminderTitleWidth: CGFloat) -> CGFloat? {
+        if let rowWidth {
+            rowWidth - reminderTitleWidth - minSpace
+        } else {
+            nil
+        }
+    }
+
     private func updateText() {
         let todaysDay = ReminderManager.shared.todaysDay
         reminderInfo = if ActiveReminderManager.shared.reminderIsActive(reminder) {
             L10n.Preferences.Reminders.Rows.notificationIsPresent
+        } else if ActiveReminderManager.shared.reminderIsWaiting(reminder) && !reminder.hasPast {
+            L10n.Preferences.Reminders.Rows.notificationIsWaiting
         } else if SchedulingPreferences.shared.remindersArePaused && !reminder.hasPast {
             L10n.Preferences.Reminders.Rows.paused
         } else if reminder.eponymous && !reminder.days.contains(todaysDay) && !reminder.hasPast {
             L10n.Preferences.Reminders.Rows.resumesOn(reminder.days.nextOccurringDay())
         } else {
-            reminderInfoProvider.preferencesInfo()
+            reminderInfoProvider.preferencesInfo(fitting: Self.maxInfoWidth(reminderTitleWidth: reminderTitleWidth))
         }
     }
 }
@@ -173,13 +219,13 @@ private struct ReminderPreferencesRows: View {
 
     init(
         heading: String,
-        rowsBeforeScoll: UInt,
+        rowsBeforeScroll: UInt,
         editingReminders: Binding<Bool>,
         remindersProvider: @autoclosure @escaping () -> [RandomReminder],
         showsNoRemindersMessage: Bool
     ) {
         self.heading = heading
-        self.rowsBeforeScroll = rowsBeforeScoll
+        self.rowsBeforeScroll = rowsBeforeScroll
         self.remindersProvider = remindersProvider
         self.showsNoRemindersMessage = showsNoRemindersMessage
         self._editingReminders = editingReminders
@@ -240,7 +286,7 @@ struct RemindersPreferencesView: View {
                 VStack(alignment: .leading) {
                     ReminderPreferencesRows(
                         heading: L10n.Preferences.Reminders.upcoming,
-                        rowsBeforeScoll: ViewConstants.upcomingRemindersBeforeScroll,
+                        rowsBeforeScroll: ViewConstants.upcomingRemindersBeforeScroll,
                         editingReminders: $editingReminders,
                         remindersProvider: reminderManager.upcomingReminders(),
                         showsNoRemindersMessage: true
@@ -249,7 +295,7 @@ struct RemindersPreferencesView: View {
 
                     ReminderPreferencesRows(
                         heading: L10n.Preferences.Reminders.past,
-                        rowsBeforeScoll: ViewConstants.pastRemindersBeforeScroll,
+                        rowsBeforeScroll: ViewConstants.pastRemindersBeforeScroll,
                         editingReminders: $editingReminders,
                         remindersProvider: reminderManager.pastReminders(),
                         showsNoRemindersMessage: false
@@ -317,6 +363,6 @@ struct RemindersPreferencesView: View {
 #Preview("Many reminders") {
     // swiftlint:disable redundant_discardable_let
     // swiftformat:disable redundantLet
-    let _ = ReminderManager.setup(options: .init(remind: false, preview: true))
+    let _ = ReminderManager.setup(options: .init(remind: true, preview: true))
     RemindersPreferencesView()
 }
