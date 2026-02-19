@@ -98,16 +98,52 @@ internal enum L10n {
     }
   }
   internal enum Modification {
+    /// Back
+    internal static let back = L10n.tr("Localizable", "modification.back", fallback: "Back")
     /// Cancel
     internal static let cancel = L10n.tr("Localizable", "modification.cancel", fallback: "Cancel")
     /// Create
     internal static let create = L10n.tr("Localizable", "modification.create", fallback: "Create")
     /// Delete
     internal static let delete = L10n.tr("Localizable", "modification.delete", fallback: "Delete")
+    /// Next
+    internal static let next = L10n.tr("Localizable", "modification.next", fallback: "Next")
     /// OK
     internal static let ok = L10n.tr("Localizable", "modification.ok", fallback: "OK")
     /// Save
     internal static let save = L10n.tr("Localizable", "modification.save", fallback: "Save")
+    internal enum Audio {
+      /// OR
+      internal static let alternativeOption = L10n.tr("Localizable", "modification.audio.alternative-option", fallback: "OR")
+      /// Audio file
+      internal static let audioFile = L10n.tr("Localizable", "modification.audio.audio-file", fallback: "Audio file")
+      /// Play audio when the reminder occurs
+      internal static let play = L10n.tr("Localizable", "modification.audio.play", fallback: "Play audio when the reminder occurs")
+      internal enum Change {
+        /// Choose an audio file
+        internal static let noFileSelected = L10n.tr("Localizable", "modification.audio.change.no-file-selected", fallback: "Choose an audio file")
+        /// Change audio file from %@
+        internal static func pickerIsNotShown(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "modification.audio.change.picker-is-not-shown", String(describing: p1), fallback: "Change audio file from %@")
+        }
+        /// Change audio file
+        internal static let pickerIsShown = L10n.tr("Localizable", "modification.audio.change.picker-is-shown", fallback: "Change audio file")
+      }
+    }
+    internal enum Content {
+      /// Delete description command
+      internal static let deleteDescriptionCommand = L10n.tr("Localizable", "modification.content.delete-description-command", fallback: "Delete description command")
+      /// Reminder description:
+      internal static let reminderDescription = L10n.tr("Localizable", "modification.content.reminder-description", fallback: "Reminder description:")
+      /// Reminder title:
+      internal static let reminderTitle = L10n.tr("Localizable", "modification.content.reminder-title", fallback: "Reminder title:")
+      /// Total occurrences:
+      internal static let totalOccurrences = L10n.tr("Localizable", "modification.content.total-occurrences", fallback: "Total occurrences:")
+      internal enum ReminderTitle {
+        /// Title
+        internal static let text = L10n.tr("Localizable", "modification.content.reminder-title.text", fallback: "Title")
+      }
+    }
     internal enum DiscardReminder {
       /// All entered information will be lost.
       internal static let message = L10n.tr("Localizable", "modification.discard-reminder.message", fallback: "All entered information will be lost.")
@@ -118,6 +154,22 @@ internal enum L10n {
       internal enum Edit {
         /// Are you sure you want to stop editing this reminder?
         internal static let title = L10n.tr("Localizable", "modification.discard-reminder.edit.title", fallback: "Are you sure you want to stop editing this reminder?")
+      }
+    }
+    internal enum Options {
+      /// Always running
+      internal static let alwaysRunning = L10n.tr("Localizable", "modification.options.always-running", fallback: "Always running")
+      /// Non-random
+      internal static let nonRandom = L10n.tr("Localizable", "modification.options.non-random", fallback: "Non-random")
+      /// Repeat
+      internal static let `repeat` = L10n.tr("Localizable", "modification.options.repeat", fallback: "Repeat")
+      /// Show in window when active
+      internal static let showInWindowWhenActive = L10n.tr("Localizable", "modification.options.show-in-window-when-active", fallback: "Show in window when active")
+      /// Use times only
+      internal static let timesOnly = L10n.tr("Localizable", "modification.options.times-only", fallback: "Use times only")
+      internal enum TimesOnly {
+        /// The created reminder will occur daily between the specified times.
+        internal static let popoverText = L10n.tr("Localizable", "modification.options.times-only.popover-text", fallback: "The created reminder will occur daily between the specified times.")
       }
     }
   }
@@ -234,6 +286,8 @@ internal enum L10n {
         internal static let edit = L10n.tr("Localizable", "preferences.reminders.rows.edit", fallback: "Edit")
         /// Active
         internal static let notificationIsPresent = L10n.tr("Localizable", "preferences.reminders.rows.notification-is-present", fallback: "Active")
+        /// Waiting
+        internal static let notificationIsWaiting = L10n.tr("Localizable", "preferences.reminders.rows.notification-is-waiting", fallback: "Waiting")
         /// Paused
         internal static let paused = L10n.tr("Localizable", "preferences.reminders.rows.paused", fallback: "Paused")
         /// Resumes on %@
@@ -259,16 +313,16 @@ internal enum L10n {
   }
   internal enum TimePicker {
     internal enum EarliestDefaultTime {
-      /// Default earliest time:
-      internal static let heading = L10n.tr("Localizable", "time-picker.earliest-default-time.heading", fallback: "Default earliest time:")
+      /// Earliest time:
+      internal static let heading = L10n.tr("Localizable", "time-picker.earliest-default-time.heading", fallback: "Earliest time:")
     }
     internal enum EarliestTime {
       /// Earliest time:
       internal static let heading = L10n.tr("Localizable", "time-picker.earliest-time.heading", fallback: "Earliest time:")
     }
     internal enum LatestDefaultTime {
-      /// Default latest time:
-      internal static let heading = L10n.tr("Localizable", "time-picker.latest-default-time.heading", fallback: "Default latest time:")
+      /// Latest time:
+      internal static let heading = L10n.tr("Localizable", "time-picker.latest-default-time.heading", fallback: "Latest time:")
     }
     internal enum LatestTime {
       /// Latest time:

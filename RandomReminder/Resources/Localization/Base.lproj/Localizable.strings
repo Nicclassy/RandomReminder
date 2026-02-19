@@ -71,8 +71,8 @@
 
 // MARK: Dual Date/Time Pickers
 
-"time-picker.earliest-default-time.heading" = "Default earliest time:";
-"time-picker.latest-default-time.heading" = "Default latest time:";
+"time-picker.earliest-default-time.heading" = "Earliest time:";
+"time-picker.latest-default-time.heading" = "Latest time:";
 "time-picker.earliest-time.heading" = "Earliest time:";
 "time-picker.latest-time.heading" = "Latest time:";
 "date-picker.earliest-date.heading" = "Earliest date:";
@@ -115,6 +115,7 @@
 "preferences.reminders.rows.delete-caption" = "Deleted reminders cannot be recovered.";
 "preferences.reminders.rows.paused" = "Paused";
 "preferences.reminders.rows.notification-is-present" = "Active";
+"preferences.reminders.rows.notification-is-waiting" = "Waiting";
 "preferences.reminders.rows.resumes-on" = "Resumes on %@";
 "preferences.reminders.reminders-count" = "Reminders: %d";
 "preferences.reminders.upcoming" = "Upcoming Reminders";
@@ -133,13 +134,26 @@
 "modification.next" = "Next";
 "modification.back" = "Back";
 
+"modification.discard-reminder.create.title" = "Are you sure you want to discard this reminder?";
+"modification.discard-reminder.edit.title" = "Are you sure you want to stop editing this reminder?";
+"modification.discard-reminder.message" = "All entered information will be lost.";
+
 "modification.content.reminder-title" = "Reminder title:";
 "modification.content.reminder-title.text" = "Title";
 "modification.content.reminder-description" = "Reminder description:";
 "modification.content.delete-description-command" = "Delete description command";
 "modification.content.total-occurrences" = "Total occurrences:";
 
-"modification.discard-reminder.create.title" = "Are you sure you want to discard this reminder?";
-"modification.discard-reminder.edit.title" = "Are you sure you want to stop editing this reminder?";
-"modification.discard-reminder.message" = "All entered information will be lost.";
+"modification.audio.alternative-option" = "OR";
+"modification.audio.play" = "Play audio when the reminder occurs";
+"modification.audio.audio-file" = "Audio file";
+"modification.audio.change.picker-is-shown" = "Change audio file";
+"modification.audio.change.picker-is-not-shown" = "Change audio file from %@";
+"modification.audio.change.no-file-selected" = "Choose an audio file";
 
+"modification.options.always-running" = "Always running";
+"modification.options.repeat" = "Repeat";
+"modification.options.non-random" = "Non-random";
+"modification.options.show-in-window-when-active" = "Show in window when active";
+"modification.options.times-only" = "Use times only";
+"modification.options.times-only.popover-text" = "The created reminder will occur daily between the specified times.";

@@ -26,15 +26,15 @@ struct ReminderOptionsView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
 
             GridRow {
-                Toggle("Always running", isOn: $preferences.alwaysRunning)
+                Toggle(L10n.Modification.Options.alwaysRunning, isOn: $preferences.alwaysRunning)
                     .disabled(preferences.nonRandom)
                 timesOnlyToggle
             }
 
             GridRow {
-                Toggle("Non-random", isOn: $preferences.nonRandom)
+                Toggle(L10n.Modification.Options.nonRandom, isOn: $preferences.nonRandom)
                     .disabled(preferences.alwaysRunning)
-                Toggle("Show in window when active", isOn: $preferences.showWhenActive)
+                Toggle(L10n.Modification.Options.showInWindowWhenActive, isOn: $preferences.showWhenActive)
             }
         }
     }
@@ -42,7 +42,7 @@ struct ReminderOptionsView: View {
     @ViewBuilder
     private var repeatEveryToggle: some View {
         HStack(spacing: 0) {
-            Toggle("Repeat", isOn: $preferences.repeatingEnabled)
+            Toggle(L10n.Modification.Options.repeat, isOn: $preferences.repeatingEnabled)
                 .disabled(preferences.alwaysRunning || preferences.nonRandom)
 
             Picker("", selection: $reminder.repeatIntervalType) {
@@ -79,13 +79,13 @@ struct ReminderOptionsView: View {
     @ViewBuilder
     private var timesOnlyToggle: some View {
         HStack {
-            Toggle("Use times only", isOn: $preferences.timesOnly)
+            Toggle(L10n.Modification.Options.timesOnly, isOn: $preferences.timesOnly)
                 .disabled(preferences.alwaysRunning)
             HelpLink {
                 viewPreferences.showTimesOnlyPopover.toggle()
             }
             .popover(isPresented: $viewPreferences.showTimesOnlyPopover) {
-                Text("The created reminder will occur daily between the specified times.")
+                Text(L10n.Modification.Options.TimesOnly.popoverText)
                     .padding()
             }
         }
