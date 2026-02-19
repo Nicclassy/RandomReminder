@@ -5,16 +5,29 @@
 //  Created by Luca Napoli on 2/2/2026.
 //
 
-import Foundation
+import SwiftUI
 
-struct ReminderInfoProvider {
+struct TimeInfoComponent {
+    let component: Calendar.Component
+    let quantity: Int
+    let name: String
+}
+
+private enum ComponentsResult {
+    case list([TimeInfoComponent])
+    case greaterThanMeasurement
+}
+
+private enum TimeDifferenceInfoCandidates {
+    case localised(String)
+    case requiresLocalisation([String])
+}
+
+private enum TimeInfoComponentLister {
     private static let orderedCalendarComponents: [Calendar.Component] = [.day, .hour, .minute, .second]
     private static let calendarComponents: Set<Calendar.Component> = [.day, .hour, .minute, .second]
-    private static let appPreferences: AppPreferences = .shared
 
-    let reminder: RandomReminder
-
-    private static func timeDifferenceInfo(from start: Date, to end: Date = .now) -> String {
+    static func components(from start: Date, to end: Date) -> ComponentsResult {
         func componentName(_ component: Calendar.Component, for quantity: Int) -> String {
             guard let unit = TimeUnit(rawValue: String(describing: component)) else {
                 fatalError("Cannot convert \(component) into a TimeUnit")
@@ -23,39 +36,48 @@ struct ReminderInfoProvider {
             return unit.name(for: quantity)
         }
 
-        let components = Calendar.current.dateComponents(
+        let differenceComponents = Calendar.current.dateComponents(
             Self.calendarComponents,
             from: end,
             to: start
         )
-        if let days = components.day, days >= 7 {
-            return L10n.Preferences.Reminders.longerThanOneWeek
+
+        if let days = differenceComponents.day, days >= 7 {
+            return .greaterThanMeasurement
         }
 
-        let infoParts: [String] = Self.orderedCalendarComponents.compactMap { calendarComponent in
-            guard let quantity = components.value(for: calendarComponent)?.magnitude, quantity > 0 else {
+        let components: [TimeInfoComponent] = Self.orderedCalendarComponents.compactMap { calendarComponent in
+            guard let componentValue = differenceComponents.value(for: calendarComponent), componentValue != 0 else {
                 return nil
             }
 
-            let componentName = componentName(calendarComponent, for: Int(exactly: quantity)!)
-            if Self.appPreferences.timeFormat == .short {
-                return "\(quantity)\(componentName)"
-            }
-            return "\(quantity) \(componentName)"
+            let quantity = abs(componentValue)
+            let componentName = componentName(calendarComponent, for: quantity)
+            return TimeInfoComponent(
+                component: calendarComponent,
+                quantity: quantity,
+                name: componentName
+            )
         }
 
-        return infoParts.listing()
+        return .list(components)
+    }
+}
+
+struct ReminderInfoProvider {
+    private static let appPreferences: AppPreferences = .shared
+
+    let reminder: RandomReminder
+    let font: NSFont
+
+    private static func timeDifferenceInfo(from components: [TimeInfoComponent]) -> String {
+        let separator = AppPreferences.shared.timeFormat == .short ? "" : " "
+        return components
+            .map { "\($0.quantity)\(separator)\($0.name)" }
+            .listing()
     }
 
-    func preferencesInfo() -> String {
-        if reminder.hasPast {
-            return if case let .finalActivation(date) = reminder.activationState {
-                L10n.Preferences.Reminders.ago(timeDifferenceInfo(from: date))
-            } else {
-                L10n.Preferences.Reminders.ago(timeDifferenceInfo())
-            }
-        }
-
+    func preferencesInfo(fitting width: CGFloat? = nil) -> String {
         if reminder.hasBegun {
             return if reminder.counts.occurrencesLeft == 1 {
                 L10n.Preferences.Reminders.singleOccurrenceLeft
@@ -64,23 +86,108 @@ struct ReminderInfoProvider {
             }
         }
 
-        let info = timeDifferenceInfo()
-        if !reminder.eponymous {
-            return if info.isEmpty {
-                L10n.Preferences.Reminders.occurringNow
+        if reminder.hasPast {
+            let date = if case let .finalActivation(date) = reminder.activationState {
+                date
             } else {
-                L10n.Preferences.Reminders.occurringIn(info)
+                reminder.interval.latest
             }
+
+            return longestFittingInfo(
+                width: width,
+                from: date,
+                to: .now,
+                localise: L10n.Preferences.Reminders.ago
+            )
         }
 
-        return if info.isEmpty {
-            L10n.Preferences.Reminders.startingNow
-        } else {
-            L10n.Preferences.Reminders.startingIn(info)
+        let start = reminder.interval.earliest
+        let candidates = timeDifferenceInfoCandidates(from: start, to: .now)
+
+        switch candidates {
+        case let .localised(localised):
+            return localised
+
+        case let .requiresLocalisation(candidates):
+            return if reminder.eponymous {
+                longestFitting(
+                    width: width,
+                    candidates: candidates,
+                    localise: L10n.Preferences.Reminders.startingIn
+                )
+            } else {
+                longestFitting(
+                    width: width,
+                    candidates: candidates,
+                    localise: L10n.Preferences.Reminders.occurringIn
+                )
+            }
         }
     }
 
-    func timeDifferenceInfo(from date: Date? = nil) -> String {
-        Self.timeDifferenceInfo(from: reminder.hasPast ? date ?? reminder.interval.latest : reminder.interval.earliest)
+    private func timeDifferenceInfoCandidates(
+        from start: Date,
+        to end: Date = .now
+    ) -> TimeDifferenceInfoCandidates {
+        switch TimeInfoComponentLister.components(from: start, to: end) {
+        case .greaterThanMeasurement:
+            return .localised(L10n.Preferences.Reminders.longerThanOneWeek)
+
+        case let .list(components):
+            if components.isEmpty {
+                return if reminder.eponymous {
+                    .localised(L10n.Preferences.Reminders.startingNow)
+                } else if reminder.hasPast {
+                    .localised(L10n.Preferences.Reminders.finished)
+                } else {
+                    .localised(L10n.Preferences.Reminders.occurringNow)
+                }
+            }
+
+            return .requiresLocalisation(
+                (1...components.count)
+                    .reversed()
+                    .map { count in
+                        Self.timeDifferenceInfo(
+                            from: Array(components.prefix(count))
+                        )
+                    }
+            )
+        }
+    }
+
+    private func longestFittingInfo(
+        width: CGFloat?,
+        from start: Date,
+        to end: Date = .now,
+        localise: (String) -> String
+    ) -> String {
+        let candidates = timeDifferenceInfoCandidates(from: start, to: end)
+
+        switch candidates {
+        case let .localised(info):
+            return info
+
+        case let .requiresLocalisation(candidates):
+            return longestFitting(
+                width: width,
+                candidates: candidates,
+                localise: localise
+            )
+        }
+    }
+
+    private func longestFitting(width: CGFloat?, candidates: [String], localise: (String) -> (String)) -> String {
+        guard let first = candidates.first, let last = candidates.last else {
+            fatalError("Candidates not provided")
+        }
+
+        guard let width else {
+            return localise(first)
+        }
+
+        return candidates
+            .map(localise)
+            .first(where: { $0.width(with: font) <= width }) ?? last
     }
 }
