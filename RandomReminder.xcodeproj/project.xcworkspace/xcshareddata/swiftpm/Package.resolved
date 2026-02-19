@@ -1,5 +1,5 @@
 {
-  "originHash" : "d700212e171eeeacdd18087264031f9a969c5e243f7aa7924f28f749ee1a0290",
+  "originHash" : "d2adffc2568372be740112d5cf80c4c65c924c21682a1e15c6ad6ac611878869",
   "pins" : [
     {
       "identity" : "launchatlogin-modern",
@@ -8,6 +8,15 @@
       "state" : {
         "branch" : "main",
         "revision" : "a04ec1c363be3627734f6dad757d82f5d4fa8fcc"
+      }
+    },
+    {
+      "identity" : "semaphore",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/groue/Semaphore.git",
+      "state" : {
+        "revision" : "2543679282aa6f6c8ecf2138acd613ed20790bc2",
+        "version" : "0.1.0"
       }
     },
     {

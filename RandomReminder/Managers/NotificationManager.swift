@@ -6,13 +6,15 @@
 //
 
 import Foundation
+import Semaphore
 import UserNotifications
 
 final class NotificationManager {
     static let shared = NotificationManager()
 
     private let schedulingPreferences: SchedulingPreferences = .shared
-    private let queue = DispatchQueue(label: Constants.bundleID + ".notificationQueue", qos: .utility)
+    private let clock = ContinuousClock()
+    private let semaphore = AsyncSemaphore(value: 1)
     private let notificationCentre: UNUserNotificationCenter = .current()
 
     private init() {}
@@ -20,35 +22,34 @@ final class NotificationManager {
     func addReminderNotification(for service: ActiveReminderService) {
         let reminder = service.reminder
         FancyLogger.info("Waiting to add request of reminder '\(reminder)' to the queue")
-        ActiveReminderManager.shared.enqueueReminder(reminder)
+        ActiveReminderManager.shared.markAsWaiting(reminder)
 
-        queue.async { [self] in
-            let notification = ReminderNotification.create(for: reminder)
-            let semaphore = DispatchSemaphore(value: 0)
-            Task {
-                FancyLogger.error("Processing for \(service.reminder)")
-                await processNotification(notification, with: service)
+        Task {
+            await semaphore.wait()
+            defer {
                 semaphore.signal()
             }
-            semaphore.wait()
-            ActiveReminderManager.shared.dequeueReminder(reminder)
+            
+            let notification = ReminderNotification.create(for: reminder)
+            FancyLogger.info("Processing for \(service.reminder)")
+            await processNotification(notification, with: service)
+            
+            if schedulingPreferences.notificationGapEnabled {
+                await notificationGap()
+            }
+            FancyLogger.error("Finished processing notification for '\(reminder)'")
         }
     }
 
     private func notificationIsPresent(for reminder: RandomReminder) async -> Bool {
         let notifications = await notificationCentre.deliveredNotifications()
-        for notification in notifications {
-            let notificationUserInfo = notification.request.content.userInfo
-            guard let notificationReminderId = notificationUserInfo["reminderId"] as? Int else {
-                continue
-            }
-
-            if reminder.id == notificationReminderId {
-                return true
+        return notifications.contains { notification in
+            if let notificationReminderId = notification.request.content.userInfo["reminderId"] as? Int {
+                reminder.id == notificationReminderId
+            } else {
+                false
             }
         }
-
-        return false
     }
 
     private func reminderCanOccur(_ reminder: RandomReminder) -> Bool {
@@ -75,6 +76,26 @@ final class NotificationManager {
         return true
     }
 
+    private func autoDismissDeadline() -> ContinuousClock.Instant? {
+        guard schedulingPreferences.notificationAutoDismissEnabled else {
+            return nil
+        }
+
+        let seconds = schedulingPreferences.notificationAutoDismissTime
+            * Int(schedulingPreferences.notificationAutoDismissTimeUnit.timeInterval)
+
+        return clock.now + .seconds(seconds)
+    }
+
+    private func notificationGap() async {
+        let notificationGapTimeInterval = schedulingPreferences.notificationGapTimeUnit.timeInterval
+        let notificationGap = UInt64(
+            schedulingPreferences.notificationGapTime * Int(notificationGapTimeInterval)
+        )
+        FancyLogger.info("Sleeping for \(notificationGap) seconds")
+        try? await Task.sleep(nanoseconds: notificationGap * 1_000_000_000)
+    }
+
     // swiftlint:disable:next function_body_length
     private func processNotification(
         _ notification: ReminderNotification,
@@ -97,6 +118,10 @@ final class NotificationManager {
         // This isn't a major issue, but when a (Thread.)sleep for 1 hour might be required
         // between notifications, it might be problematic
         let reminder = reminderService.reminder
+        defer {
+            ActiveReminderManager.shared.removeWaiting(reminder)
+        }
+        
         guard reminderCanOccur(reminder) else {
             return
         }
@@ -112,7 +137,7 @@ final class NotificationManager {
         do {
             try await notificationCentre.add(request)
         } catch {
-            FancyLogger.error("Error adding notifiation:", error)
+            FancyLogger.error("Error adding notification:", error)
             return
         }
 
@@ -128,19 +153,37 @@ final class NotificationManager {
         await MainActor.run {
             FancyLogger.info("🟩 Notification appeared 🟩")
             ActiveReminderManager.shared.setActiveReminder(with: notification)
+            ActiveReminderManager.shared.removeWaiting(reminder)
             reminderService.start()
             if reminder.activationEvents.showWhenActive {
                 NotificationCenter.default.post(name: .openActiveReminderWindow, object: nil)
             }
         }
 
+        let deadline = autoDismissDeadline()
         async let notificationDisappeared: Void = {
             // Now, wait until it disappears
             defer {
                 FancyLogger.info("🟦 Notification disappeared 🟦")
             }
+
+            var dismissNotification = false
             while await notificationIsPresent(for: reminder) {
                 try? await Task.sleep(nanoseconds: 500_000_000)
+
+                if let deadline, clock.now >= deadline {
+                    dismissNotification = true
+                    break
+                }
+            }
+
+            guard dismissNotification else { return }
+
+            notificationCentre.removeDeliveredNotifications(withIdentifiers: [request.identifier])
+            if reminder.activationEvents.showWhenActive {
+                await MainActor.run {
+                    NotificationCenter.default.post(name: .dismissActiveReminderWindow, object: nil)
+                }
             }
         }()
 
@@ -161,15 +204,5 @@ final class NotificationManager {
             ActiveReminderManager.shared.unsetActiveReminder()
             reminderService.stop()
         }
-
-        if schedulingPreferences.notificationGapEnabled {
-            let notificationGapTimeInterval = Int(schedulingPreferences.notificationGapTimeUnit.timeInterval)
-            let notificationGap = UInt64(
-                schedulingPreferences.notificationGapTime * Int(notificationGapTimeInterval)
-            )
-            FancyLogger.info("Sleeping for \(notificationGap) seconds")
-            try? await Task.sleep(nanoseconds: notificationGap * 1_000_000_000)
-        }
-        FancyLogger.error("Finished processing notification for '\(reminder)'")
     }
 }

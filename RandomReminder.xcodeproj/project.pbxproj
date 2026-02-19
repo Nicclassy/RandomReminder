@@ -73,6 +73,7 @@
 		8163F60E2D13A7540052A016 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8163F60D2D13A7540052A016 /* AppDelegate.swift */; };
 		8163F6132D13A90E0052A016 /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8163F6112D13A90E0052A016 /* StatusBarController.swift */; };
 		8166AD102F3FD22D0080F05C /* ReminderNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8166AD0F2F3FD22D0080F05C /* ReminderNotification.swift */; };
+		8168A5EA2F4595E900328155 /* Semaphore in Frameworks */ = {isa = PBXBuildFile; productRef = 8168A5E92F4595E900328155 /* Semaphore */; };
 		8175426A2E1BD1D500B8FB6E /* ReminderContentOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817542692E1BD1D500B8FB6E /* ReminderContentOptionsView.swift */; };
 		8175426E2E1BDB9300B8FB6E /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8175426D2E1BDB9300B8FB6E /* OnboardingView.swift */; };
 		817542702E1BDF3800B8FB6E /* View+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8175426F2E1BDF3800B8FB6E /* View+Extensions.swift */; };
@@ -256,6 +257,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				813F31232D3BB34B00EF6DD1 /* Collections in Frameworks */,
+				8168A5EA2F4595E900328155 /* Semaphore in Frameworks */,
 				8163F60A2D139C230052A016 /* LaunchAtLogin in Frameworks */,
 				81B5261D2D213B23008D36F0 /* Settings in Frameworks */,
 			);
@@ -571,6 +573,7 @@
 				8163F6092D139C230052A016 /* LaunchAtLogin */,
 				81B5261C2D213B23008D36F0 /* Settings */,
 				813F31222D3BB34B00EF6DD1 /* Collections */,
+				8168A5E92F4595E900328155 /* Semaphore */,
 			);
 			productName = RandomReminder;
 			productReference = 8163F5CF2D1241D40052A016 /* RandomReminder.app */;
@@ -660,6 +663,7 @@
 				81B5261B2D213B23008D36F0 /* XCRemoteSwiftPackageReference "Settings" */,
 				813F31212D3BB34B00EF6DD1 /* XCRemoteSwiftPackageReference "swift-collections" */,
 				81F921CE2D92BF310064ED2E /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
+				8168A5E82F4595E900328155 /* XCRemoteSwiftPackageReference "Semaphore" */,
 			);
 			productRefGroup = 8163F5D02D1241D40052A016 /* Products */;
 			projectDirPath = "";
@@ -1222,6 +1226,14 @@
 				kind = branch;
 			};
 		};
+		8168A5E82F4595E900328155 /* XCRemoteSwiftPackageReference "Semaphore" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/Semaphore.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
 		81B5261B2D213B23008D36F0 /* XCRemoteSwiftPackageReference "Settings" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/Settings";
@@ -1250,6 +1262,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8163F6082D139AD60052A016 /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */;
 			productName = LaunchAtLogin;
+		};
+		8168A5E92F4595E900328155 /* Semaphore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8168A5E82F4595E900328155 /* XCRemoteSwiftPackageReference "Semaphore" */;
+			productName = Semaphore;
 		};
 		81B5261C2D213B23008D36F0 /* Settings */ = {
 			isa = XCSwiftPackageProductDependency;
